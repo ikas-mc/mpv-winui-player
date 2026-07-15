@@ -3,12 +3,6 @@
         <Platform Name="ARM64" />
         <Platform Name="x64" />
     </Configurations>
-    <Project Path="mpv-winrt-projection-test/mpv-winrt-projection-test.csproj" Id="716ff7f1-a78f-4035-9c07-b55d1a63ea64">
-        <Platform Solution="*|ARM64" Project="ARM64" />
-        <Platform Solution="*|x64" Project="x64" />
-        <Deploy />
-    </Project>
-    <Project Path="mpv-winrt-projection/mpv-winrt-projection.csproj" Id="d296e342-6b4b-498c-a8eb-7e65bd81b697" />
     <Project Path="mpv-winrt-test/mpv-winrt-test.vcxproj" Id="4567618d-9071-4801-95ad-cea7d3b32cff">
         <Deploy />
     </Project>
