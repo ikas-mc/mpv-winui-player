@@ -1,0 +1,9 @@
+namespace mpv_winrt
+{
+	runtimeclass MpvChapter
+	{
+		Int32 Id { get; };
+		String Title { get; };
+		Double Time { get; };
+	};
+}

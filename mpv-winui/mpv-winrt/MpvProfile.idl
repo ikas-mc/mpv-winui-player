@@ -1,0 +1,7 @@
+namespace mpv_winrt
+{
+	runtimeclass MpvProfile
+	{
+		String Name { get; };
+	};
+}

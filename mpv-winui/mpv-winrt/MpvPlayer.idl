@@ -1,0 +1,118 @@
+import "MpvPlaylistItem.idl";
+import "MpvChapter.idl";
+import "MpvEdition.idl";
+import "MpvAudioDevice.idl";
+import "MpvProfile.idl";
+import "MpvMenuItem.idl";
+import "MpvTrack.idl";
+import "PlaybackStateChangedEventArgs.idl";
+import "VolumeChangedEventArgs.idl";
+import "PositionChangedEventArgs.idl";
+import "SpeedChangedEventArgs.idl";
+import "MediaInfoChangedEventArgs.idl";
+import "NetworkInfoChangedEventArgs.idl";
+import "PlaybackFailedEventArgs.idl";
+import "TrackListChangedEventArgs.idl";
+import "TrackListCountChangedEventArgs.idl";
+
+namespace mpv_winrt
+{
+	delegate void MediaLoadedEventHandler();
+	delegate void PlaybackEndedEventHandler();
+	delegate void PlaybackFailedEventHandler(PlaybackFailedEventArgs args);
+	delegate void SeekEventHandler();
+	delegate void FileLoadedEventHandler();
+	delegate void TrackChangedEventHandler();
+
+	delegate void PlaybackStateChangedEventHandler(PlaybackStateChangedEventArgs args);
+	delegate void VolumeChangedEventHandler(VolumeChangedEventArgs args);
+	delegate void PositionChangedEventHandler(PositionChangedEventArgs args);
+	delegate void SpeedChangedEventHandler(SpeedChangedEventArgs args);
+	delegate void MediaInfoChangedEventHandler(MediaInfoChangedEventArgs args);
+	delegate void NetworkInfoChangedEventHandler(NetworkInfoChangedEventArgs args);
+	delegate void TrackListChangedEventHandler(TrackListChangedEventArgs args);
+	delegate void TrackListCountChangedEventHandler(TrackListCountChangedEventArgs args);
+	delegate void VoConfiguredEventHandler();
+
+	runtimeclass MpvPlayer
+	{
+		MpvPlayer();
+		void Initialize(String configPath, UInt32 width, UInt32 height, Int32 volume);
+		void Destroy();
+		void UpdateSize(UInt32 width, UInt32 height);
+		void LoadFile(String url, Double position);
+		void LoadList(String url);
+		void AttachSwapChain(Microsoft.UI.Xaml.Controls.SwapChainPanel panel);
+
+		void Play();
+		void Pause();
+		void Stop();
+		void TogglePlayPause();
+		Boolean IsPaused();
+
+		void Command(Windows.Foundation.Collections.IVector<String> args);
+
+		Double Volume();
+		void Volume(Double value);
+		Boolean IsMuted();
+		void IsMuted(Boolean value);
+
+		Double Position();
+		void Position(Double value);
+		Double Duration();
+
+		Int32 CurrentVideoTrack();
+		void CurrentVideoTrack(Int32 value);
+		Int32 CurrentAudioTrack();
+		void CurrentAudioTrack(Int32 value);
+		Int32 CurrentSubtitleTrack();
+		void CurrentSubtitleTrack(Int32 value);
+		Int32 CurrentSecondSubtitleTrack();
+		void CurrentSecondSubtitleTrack(Int32 value);
+
+		void AddSubtitle(String url, Boolean selected, String title);
+
+		Double PlaybackSpeed();
+		void PlaybackSpeed(Double value);
+
+		Boolean LoopFile();
+		void LoopFile(Boolean enabled);
+		void SetLoopPlaylist(Boolean enabled);
+		Boolean LoopPlaylist();
+		void SetShuffle(Boolean enabled);
+		Boolean Shuffle();
+
+		void SetAspectRatio(String ratio);
+
+		Windows.Foundation.Collections.IVectorView<MpvPlaylistItem> GetPlaylist();
+
+		Windows.Foundation.Collections.IVectorView<MpvTrack> GetAudioTracks();
+		Windows.Foundation.Collections.IVectorView<MpvTrack> GetVideoTracks();
+		Windows.Foundation.Collections.IVectorView<MpvTrack> GetSubtitleTracks();
+		Windows.Foundation.Collections.IVectorView<MpvChapter> GetChapters();
+		Windows.Foundation.Collections.IVectorView<MpvEdition> GetEditions();
+		Windows.Foundation.Collections.IVectorView<MpvAudioDevice> GetAudioDevices();
+		Windows.Foundation.Collections.IVectorView<MpvProfile> GetProfiles();
+		Int32 CurrentChapter();
+		Int32 CurrentEdition();
+
+		Windows.Foundation.Collections.IVectorView<MpvMenuItem> GetMenu();
+
+		event MediaLoadedEventHandler MediaLoaded;
+		event PlaybackEndedEventHandler PlaybackEnded;
+		event PlaybackFailedEventHandler PlaybackFailed;
+		event SeekEventHandler Seeked;
+		event FileLoadedEventHandler FileLoaded;
+		event TrackChangedEventHandler TrackChanged;
+
+		event PlaybackStateChangedEventHandler PlaybackStateChanged;
+		event VolumeChangedEventHandler VolumeChanged;
+		event PositionChangedEventHandler PositionChanged;
+		event SpeedChangedEventHandler SpeedChanged;
+		event MediaInfoChangedEventHandler MediaInfoChanged;
+		event NetworkInfoChangedEventHandler NetworkInfoChanged;
+		event TrackListChangedEventHandler TrackListChanged;
+		event TrackListCountChangedEventHandler TrackListCountChanged;
+		event VoConfiguredEventHandler VoConfigured;
+	};
+}

@@ -1,0 +1,23 @@
+import "TrackType.idl";
+
+namespace mpv_winrt
+{
+	runtimeclass MpvTrack
+	{
+		Int32 Index { get; };
+		Int32 Id { get; };
+		TrackType Type { get; };
+		String Title { get; };
+		String Lang { get; };
+		Boolean Selected { get; };
+		String Codec { get; };
+		Boolean IsDefault { get; };
+		Boolean IsForced { get; };
+		Boolean IsExternal { get; };
+		Int32 DemuxW { get; };
+		Int32 DemuxH { get; };
+		Double DemuxFps { get; };
+		Int32 DemuxChannelCount { get; };
+		Int32 DemuxSamplerate { get; };
+	};
+}

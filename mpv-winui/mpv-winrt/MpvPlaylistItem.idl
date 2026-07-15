@@ -1,0 +1,11 @@
+namespace mpv_winrt
+{
+	runtimeclass MpvPlaylistItem
+	{
+		Int32 Id { get; };
+		String Filename { get; };
+		String Title { get; };
+		Boolean IsCurrent { get; };
+		Boolean IsPlaying { get; };
+	};
+}

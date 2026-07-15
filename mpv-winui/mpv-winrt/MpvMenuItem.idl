@@ -1,0 +1,12 @@
+namespace mpv_winrt
+{
+	runtimeclass MpvMenuItem
+	{
+		String Title { get; };
+		String Command { get; };
+		String Type { get; };
+		Boolean IsChecked { get; };
+		Boolean IsDisabled { get; };
+		Windows.Foundation.Collections.IVectorView<MpvMenuItem> Items { get; };
+	};
+}

@@ -1,0 +1,8 @@
+namespace mpv_winrt
+{
+	runtimeclass VolumeChangedEventArgs
+	{
+		Double Volume { get; };
+		Boolean IsMuted { get; };
+	};
+}

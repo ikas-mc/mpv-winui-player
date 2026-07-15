@@ -1,0 +1,7 @@
+namespace mpv_winrt
+{
+	runtimeclass TrackListCountChangedEventArgs
+	{
+		Int32 Count { get; };
+	};
+}

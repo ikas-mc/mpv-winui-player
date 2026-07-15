@@ -1,0 +1,8 @@
+namespace mpv_winrt
+{
+	runtimeclass MpvEdition
+	{
+		Int32 Id { get; };
+		String Title { get; };
+	};
+}

@@ -1,0 +1,7 @@
+namespace mpv_winrt
+{
+	runtimeclass SpeedChangedEventArgs
+	{
+		Double Speed { get; };
+	};
+}

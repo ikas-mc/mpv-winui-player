@@ -1,0 +1,9 @@
+namespace mpv_winrt
+{
+	runtimeclass PositionChangedEventArgs
+	{
+		Double Position { get; };
+		Double Duration { get; };
+		Double PercentPosition { get; };
+	};
+}
