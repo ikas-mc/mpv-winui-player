@@ -13,10 +13,14 @@ namespace mpv_winui
         {
             InitializeComponent();
             this.Title = AppContext.AppLang.AppName;
-            SetTitleBarColors();
+
+            TrySetBackdrop();
+
             ExtendsContentIntoTitleBar = true;
             ShellTitleBar.Title = AppContext.AppLang.AppName;
+            SetTitleBarColors();
             SetTitleBar(ShellTitleBar);
+
             AppWindow.Changed += AppWindow_Changed;
         }
 

@@ -34,7 +34,7 @@
             x:Name="ControlPanelGrid"
             Padding="4,0"
             VerticalAlignment="Bottom"
-            Background="#A0000000"
+            Background="{ThemeResource MpvPlayControlBackground}"
             RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="TranslateVertical" />
