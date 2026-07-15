@@ -7,11 +7,15 @@
     mc:Ignorable="d">
 
     <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Light" >
-            <SolidColorBrush x:Key="MpvPlayControlBackground" Color="#60FFFFFF"></SolidColorBrush>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush
+                x:Key="MpvPlayControlBackground"
+                Color="#60FFFFFF" />
         </ResourceDictionary>
-        <ResourceDictionary x:Key="Dark" >
-            <SolidColorBrush x:Key="MpvPlayControlBackground" Color="#80000000"></SolidColorBrush>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush
+                x:Key="MpvPlayControlBackground"
+                Color="#80000000" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

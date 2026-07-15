@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using mpv_winui.Modules.AppModel;
+using mpv_winui.Modules.FileSystem;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -49,8 +51,8 @@ namespace mpv_winui.Modules.Player
                             break;
                         case "conf-folder":
                         {
-                            var configFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("mpv", CreationCollisionOption.OpenIfExists);
-                            await Launcher.LaunchFolderAsync(configFolder);
+                            var storageFolder = await AppData.Current.OpenOrCreateLocalDataFolderAsync(MpvConfigFolderName);
+                            await Launcher.LaunchFolderAsync(storageFolder);
                             break;
                         }
                         case "playlist":
@@ -90,13 +92,14 @@ namespace mpv_winui.Modules.Player
 
             stack.Children.Add(new TextBlock
             {
-                Text = Package.Current.DisplayName,
+                Text = PackageHelper.AppName,
                 FontSize = 20,
                 FontWeight = new Windows.UI.Text.FontWeight(600)
             });
+
             stack.Children.Add(new TextBlock
             {
-                Text = $"{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}",
+                Text = PackageHelper.AppVersion,
                 TextWrapping = TextWrapping.Wrap
             });
 
@@ -105,7 +108,6 @@ namespace mpv_winui.Modules.Player
                 Text = "mpv",
                 TextWrapping = TextWrapping.Wrap
             });
-
             var mpvLink = new HyperlinkButton
             {
                 Content = "github.com/mpv-player/mpv",

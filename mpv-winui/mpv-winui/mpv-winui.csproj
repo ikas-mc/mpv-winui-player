@@ -18,6 +18,7 @@
         <PublishAot>true</PublishAot>
         <SelfContained>true</SelfContained>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+        <ApplicationIcon>App.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -56,11 +57,6 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Modules\Language\" />
-        <Folder Include="Modules\Settings\" />
-        <Folder Include="Styles\" />
-    </ItemGroup>
 
     <ItemGroup>
         <Content Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Include="..\libs\bin\mpv-2.dll">
@@ -69,6 +65,12 @@
         <Content Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Include="..\libs\bin\mpv-2.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="App.ico">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <PropertyGroup Label="Globals">

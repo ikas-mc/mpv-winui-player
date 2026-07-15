@@ -23,7 +23,7 @@ namespace mpv_winui
             }
 
             _task = Task.WhenAll([
-                Task.Run(() => { AppSetting.EnableLog = true; }),
+                //Task.Run(() => { AppSetting.EnableLog = true; }),
                 AppBootstrap.RunAsync()
             ]);
         }

@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
+using mpv_winui.Modules.FileSystem;
 using NLog;
 using System.Text;
-using Windows.Storage;
 
 namespace mpv_winui
 {
@@ -13,21 +13,15 @@ namespace mpv_winui
         {
             LogManager.Setup().LoadConfiguration(builder =>
             {
-                var level = LogLevel.Error;
-
-                if (AppContext.AppSetting.EnableLog)
-                {
 #if DEBUG
-                    level = LogLevel.Trace;
+                var level = LogLevel.Trace;
+                builder.ForLogger().FilterMinLevel(level).WriteToDebug();
 #else
-                    level = LogLevel.Debug;
+                var level = LogLevel.Error;
 #endif
-                    builder.ForLogger().FilterMinLevel(level).WriteToDebug();
-                }
-
                 builder.ForLogger()
                     .FilterMinLevel(level)
-                    .WriteToFile(fileName: ApplicationData.Current.LocalFolder.Path + "/logs/mpv-winui.${shortdate}.log.txt", encoding: Encoding.UTF8, keepFileOpen: false, maxArchiveDays: 15);
+                    .WriteToFile(fileName: AppData.Current.ResolveLocalData("logs\\mpv-winui.${shortdate}.log.txt"), encoding: Encoding.UTF8, keepFileOpen: false, maxArchiveDays: 15);
             });
         }
 

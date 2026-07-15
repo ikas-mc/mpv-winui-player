@@ -3,18 +3,18 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.FileSystem;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage : Page
     {
         private static readonly Logger _logger = LogManager.GetLogger("MpvPlayer");
-
+        private const string MpvConfigFolderName = "mpv";
         private readonly MpvMediaPlayer _mediaPlayer = new();
         private bool _isPlayerInitialized;
 
@@ -68,7 +68,6 @@ namespace mpv_winui.Modules.Player
             {
                 //TODO
             }
-
         }
 
         private void MpvPlayerPage_Unloaded(object sender, RoutedEventArgs e)
@@ -83,7 +82,7 @@ namespace mpv_winui.Modules.Player
 
         public async Task CreateAsync()
         {
-            var configFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("mpv", CreationCollisionOption.OpenIfExists);
+            var configFolder = await AppData.Current.OpenOrCreateLocalDataFolderAsync(MpvConfigFolderName);
             if (_logger.IsDebugEnabled)
             {
                 _logger.Debug("mpv config folder, path={}", configFolder.Path);

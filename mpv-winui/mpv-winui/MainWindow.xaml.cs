@@ -1,8 +1,10 @@
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppLifecycle;
 using mpv_winui.Modules.Activation;
+using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Player;
 
 namespace mpv_winui
@@ -12,16 +14,17 @@ namespace mpv_winui
         public MainWindow()
         {
             InitializeComponent();
-            this.Title = AppContext.AppLang.AppName;
 
             TrySetBackdrop();
 
             ExtendsContentIntoTitleBar = true;
-            ShellTitleBar.Title = AppContext.AppLang.AppName;
+            ShellTitleBar.Title = PackageHelper.AppName;
             SetTitleBarColors();
             SetTitleBar(ShellTitleBar);
 
             AppWindow.Changed += AppWindow_Changed;
+            AppWindow.Title = PackageHelper.AppName;
+            AppWindow.SetIcon("App.ico");
         }
 
         private bool SetTitleBarColors()

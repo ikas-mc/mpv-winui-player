@@ -1,61 +1,68 @@
+using mpv_winui.Modules.AppModel;
+
 namespace mpv_winui.Modules.Settings
 {
     public class AppSettings
     {
-        private readonly AppDataSetting _mainSettingDao = new("app-settings");
+        private readonly IDataSetting _dataSetting;
+
+        public AppSettings()
+        {
+            _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new FileSetting("config.ini");
+        }
 
         public bool EnableLog
         {
-            get => _mainSettingDao.GetValue(nameof(EnableLog), false);
-            set => _mainSettingDao.SetValue(nameof(EnableLog), value);
+            get => _dataSetting.GetValue(nameof(EnableLog), false);
+            set => _dataSetting.SetValue(nameof(EnableLog), value);
         }
 
         public bool EnableMica
         {
-            get => _mainSettingDao.GetValue(nameof(EnableMica), false);
-            set => _mainSettingDao.SetValue(nameof(EnableMica), value);
+            get => _dataSetting.GetValue(nameof(EnableMica), false);
+            set => _dataSetting.SetValue(nameof(EnableMica), value);
         }
 
         public int PatchVersion
         {
-            get => _mainSettingDao.GetValue(nameof(PatchVersion), 0);
-            set => _mainSettingDao.SetValue(nameof(PatchVersion), value);
+            get => _dataSetting.GetValue(nameof(PatchVersion), 0);
+            set => _dataSetting.SetValue(nameof(PatchVersion), value);
         }
 
         public ulong AppVersion
         {
-            get => _mainSettingDao.GetValue(nameof(AppVersion), (ulong)0);
-            set => _mainSettingDao.SetValue(nameof(AppVersion), value);
+            get => _dataSetting.GetValue(nameof(AppVersion), (ulong)0);
+            set => _dataSetting.SetValue(nameof(AppVersion), value);
         }
 
         public string CurrentLanguage
         {
-            get => _mainSettingDao.GetValue(nameof(CurrentLanguage), "");
-            set => _mainSettingDao.SetValue(nameof(CurrentLanguage), value);
+            get => _dataSetting.GetValue(nameof(CurrentLanguage), "");
+            set => _dataSetting.SetValue(nameof(CurrentLanguage), value);
         }
 
         public int ThemeType
         {
-            get => _mainSettingDao.GetValue(nameof(ThemeType), 0);
-            set => _mainSettingDao.SetValue(nameof(ThemeType), value);
+            get => _dataSetting.GetValue(nameof(ThemeType), 0);
+            set => _dataSetting.SetValue(nameof(ThemeType), value);
         }
 
         public bool EnableUISound
         {
-            get => _mainSettingDao.GetValue(nameof(EnableUISound), false);
-            set => _mainSettingDao.SetValue(nameof(EnableUISound), value);
+            get => _dataSetting.GetValue(nameof(EnableUISound), false);
+            set => _dataSetting.SetValue(nameof(EnableUISound), value);
         }
 
         public int LastVideoVolume
         {
-            get => _mainSettingDao.GetValue(nameof(LastVideoVolume), 50);
-            set => _mainSettingDao.SetValue(nameof(LastVideoVolume), value);
+            get => _dataSetting.GetValue(nameof(LastVideoVolume), 50);
+            set => _dataSetting.SetValue(nameof(LastVideoVolume), value);
         }
 
         public int LastAudioVolume
         {
-            get => _mainSettingDao.GetValue(nameof(LastAudioVolume), 50);
-            set => _mainSettingDao.SetValue(nameof(LastAudioVolume), value);
+            get => _dataSetting.GetValue(nameof(LastAudioVolume), 50);
+            set => _dataSetting.SetValue(nameof(LastAudioVolume), value);
         }
     }
 }

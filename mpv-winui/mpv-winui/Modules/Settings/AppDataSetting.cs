@@ -2,7 +2,7 @@ using Windows.Storage;
 
 namespace mpv_winui.Modules.Settings
 {
-    public class AppDataSetting
+    public class AppDataSetting : IDataSetting
     {
         private readonly ApplicationDataContainer _container;
 
