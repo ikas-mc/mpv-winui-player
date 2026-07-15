@@ -16,4 +16,8 @@
     <ItemGroup>
       <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj" />
     </ItemGroup>
+    <PropertyGroup>
+        <NuspecFile>mpv-winrt-projection.nuspec</NuspecFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
 </Project>

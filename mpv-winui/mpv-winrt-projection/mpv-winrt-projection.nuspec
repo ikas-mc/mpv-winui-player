@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>mpv-winrt</id>
+    <version>0.2.0-prerelease</version>
+    <authors>ikas</authors>
+    <description>mpv-winrt</description>
+    <dependencies>
+      <group targetFramework="net10.0-windows10.0.26100.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\bin\Debug\net10.0-windows10.0.26100.0\mpv-winrt-projection.dll" target="lib\net10.0-windows10.0.26100.0\mpv-winrt-projection.dll" />
+    <file src=".\bin\Debug\net10.0-windows10.0.26100.0\mpv_winrt.dll" target="runtimes\win-x64\native\mpv_winrt.dll" />
+    <file src="..\libs\bin\mpv-2.dll" target="runtimes\win-x64\native\mpv-2.dll" />
+  </files>
+</package>
