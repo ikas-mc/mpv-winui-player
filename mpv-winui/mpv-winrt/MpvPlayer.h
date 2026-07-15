@@ -6,6 +6,7 @@
 #include <mpv/client.h>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <winrt/Windows.Foundation.Collections.h>
 
@@ -120,7 +121,8 @@ namespace winrt::mpv_winrt::implementation
 
         double GetDoubleProperty(const char* name);
         int64_t GetInt64Property(const char* name);
-        std::string GetStringProperty(const char* name);
+        winrt::hstring GetHStringProperty(const char* name);
+        bool IsStringPropertyEqual(const char* name, std::string_view expected);
         void SetDoubleProperty(const char* name, double value);
         void SetInt64Property(const char* name, int64_t value);
         void SetStringProperty(const char* name, const std::string& value);

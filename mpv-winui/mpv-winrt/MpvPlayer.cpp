@@ -245,7 +245,7 @@ namespace winrt::mpv_winrt::implementation
                 else if (strcmp(propName, "volume") == 0 || strcmp(propName, "mute") == 0)
                 {
                     double volume = GetDoubleProperty("volume");
-                    bool isMuted = GetStringProperty("mute") == "yes";
+                    bool isMuted = IsStringPropertyEqual("mute", "yes");
                     auto args = winrt::make<implementation::VolumeChangedEventArgs>(volume, isMuted);
                     m_volumeChangedEvent(args);
                 }
@@ -266,10 +266,7 @@ namespace winrt::mpv_winrt::implementation
                 }
                 else if (strcmp(propName, "filename") == 0 || strcmp(propName, "media-title") == 0)
                 {
-                    std::string filename = GetStringProperty("filename");
-                    std::string title = GetStringProperty("media-title");
-                    auto args = winrt::make<implementation::MediaInfoChangedEventArgs>(
-                        to_hstring(filename), to_hstring(title));
+                    auto args = winrt::make<implementation::MediaInfoChangedEventArgs>(GetHStringProperty("filename"), GetHStringProperty("media-title"));
                     m_mediaInfoChangedEvent(args);
                 }
                 else if (strcmp(propName, "cache-speed") == 0)
@@ -600,7 +597,7 @@ namespace winrt::mpv_winrt::implementation
         {
             return true;
         }
-        return GetStringProperty("pause") == "yes";
+        return IsStringPropertyEqual("pause", "yes");
     }
 
     // Volume control methods
@@ -637,7 +634,7 @@ namespace winrt::mpv_winrt::implementation
         {
             return false;
         }
-        return GetStringProperty("mute") == "yes";
+        return IsStringPropertyEqual("mute", "yes");
     }
 
     void MpvPlayer::IsMuted(bool value)
@@ -805,7 +802,7 @@ namespace winrt::mpv_winrt::implementation
             return false;
         }
 
-        return GetStringProperty("loop-file") != "no";
+        return !IsStringPropertyEqual("loop-file", "no");
     }
 
     void MpvPlayer::LoopFile(bool enabled)
@@ -835,7 +832,7 @@ namespace winrt::mpv_winrt::implementation
             return false;
         }
 
-        return GetStringProperty("loop-playlist") != "no";
+        return !IsStringPropertyEqual("loop-playlist", "no");
     }
 
     void MpvPlayer::SetShuffle(bool enabled)
@@ -858,7 +855,7 @@ namespace winrt::mpv_winrt::implementation
             return false;
         }
 
-        return GetStringProperty("shuffle") != "no";
+        return !IsStringPropertyEqual("shuffle", "no");
     }
 
     void MpvPlayer::SetAspectRatio(hstring const& ratio)
@@ -914,21 +911,39 @@ namespace winrt::mpv_winrt::implementation
         return value;
     }
 
-    std::string MpvPlayer::GetStringProperty(const char* name)
+    winrt::hstring MpvPlayer::GetHStringProperty(const char* name)
     {
         if (!m_mpv)
         {
-            return "";
+            return L"";
         }
 
         char* value = nullptr;
         if (mpv_get_property(m_mpv, name, MPV_FORMAT_STRING, &value) >= 0 && value)
         {
-            std::string result(value);
+            auto hstring = winrt::to_hstring(value);
             mpv_free(value);
-            return result;
+            return hstring;
         }
-        return "";
+        return L"";
+    }
+
+    bool MpvPlayer::IsStringPropertyEqual(const char* name, std::string_view expected)
+    {
+        if (!m_mpv)
+        {
+            return false;
+        }
+
+        char* value = nullptr;
+        if (mpv_get_property(m_mpv, name, MPV_FORMAT_STRING, &value) < 0 || !value)
+        {
+            return false;
+        }
+
+        const bool isEqual = std::string_view(value) == expected;
+        mpv_free(value);
+        return isEqual;
     }
 
     void MpvPlayer::SetDoubleProperty(const char* name, double value)
