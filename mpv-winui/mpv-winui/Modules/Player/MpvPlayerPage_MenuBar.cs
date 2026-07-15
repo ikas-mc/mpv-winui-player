@@ -1,0 +1,140 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.Storage;
+using Windows.System;
+using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
+
+namespace mpv_winui.Modules.Player
+{
+    public sealed partial class MpvPlayerPage
+    {
+
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is MenuFlyoutItem { Tag: string tag })
+                {
+                    switch (tag)
+                    {
+                        case "open":
+                            await OpenFileAsync();
+                            break;
+                        case "open-folder":
+                            await OpenFolderAsync();
+                            break;
+                        case "open-url":
+                            await OpenUrlAsync();
+                            break;
+                        case "open-clipboard":
+                            await OpenClipboardAsync();
+                            break;
+                        case "open-dvd":
+                            await OpenDvdAsync();
+                            break;
+                        case "open-bd":
+                            await OpenBdAsync();
+                            break;
+                        case "load-subtitle":
+                            await LoadSubtitleAsync();
+                            break;
+                        case "screenshot":
+                            await _mediaPlayer.RunCommandAsync(["screenshot"]);
+                            break;
+                        case "screenshot-no-sub":
+                            await _mediaPlayer.RunCommandAsync(["screenshot", "video"]);
+                            break;
+                        case "conf-folder":
+                        {
+                            var configFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("mpv", CreationCollisionOption.OpenIfExists);
+                            await Launcher.LaunchFolderAsync(configFolder);
+                            break;
+                        }
+                        case "playlist":
+                        {
+                            TogglePlaylist(true);
+                            break;
+                        }
+                        case "restart":
+                        {
+                            AppInstance.Restart("Reset");
+                            break;
+                        }
+                        case "about":
+                            await ShowAboutDialogAsync();
+                            break;
+                        case "quit":
+                            AppQuit();
+                            break;
+                        case "fullwindow":
+                            PlayerControl.ToggleFullWindow();
+                            break;
+                        case "fullscreen":
+                            PlayerControl.ToggleFullScreen();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnException(ex);
+            }
+        }
+
+        private async Task ShowAboutDialogAsync()
+        {
+            var stack = new StackPanel { Spacing = 12, MinWidth = 400 };
+
+            stack.Children.Add(new TextBlock
+            {
+                Text = Package.Current.DisplayName,
+                FontSize = 20,
+                FontWeight = new Windows.UI.Text.FontWeight(600)
+            });
+            stack.Children.Add(new TextBlock
+            {
+                Text = $"{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            stack.Children.Add(new TextBlock
+            {
+                Text = "mpv",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var mpvLink = new HyperlinkButton
+            {
+                Content = "github.com/mpv-player/mpv",
+                NavigateUri = new Uri("https://github.com/mpv-player/mpv"),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            stack.Children.Add(mpvLink);
+
+            stack.Children.Add(new TextBlock
+            {
+                Text = "mpv-winui",
+                TextWrapping = TextWrapping.Wrap
+            });
+            var projectLink = new HyperlinkButton
+            {
+                Content = "github.com/ikas-mc/mpv-winui",
+                NavigateUri = new Uri("https://github.com/ikas-mc/mpv-winui"),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            stack.Children.Add(projectLink);
+
+            var dialog = new ContentDialog
+            {
+                Title = "About",
+                Content = stack,
+                CloseButtonText = "Close",
+                XamlRoot = XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+    }
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="mpv_winui.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:mpv_winui"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="mpv-winui"
+    mc:Ignorable="d">
+
+    <Window.SystemBackdrop>
+        <DesktopAcrylicBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid x:Name="Body">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="TitleBarRow" Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TitleBar x:Name="ShellTitleBar">
+            <TitleBar.IconSource>
+                <BitmapIconSource
+                    ShowAsMonochrome="False"
+                    UriSource="ms-appx:///Assets/StoreLogo.scale-100.png" />
+            </TitleBar.IconSource>
+        </TitleBar>
+
+        <Frame
+            x:Name="ShellFrame"
+            Grid.Row="1"
+            Grid.RowSpan="1" />
+
+        <!--
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="NormalWindow">
+                    <VisualState.Setters />
+                </VisualState>
+                <VisualState x:Name="FullWindow">
+                    <VisualState.Setters>
+                        <Setter Target="ShellFrame.(Grid.Row)" Value="0" />
+                        <Setter Target="ShellFrame.(Grid.RowSpan)" Value="2" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        -->
+    </Grid>
+
+</Window>

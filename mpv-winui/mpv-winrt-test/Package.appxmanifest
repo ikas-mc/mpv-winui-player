@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+        xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+        xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+        xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+        xmlns:systemai="http://schemas.microsoft.com/appx/manifest/systemai/windows10"
+        xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+        IgnorableNamespaces="uap rescap systemai">
+
+    <Identity
+            Name="6dc4d66f-12b1-471f-95ee-309174b41989"
+            Publisher="CN=test"
+            Version="1.0.0.0"/>
+
+    <mp:PhoneIdentity PhoneProductId="6dc4d66f-12b1-471f-95ee-309174b41989"
+                      PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
+    <Properties>
+        <DisplayName>mpv-winrt-test</DisplayName>
+        <PublisherDisplayName>test</PublisherDisplayName>
+        <Logo>Assets\StoreLogo.png</Logo>
+    </Properties>
+
+    <Dependencies>
+        <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26226.0"/>
+        <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26226.0"/>
+        <PackageDependency Name="Microsoft.VCLibs.140.00" MinVersion="14.0.33519.0"
+                           Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"/>
+    </Dependencies>
+
+    <Resources>
+        <Resource Language="x-generate"/>
+    </Resources>
+
+    <Applications>
+        <Application Id="App"
+                     Executable="$targetnametoken$.exe"
+                     EntryPoint="$targetentrypoint$">
+            <uap:VisualElements
+                    DisplayName="mpv-winrt-test"
+                    Description="mpv-winrt-test"
+                    BackgroundColor="transparent"
+                    Square150x150Logo="Assets\Square150x150Logo.png"
+                    Square44x44Logo="Assets\Square44x44Logo.png">
+                <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+                <uap:SplashScreen Image="Assets\SplashScreen.png"/>
+            </uap:VisualElements>
+        </Application>
+    </Applications>
+
+    <Capabilities>
+        <rescap:Capability Name="runFullTrust"/>
+        <systemai:Capability Name="systemAIModels"/>
+    </Capabilities>
+
+    <Extensions>
+        <Extension Category="windows.activatableClass.inProcessServer">
+            <InProcessServer>
+                <Path>WinRT.Host.dll</Path>
+                <ActivatableClass
+                        ActivatableClassId="Microsoft.VisualStudio.TestPlatform.TestExecutor.WinRTCore.UnitTestClient"
+                        ThreadingModel="both"/>
+            </InProcessServer>
+        </Extension>
+    </Extensions>
+
+</Package>

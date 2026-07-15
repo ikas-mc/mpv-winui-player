@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Platform>AnyCPU</Platform>
+        <UseWinUI>true</UseWinUI>
+        <CsWinRTIncludes>mpv_winrt</CsWinRTIncludes>
+        <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+        <CsWinRTGenerateAotProjection>true</CsWinRTGenerateAotProjection>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.2.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj" />
+    </ItemGroup>
+</Project>
