@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
@@ -133,13 +133,4 @@
         <Capability Name="codeGeneration"/>
         <Capability Name="privateNetworkClientServer"/>
     </Capabilities>
-
-	<Extensions>
-		<Extension Category="windows.activatableClass.inProcessServer">
-			<InProcessServer>
-				<Path>mpv-winrt.dll</Path>
-				<ActivatableClass ActivatableClassId="mpv_winrt.MpvPlayer" ThreadingModel="both"/>
-			</InProcessServer>
-		</Extension>
-	</Extensions>
 </Package>
