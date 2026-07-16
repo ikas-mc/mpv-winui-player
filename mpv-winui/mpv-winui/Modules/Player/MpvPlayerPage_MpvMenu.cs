@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
-using NLog.Targets;
 using System.Collections.Generic;
 
 namespace mpv_winui.Modules.Player
@@ -13,10 +12,56 @@ namespace mpv_winui.Modules.Player
         private MenuFlyout BuildMenuFlyoutFromData(IReadOnlyList<MpvMenuItem>? items)
         {
             var flyout = new MenuFlyout();
-            if (items != null)
+
+            AddOpenHeaderItems(flyout.Items);
+
+            if (items?.Count > 0)
             {
                 AddMenuDataItems(flyout.Items, items);
             }
+            else
+            {
+                flyout.Items.Add(new MenuFlyoutSeparator());
+            }
+
+            AddCustomFooterItems(flyout.Items);
+
+            return flyout;
+        }
+
+        private void AddOpenHeaderItems(IList<MenuFlyoutItemBase> target)
+        {
+            var openSub = new MenuFlyoutSubItem { Text = "Open" };
+
+            var item = new MenuFlyoutItem { Text = "Open File", Tag = "open" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
+
+            item = new MenuFlyoutItem { Text = "Open Folder", Tag = "open-folder" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
+
+            item = new MenuFlyoutItem { Text = "Open URL", Tag = "open-url" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
+
+            item = new MenuFlyoutItem { Text = "Open from Clipboard", Tag = "open-clipboard" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
+
+            openSub.Items.Add(new MenuFlyoutSeparator());
+
+            target.Add(openSub);
+        }
+
+        private void AddCustomFooterItems(IList<MenuFlyoutItemBase> target)
+        {
+            var subItem = new MenuFlyoutSubItem
+            {
+                Text = "Window",
+                MinWidth = 200
+            };
+            target.Add(subItem);
 
             var item = new MenuFlyoutItem
             {
@@ -24,16 +69,8 @@ namespace mpv_winui.Modules.Player
                 Tag = "playlist"
             };
             item.Click += Item_Click;
-            flyout.Items.Add(item);
+            subItem.Items.Add(item);
 
-            var subItem = new MenuFlyoutSubItem
-            {
-                Text = "Window",
-                MinWidth = 200 //TODO 
-            };
-            flyout.Items.Add(subItem);
-
-            //TODO 
             item = new MenuFlyoutItem
             {
                 Text = "Toggle Full Screen",
@@ -56,9 +93,7 @@ namespace mpv_winui.Modules.Player
                 Tag = "quit"
             };
             item.Click += Item_Click;
-            flyout.Items.Add(item);
-
-            return flyout;
+            target.Add(item);
         }
 
         private void AddMenuDataItems(IList<MenuFlyoutItemBase> target, IReadOnlyList<MpvMenuItem> items)
@@ -112,26 +147,39 @@ namespace mpv_winui.Modules.Player
             {
                 switch (tag)
                 {
+                    case "open":
+                        _ = OpenFileAsync();
+                        break;
+                    case "open-folder":
+                        _ = OpenFolderAsync();
+                        break;
+                    case "open-url":
+                        _ = OpenUrlAsync();
+                        break;
+                    case "open-clipboard":
+                        _ = OpenClipboardAsync();
+                        break;
+                    case "open-dvd":
+                        _ = OpenDvdAsync();
+                        break;
+                    case "open-bd":
+                        _ = OpenBdAsync();
+                        break;
+                    case "load-subtitle":
+                        _ = LoadSubtitleAsync();
+                        break;
                     case "quit":
-                    {
                         AppQuit();
                         break;
-                    }
                     case "fullscreen":
-                    {
                         PlayerControl.ToggleFullScreen();
                         break;
-                    }
                     case "fullwindow":
-                    {
                         PlayerControl.ToggleFullWindow();
                         break;
-                    }
                     case "playlist":
-                    {
                         TogglePlaylist(true);
                         break;
-                    }
                 }
             }
         }
@@ -141,7 +189,7 @@ namespace mpv_winui.Modules.Player
             //TODO remove&  check cmd ??
             if (mpvMenuItem.Title == "&Stop" || mpvMenuItem.Title == "&Quit" || mpvMenuItem.Title == "Quit an&d save position")
             {
-                return true;
+                return false;
             }
 
             return true;
@@ -196,20 +244,17 @@ namespace mpv_winui.Modules.Player
         private void PlayerView_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
             var menuItems = _mediaPlayer.MenuData();
-            if (menuItems.Count > 0)
+            var flyout = BuildMenuFlyoutFromData(menuItems);
+            if (args.TryGetPosition(PlayerView, out var point))
             {
-                var flyout = BuildMenuFlyoutFromData(menuItems);
-                if (args.TryGetPosition(PlayerView, out var point))
-                {
-                    flyout.ShowAt(PlayerView, point);
-                }
-                else
-                {
-                    flyout.ShowAt(PlayerView);
-                }
-
-                args.Handled = true;
+                flyout.ShowAt(PlayerView, point);
             }
+            else
+            {
+                flyout.ShowAt(PlayerView);
+            }
+
+            args.Handled = true;
         }
     }
 }

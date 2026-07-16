@@ -48,6 +48,12 @@ namespace mpv_winui.Modules.Player
                             break;
                         case "conf-folder":
                         {
+                            var storageFolder = await AppData.Current.OpenOrCreateLocalDataFolderAsync(string.Empty);
+                            await Launcher.LaunchFolderAsync(storageFolder);
+                            break;
+                        }
+                        case "mpv-folder":
+                        {
                             var storageFolder = await AppData.Current.OpenOrCreateLocalDataFolderAsync(MpvConfigFolderName);
                             await Launcher.LaunchFolderAsync(storageFolder);
                             break;
