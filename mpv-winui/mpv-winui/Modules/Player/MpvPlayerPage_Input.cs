@@ -14,6 +14,8 @@ namespace mpv_winui.Modules.Player
         private const uint WM_SYSKEYUP = 0x105;
         private const uint WM_SYSCHAR = 0x106;
         private const uint WM_UNICHAR = 0x109;
+        private const uint WM_KILLFOCUS = 0x008;
+        private const uint WM_ENTERMENULOOP = 0x211;
         private const uint WM_APPCOMMAND = 0x319;
 
         private const int KF_EXTENDED = 0x0100;
@@ -39,13 +41,23 @@ namespace mpv_winui.Modules.Player
         private const int MP_KEY_MENU = MP_KEY_MM_BASE + 1;
         private const int MP_KEY_PLAY = MP_KEY_MM_BASE + 2;
         private const int MP_KEY_PAUSE = MP_KEY_MM_BASE + 3;
+        private const int MP_KEY_PLAYPAUSE = MP_KEY_MM_BASE + 4;
         private const int MP_KEY_STOP = MP_KEY_MM_BASE + 5;
+        private const int MP_KEY_FORWARD = MP_KEY_MM_BASE + 6;
+        private const int MP_KEY_REWIND = MP_KEY_MM_BASE + 7;
         private const int MP_KEY_NEXT = MP_KEY_MM_BASE + 8;
         private const int MP_KEY_PREV = MP_KEY_MM_BASE + 9;
         private const int MP_KEY_VOLUME_UP = MP_KEY_MM_BASE + 10;
         private const int MP_KEY_VOLUME_DOWN = MP_KEY_MM_BASE + 11;
         private const int MP_KEY_MUTE = MP_KEY_MM_BASE + 12;
+        private const int MP_KEY_HOMEPAGE = MP_KEY_MM_BASE + 13;
+        private const int MP_KEY_MAIL = MP_KEY_MM_BASE + 15;
+        private const int MP_KEY_FAVORITES = MP_KEY_MM_BASE + 16;
+        private const int MP_KEY_SEARCH = MP_KEY_MM_BASE + 17;
         private const int MP_KEY_SLEEP = MP_KEY_MM_BASE + 18;
+        private const int MP_KEY_RECORD = MP_KEY_MM_BASE + 20;
+        private const int MP_KEY_CHANNEL_UP = MP_KEY_MM_BASE + 21;
+        private const int MP_KEY_CHANNEL_DOWN = MP_KEY_MM_BASE + 22;
         private const int MP_KEY_GO_BACK = MP_KEY_MM_BASE + 25;
         private const int MP_KEY_GO_FORWARD = MP_KEY_MM_BASE + 26;
         private const int MP_KEY_F = MP_KEY_BASE + 0x40;
@@ -85,11 +97,34 @@ namespace mpv_winui.Modules.Player
         private const int VK_RMENU = 0xA5;
         private const int VK_LWIN = 0x5B;
         private const int VK_RWIN = 0x5C;
+        private const int VK_SPACE = 0x20;
+        private const int VK_NUMLOCK = 0x90;
+
+        private const uint APPCOMMAND_BROWSER_BACKWARD = 1;
+        private const uint APPCOMMAND_BROWSER_FORWARD = 2;
+        private const uint APPCOMMAND_BROWSER_SEARCH = 5;
+        private const uint APPCOMMAND_BROWSER_FAVORITES = 6;
+        private const uint APPCOMMAND_BROWSER_HOME = 7;
+        private const uint APPCOMMAND_VOLUME_MUTE = 8;
+        private const uint APPCOMMAND_VOLUME_DOWN = 9;
+        private const uint APPCOMMAND_VOLUME_UP = 10;
+        private const uint APPCOMMAND_MEDIA_NEXTTRACK = 11;
+        private const uint APPCOMMAND_MEDIA_PREVIOUSTRACK = 12;
+        private const uint APPCOMMAND_MEDIA_STOP = 13;
+        private const uint APPCOMMAND_MEDIA_PLAY_PAUSE = 14;
+        private const uint APPCOMMAND_MEDIA_PLAY = 46;
+        private const uint APPCOMMAND_MEDIA_PAUSE = 47;
+        private const uint APPCOMMAND_MEDIA_RECORD = 48;
+        private const uint APPCOMMAND_MEDIA_FAST_FORWARD = 49;
+        private const uint APPCOMMAND_MEDIA_REWIND = 50;
+        private const uint APPCOMMAND_MEDIA_CHANNEL_UP = 51;
+        private const uint APPCOMMAND_MEDIA_CHANNEL_DOWN = 52;
+        private const uint APPCOMMAND_LAUNCH_MAIL = 15;
 
         private nint _hHook = nint.Zero;
         private bool _suppressKeyboard;
+        private char _highSurrogate;
         private Win32HookProc _hookDelegate = null!;
-        private int _highSurrogate;
 
         [LibraryImport("user32.dll", EntryPoint = "SetWindowsHookExW", StringMarshalling = StringMarshalling.Utf16)]
         private static partial nint SetWindowsHookEx(int idHook, Win32HookProc lpfn, nint hMod, uint dwThreadId);
@@ -150,14 +185,6 @@ namespace mpv_winui.Modules.Player
             return (GetKeyState(vk) & 0x8000) != 0;
         }
 
-        private static bool IsModifier(int vk)
-        {
-            return vk == VK_SHIFT || vk == VK_LSHIFT || vk == VK_RSHIFT
-                || vk == VK_CONTROL || vk == VK_LCONTROL || vk == VK_RCONTROL
-                || vk == VK_MENU || vk == VK_LMENU || vk == VK_RMENU
-                || vk == VK_LWIN || vk == VK_RWIN;
-        }
-
         // Mirrors mpv's mod_state() — returns MP_KEY_MODIFIER_* bits
         private int ModState()
         {
@@ -211,6 +238,37 @@ namespace mpv_winui.Modules.Player
             return prefix;
         }
 
+        private int DecodeUtf16(char value)
+        {
+            if (char.IsHighSurrogate(value))
+            {
+                _highSurrogate = value;
+                return 0;
+            }
+
+            if (char.IsLowSurrogate(value))
+            {
+                if (_highSurrogate == '\0')
+                {
+                    _logger.Error("Invalid UTF-16 input");
+                    return 0;
+                }
+
+                var codePoint = char.ConvertToUtf32(_highSurrogate, value);
+                _highSurrogate = '\0';
+                return codePoint;
+            }
+
+            if (_highSurrogate != '\0')
+            {
+                _highSurrogate = '\0';
+                _logger.Error("Invalid UTF-16 input");
+                return 0;
+            }
+
+            return value;
+        }
+
         private void SendToMpv(string keyName, bool isDown)
         {
             if (string.IsNullOrEmpty(keyName))
@@ -227,28 +285,60 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer?.Command(["keyup", ""]);
         }
 
-        // --- Key event handlers (mirrors mpv's handle_key_down / handle_key_up / handle_char) ---
-
-        // Mirrors mpv's handle_key_down:
-        //   1. Try mp_w32_vkey_to_mpkey (special keys)
-        //   2. Fallback: decode_key (ToUnicode) — simplified to US layout mapping
-        //   3. mp_input_put_key(mpkey | mod_state | MP_KEY_STATE_DOWN)
-        private void HandleKeyDown(uint vkey, uint scancode)
+        private bool ShouldCompensateModifierCharacter()
         {
-            bool extended = (scancode & KF_EXTENDED) != 0;
-            int mpkey = VkCodeToMpvKeyCode((int)vkey, extended);
-
-            // decode_key fallback: produce printable character from VK code
-            if (mpkey == 0)
+            var modifiers = ModState();
+            if ((modifiers & (MP_KEY_MODIFIER_CTRL | MP_KEY_MODIFIER_ALT)) == MP_KEY_MODIFIER_CTRL)
             {
-                mpkey = VkCodeToUsChar((int)vkey);
-                if (mpkey == 0)
-                {
-                    return;
-                }
+                return true;
             }
 
-            SendToMpv(ModPrefix() + $"0x{mpkey:X}", true);
+            return KeyStateDown(VK_LWIN) || KeyStateDown(VK_RWIN);
+        }
+
+        private static bool TryGetModifierCharacter(uint vkey, out char character)
+        {
+            if (vkey is >= '0' and <= '9' || vkey is >= 'A' and <= 'Z')
+            {
+                character = char.ToLowerInvariant((char)vkey);
+                return true;
+            }
+
+            if (vkey == VK_SPACE)
+            {
+                character = ' ';
+                return true;
+            }
+
+            character = default;
+            return false;
+        }
+
+        // --- Key event handlers (mirrors mpv's handle_key_down / handle_key_up / handle_char) ---
+
+        private void HandleKeyDown(uint vkey, uint scancode)
+        {
+            if (vkey is >= 0x60 and <= 0x6F
+                && (GetKeyState(VK_NUMLOCK) & 1) != 0
+                && ModState() == 0
+                && !KeyStateDown(VK_LWIN)
+                && !KeyStateDown(VK_RWIN))
+            {
+                return;
+            }
+
+            bool extended = (scancode & KF_EXTENDED) != 0;
+            int mpkey = VkCodeToMpvKeyCode((int)vkey, extended);
+            if (mpkey != 0)
+            {
+                SendToMpv(ModPrefix() + $"0x{mpkey:X}", true);
+                return;
+            }
+
+            if (ShouldCompensateModifierCharacter() && TryGetModifierCharacter(vkey, out var character))
+            {
+                _mediaPlayer?.Command(["keypress", ModPrefix() + character]);
+            }
         }
 
         // Mirrors mpv's handle_key_up: releases all keys for non-modifier key-ups
@@ -266,49 +356,30 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        // Mirrors mpv's handle_char:
-        //   c = decode ? decode_utf16(wc) : wc
-        //   if (c >= 0x20) mp_input_put_key(c | mod_state)
-        private void HandleChar(int code, bool decode)
+        private bool HandleChar(uint character, bool decode)
         {
-            if (decode)
+            int code = decode ? DecodeUtf16((char)character) : (int)character;
+            if (code == 0)
             {
-                // UTF-16 decoding (mirrors mpv's decode_utf16)
-                if (code >= 0xD800 && code <= 0xDBFF)
-                {
-                    _highSurrogate = code;
-                    return;
-                }
-
-                if (code >= 0xDC00 && code <= 0xDFFF)
-                {
-                    if (_highSurrogate != 0)
-                    {
-                        code = 0x10000 + ((_highSurrogate - 0xD800) << 10) + (code - 0xDC00);
-                        _highSurrogate = 0;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    _highSurrogate = 0;
-                }
-            }
-
-            if (code <= 0)
-            {
-                return;
+                return true;
             }
 
             if (code < 0x20)
             {
-                return;
+                return false;
             }
 
             _mediaPlayer?.Command(["keypress", $"0x{code:X}"]);
+            return true;
+        }
+
+        private void HandleAppCommand(uint appCommand)
+        {
+            var mpkey = AppCommandToMpvKeyCode(appCommand);
+            if (mpkey != 0)
+            {
+                _mediaPlayer?.Command(["keypress", ModPrefix() + $"0x{mpkey:X}"]);
+            }
         }
 
         // --- Hook procedure (mirrors mpv's WndProc keyboard section) ---
@@ -331,8 +402,14 @@ namespace mpv_winui.Modules.Player
                 switch (msg.message)
                 {
                     case WM_KEYDOWN:
-                    case WM_SYSKEYDOWN:
                         HandleKeyDown(vkey, (uint)(msg.lParam >> 16) & 0xFFFF);
+                        break;
+
+                    case WM_SYSKEYDOWN:
+                        if (vkey != VK_SPACE)
+                        {
+                            HandleKeyDown(vkey, (uint)(msg.lParam >> 16) & 0xFFFF);
+                        }
                         break;
 
                     case WM_KEYUP:
@@ -342,15 +419,16 @@ namespace mpv_winui.Modules.Player
 
                     case WM_CHAR:
                     case WM_SYSCHAR:
-                        HandleChar((int)msg.wParam, true);
+                        HandleChar((uint)msg.wParam, true);
                         break;
 
-                    case WM_UNICHAR:
-                        if ((int)msg.wParam == UNICODE_NOCHAR)
-                        {
-                            return (nint)1;
-                        }
-                        HandleChar((int)msg.wParam, false);
+                    case WM_APPCOMMAND:
+                        HandleAppCommand(((uint)msg.lParam >> 16) & 0x7ff);
+                        break;
+
+                    case WM_ENTERMENULOOP:
+                    case WM_KILLFOCUS:
+                        ReleaseAllKeys();
                         break;
                 }
             }
@@ -361,9 +439,6 @@ namespace mpv_winui.Modules.Player
         // --- VK-to-mp keycode mapping (mirrors mpv's mp_w32_vkey_to_mpkey) ---
         private static int VkCodeToMpvKeyCode(int vk, bool extended)
         {
-            // vk_map_ext from mpv's osdep/w32_keyboard.c
-            // Extended flag is set for the navigation cluster and arrow keys,
-            // so it differentiates them from the numpad.
             if (extended)
             {
                 switch (vk)
@@ -513,36 +588,33 @@ namespace mpv_winui.Modules.Player
             return 0;
         }
 
-        // Simplified decode_key fallback: returns US layout printable character
-        private static int VkCodeToUsChar(int vk)
+        private static int AppCommandToMpvKeyCode(uint appCommand)
         {
-            if (vk >= 'A' && vk <= 'Z')
+            return appCommand switch
             {
-                return vk + 0x20;
-            }
-
-            if (vk >= '0' && vk <= '9')
-            {
-                return vk;
-            }
-
-            return vk switch
-            {
-                0x20 => ' ',
-                0xBA => ';',
-                0xBB => '=',
-                0xBC => ',',
-                0xBD => '-',
-                0xBE => '.',
-                0xBF => '/',
-                0xC0 => '`',
-                0xDB => '[',
-                0xDC => '\\',
-                0xDD => ']',
-                0xDE => '\'',
-                0xE2 => '\\',
+                APPCOMMAND_MEDIA_NEXTTRACK => MP_KEY_NEXT,
+                APPCOMMAND_MEDIA_PREVIOUSTRACK => MP_KEY_PREV,
+                APPCOMMAND_MEDIA_STOP => MP_KEY_STOP,
+                APPCOMMAND_MEDIA_PLAY_PAUSE => MP_KEY_PLAYPAUSE,
+                APPCOMMAND_MEDIA_PLAY => MP_KEY_PLAY,
+                APPCOMMAND_MEDIA_PAUSE => MP_KEY_PAUSE,
+                APPCOMMAND_MEDIA_RECORD => MP_KEY_RECORD,
+                APPCOMMAND_MEDIA_FAST_FORWARD => MP_KEY_FORWARD,
+                APPCOMMAND_MEDIA_REWIND => MP_KEY_REWIND,
+                APPCOMMAND_MEDIA_CHANNEL_UP => MP_KEY_CHANNEL_UP,
+                APPCOMMAND_MEDIA_CHANNEL_DOWN => MP_KEY_CHANNEL_DOWN,
+                APPCOMMAND_VOLUME_MUTE => MP_KEY_MUTE,
+                APPCOMMAND_VOLUME_DOWN => MP_KEY_VOLUME_DOWN,
+                APPCOMMAND_VOLUME_UP => MP_KEY_VOLUME_UP,
+                APPCOMMAND_BROWSER_HOME => MP_KEY_HOMEPAGE,
+                APPCOMMAND_LAUNCH_MAIL => MP_KEY_MAIL,
+                APPCOMMAND_BROWSER_FAVORITES => MP_KEY_FAVORITES,
+                APPCOMMAND_BROWSER_SEARCH => MP_KEY_SEARCH,
+                APPCOMMAND_BROWSER_BACKWARD => MP_KEY_GO_BACK,
+                APPCOMMAND_BROWSER_FORWARD => MP_KEY_GO_FORWARD,
                 _ => 0
             };
         }
+
     }
 }
