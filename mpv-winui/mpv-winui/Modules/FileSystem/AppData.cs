@@ -43,5 +43,19 @@ namespace mpv_winui.Modules.FileSystem
                 return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
             }
         }
+
+        public async Task<Windows.Storage.StorageFolder> OpenLocalDataFolderAsync()
+        {
+            if (PackageHelper.IsPackaged)
+            {
+                return ApplicationData.GetDefault().LocalFolder;
+            }
+            else
+            {
+                var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
+                Directory.CreateDirectory(folderPath);
+                return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+            }
+        }
     }
 }
