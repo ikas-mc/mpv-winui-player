@@ -9,15 +9,48 @@
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
         <CsWinRTGenerateAotProjection>true</CsWinRTGenerateAotProjection>
     </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
-        <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.2.1" />
+        <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.2.1">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
+
     <ItemGroup>
-      <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj" />
+        <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj">
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
     </ItemGroup>
+
     <PropertyGroup>
-        <NuspecFile>mpv-winrt-projection.nuspec</NuspecFile>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <NativeArch Condition="'$(NativeArch)' == ''">x64</NativeArch>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>mpv-winrt</PackageId>
+        <PackageVersion>0.3.0-prerelease</PackageVersion>
+        <PackageAuthors>ikas</PackageAuthors>
+        <PackageDescription>mpv-winrt</PackageDescription>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md"
+              Pack="true"
+              PackagePath="\"/>
+        <None Include="$(OutputPath)mpv-winrt-projection.dll"
+              Pack="true"
+              PackagePath="lib\$(TargetFramework)" />
+        <None Include="..\$(NativeArch)\$(Configuration)\mpv-winrt\mpv_winrt.dll"
+              Pack="true"
+              PackagePath="runtimes\win-$(NativeArch)\native" />
+        <None Include="..\libs\bin\mpv-2.dll"
+              Pack="true"
+              PackagePath="runtimes\win-$(NativeArch)\native" />
+    </ItemGroup>
 </Project>
