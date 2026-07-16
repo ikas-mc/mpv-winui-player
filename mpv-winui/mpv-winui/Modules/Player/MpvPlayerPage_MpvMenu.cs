@@ -139,9 +139,9 @@ namespace mpv_winui.Modules.Player
         private bool CheckMpvMenu(MpvMenuItem mpvMenuItem)
         {
             //TODO remove&  check cmd ??
-            if (mpvMenuItem.Title == "&Stop" || mpvMenuItem.Title == "Ope&n" || mpvMenuItem.Title == "&Window" || mpvMenuItem.Title == "&Quit" || mpvMenuItem.Title == "Quit an&d save position")
+            if (mpvMenuItem.Title == "&Stop" || mpvMenuItem.Title == "&Quit" || mpvMenuItem.Title == "Quit an&d save position")
             {
-                return false;
+                return true;
             }
 
             return true;

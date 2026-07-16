@@ -33,6 +33,7 @@
     <ClInclude Include="PlaybackFailedEventArgs.h" />
     <ClInclude Include="TrackListChangedEventArgs.h" />
     <ClInclude Include="TrackListCountChangedEventArgs.h" />
+    <ClInclude Include="WindowChangedEventArgs.h" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="MpvPlayer.idl" />
@@ -53,6 +54,7 @@
     <Midl Include="PlaybackFailedEventArgs.idl" />
     <Midl Include="TrackListChangedEventArgs.idl" />
     <Midl Include="TrackListCountChangedEventArgs.idl" />
+    <Midl Include="WindowChangedEventArgs.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mpv_winrt.def" />

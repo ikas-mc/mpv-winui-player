@@ -86,6 +86,11 @@ namespace mpv_winui.Modules.Player
             get; set;
         }
 
+        public Action<MpvMediaPlayer, WindowChangedEventArgs>? WindowChanged
+        {
+            get; set;
+        }
+
         public Action<MpvMediaPlayer, object?>? SeekingStarted
         {
             get; set;
@@ -231,6 +236,7 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.VolumeChanged += MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked += MpvPlayer_Seeked;
             _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
+            _mpvPlayer.WindowChanged += MpvPlayer_WindowChanged;
         }
 
         public void StopListen()
@@ -245,11 +251,17 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.VolumeChanged -= MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked -= MpvPlayer_Seeked;
             _mpvPlayer.VoConfigured -= MpvPlayer_VoConfigured;
+            _mpvPlayer.WindowChanged -= MpvPlayer_WindowChanged;
         }
 
         private void MpvPlayer_VoConfigured()
         {
             VoConfigured?.Invoke(this, null);
+        }
+
+        private void MpvPlayer_WindowChanged(WindowChangedEventArgs args)
+        {
+            WindowChanged?.Invoke(this, args);
         }
 
         private void MpvPlayer_Seeked()

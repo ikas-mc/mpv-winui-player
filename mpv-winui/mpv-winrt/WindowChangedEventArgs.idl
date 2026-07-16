@@ -1,0 +1,9 @@
+namespace mpv_winrt
+{
+	runtimeclass WindowChangedEventArgs
+	{
+		String PropertyName { get; };
+		Int32 PropertyId { get; };
+		Boolean Value { get; };
+	};
+}

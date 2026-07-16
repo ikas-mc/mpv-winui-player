@@ -4,8 +4,6 @@ using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.FileSystem;
 using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Storage;
 using Windows.System;
 using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
 
@@ -13,7 +11,6 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
-
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             try

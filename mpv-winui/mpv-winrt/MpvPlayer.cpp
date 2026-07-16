@@ -17,6 +17,7 @@
 #include "TrackListChangedEventArgs.h"
 #include "TrackListCountChangedEventArgs.h"
 #include "VolumeChangedEventArgs.h"
+#include "WindowChangedEventArgs.h"
 #include <vector>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
@@ -121,6 +122,13 @@ namespace winrt::mpv_winrt::implementation
 
         mpv_observe_property(m_mpv, 17, "vo-configured", MPV_FORMAT_FLAG);
         // mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &m_swapChain);
+
+        mpv_observe_property(m_mpv, 201, "fullscreen", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, 202, "ontop", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, 203, "window-minimized", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, 204, "window-maximized", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, 205, "title-bar", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, 206, "border", MPV_FORMAT_FLAG);
 
         StartEventThread();
     }
@@ -317,6 +325,18 @@ namespace winrt::mpv_winrt::implementation
                     m_swapChain.store(swapChain);
                     m_voConfiguredEvent();
                 }
+                else if (strcmp(propName, "fullscreen") == 0 ||
+                         strcmp(propName, "window-minimized") == 0 ||
+                         strcmp(propName, "window-maximized") == 0 ||
+                         strcmp(propName, "ontop") == 0 ||
+                         strcmp(propName, "title-bar") == 0 ||
+                         strcmp(propName, "border") == 0)
+                {
+                    bool value = prop->data ? *static_cast<int*>(prop->data) != 0 : false;
+                    auto args = winrt::make<implementation::WindowChangedEventArgs>(
+                        winrt::to_hstring(propName), event->reply_userdata, value);
+                    m_windowChangedEvent(args);
+                }
             }
             break;
         }
@@ -473,6 +493,16 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::VoConfigured(winrt::event_token const& token) noexcept
     {
         m_voConfiguredEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::WindowChanged(winrt::mpv_winrt::WindowChangedEventHandler const& handler)
+    {
+        return m_windowChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::WindowChanged(winrt::event_token const& token) noexcept
+    {
+        m_windowChangedEvent.remove(token);
     }
 
     void MpvPlayer::UpdateSize(uint32_t width, uint32_t height)

@@ -145,6 +145,7 @@
     <ClInclude Include="PlaybackFailedEventArgs.h" />
     <ClInclude Include="TrackListChangedEventArgs.h" />
     <ClInclude Include="TrackListCountChangedEventArgs.h" />
+    <ClInclude Include="WindowChangedEventArgs.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,7 @@
     <Midl Include="PlaybackFailedEventArgs.idl" />
     <Midl Include="TrackListChangedEventArgs.idl" />
     <Midl Include="TrackListCountChangedEventArgs.idl" />
+    <Midl Include="WindowChangedEventArgs.idl" />
     <Midl Include="MpvPlayer.idl" />
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ import "NetworkInfoChangedEventArgs.idl";
 import "PlaybackFailedEventArgs.idl";
 import "TrackListChangedEventArgs.idl";
 import "TrackListCountChangedEventArgs.idl";
+import "WindowChangedEventArgs.idl";
 
 namespace mpv_winrt
 {
@@ -33,6 +34,7 @@ namespace mpv_winrt
 	delegate void TrackListChangedEventHandler(TrackListChangedEventArgs args);
 	delegate void TrackListCountChangedEventHandler(TrackListCountChangedEventArgs args);
 	delegate void VoConfiguredEventHandler();
+	delegate void WindowChangedEventHandler(WindowChangedEventArgs args);
 
 	runtimeclass MpvPlayer
 	{
@@ -114,5 +116,6 @@ namespace mpv_winrt
 		event TrackListChangedEventHandler TrackListChanged;
 		event TrackListCountChangedEventHandler TrackListCountChanged;
 		event VoConfiguredEventHandler VoConfigured;
+		event WindowChangedEventHandler WindowChanged;
 	};
 }

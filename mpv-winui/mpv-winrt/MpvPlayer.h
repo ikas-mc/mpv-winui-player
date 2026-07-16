@@ -108,6 +108,8 @@ namespace winrt::mpv_winrt::implementation
         void TrackListCountChanged(winrt::event_token const& token) noexcept;
         winrt::event_token VoConfigured(winrt::mpv_winrt::VoConfiguredEventHandler const& handler);
         void VoConfigured(winrt::event_token const& token) noexcept;
+        winrt::event_token WindowChanged(winrt::mpv_winrt::WindowChangedEventHandler const& handler);
+        void WindowChanged(winrt::event_token const& token) noexcept;
 
     private:
         static mpv_node* FindMapField(mpv_node* map, const char* key);
@@ -149,6 +151,7 @@ namespace winrt::mpv_winrt::implementation
         winrt::event<winrt::mpv_winrt::TrackListChangedEventHandler> m_trackListChangedEvent;
         winrt::event<winrt::mpv_winrt::TrackListCountChangedEventHandler> m_trackListCountChangedEvent;
         winrt::event<winrt::mpv_winrt::VoConfiguredEventHandler> m_voConfiguredEvent;
+        winrt::event<winrt::mpv_winrt::WindowChangedEventHandler> m_windowChangedEvent;
     };
 }
 
