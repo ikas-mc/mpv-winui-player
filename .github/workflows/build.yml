@@ -1,0 +1,87 @@
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+        platform: [x64]
+
+    runs-on: windows-2025-vs2026
+    env:
+      Appx_Package_Dir: ${{github.workspace}}\mpv-winui\Packages\
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Download mpv libs
+      run: |
+        curl -L -o mpv-libs.zip "https://github.com/ikas-mc/mpv-windows-builder/releases/download/20260731/mpv-2.dll.zip"
+        Expand-Archive -Path mpv-libs.zip -DestinationPath "${{github.workspace}}\mpv-winui\libs" -Force
+        Remove-Item -Path mpv-libs.zip -Force
+
+    - name: Update Version Build Number
+      run: |
+        $env:VERSION_BUILD_NUMBER = "${{github.run_number}}"
+        .\update-package.ps1
+
+    - name: Restore the application
+      run: msbuild mpv-winui\mpv-winui.sln /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+    - name: Create Package
+      run: msbuild mpv-winui\mpv-winui\mpv-winui.csproj /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=${{env.CertFile}} /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      env:
+        Appx_Bundle: Never
+        Appx_Package_Build_Mode: SideloadOnly
+        Configuration: ${{ matrix.configuration }}
+        Platform: ${{ matrix.platform }}
+        CertFile: ${{github.workspace}}\GitHubActionsWorkflow.pfx
+
+    - name: Remove the pfx
+      run: Remove-Item -path GitHubActionsWorkflow.pfx
+
+    - name: Create Unpackaged
+      run: msbuild mpv-winui\mpv-winui\mpv-winui.csproj /t:Publish /p:Configuration=$env:Configuration /p:Platform=$env:Platform
+      env:
+        Configuration: ${{ matrix.configuration }}
+        Platform: ${{ matrix.platform }}
+
+    - name: Upload Deps
+      uses: actions/upload-artifact@v7
+      with:
+        name: mpv-winui-Deps-${{ matrix.platform }}
+        archive: true
+        path: |
+          ${{env.Appx_Package_Dir}}\*\Dependencies\${{ matrix.platform }}\*
+
+    - name: Upload Package
+      uses: actions/upload-artifact@v7
+      with:
+        name: mpv-winui-${{ matrix.platform }}-${{ matrix.configuration }}
+        archive: true
+        path: |
+          ${{env.Appx_Package_Dir}}\*\*.msix
+          ${{env.Appx_Package_Dir}}\*\*.cer
+
+    - name: Upload Unpackaged
+      uses: actions/upload-artifact@v7
+      with:
+        name: mpv-winui-unpackaged-${{ matrix.platform }}-${{ matrix.configuration }}
+        path: ${{github.workspace}}\mpv-winui\mpv-winui\bin\win-${{ matrix.platform }}\publish
