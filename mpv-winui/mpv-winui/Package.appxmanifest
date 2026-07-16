@@ -11,7 +11,7 @@
     <Identity
             Name="mpv-winui-dev"
             Publisher="CN=ikas-mc-dev"
-            Version="1.0.4.0"/>
+            Version="1.0.16.0"/>
 
     <mp:PhoneIdentity PhoneProductId="821b3dd9-0d1c-4899-b276-d23d6b8718a9"
                       PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -50,77 +50,77 @@
                         <uap:DisplayName>mpv winui</uap:DisplayName>
                     </uap:Protocol>
                 </uap:Extension>
-				<uap:Extension Category="windows.fileTypeAssociation">
-				<uap:FileTypeAssociation Name="mpv-winui">
-					<uap:SupportedFileTypes>
-						<uap:FileType>.3g2</uap:FileType>
-						<uap:FileType>.3gp</uap:FileType>
-						<uap:FileType>.avi</uap:FileType>
-						<uap:FileType>.flv</uap:FileType>
-						<uap:FileType>.ivf</uap:FileType>
-						<uap:FileType>.m2ts</uap:FileType>
-						<uap:FileType>.m4v</uap:FileType>
-						<uap:FileType>.mj2</uap:FileType>
-						<uap:FileType>.mkv</uap:FileType>
-						<uap:FileType>.mov</uap:FileType>
-						<uap:FileType>.mp4</uap:FileType>
-						<uap:FileType>.mpeg</uap:FileType>
-						<uap:FileType>.mpg</uap:FileType>
-						<uap:FileType>.ogv</uap:FileType>
-						<uap:FileType>.rmvb</uap:FileType>
-						<uap:FileType>.ts</uap:FileType>
-						<uap:FileType>.webm</uap:FileType>
-						<uap:FileType>.wmv</uap:FileType>
-						<uap:FileType>.y4m</uap:FileType>
-						<uap:FileType>.aac</uap:FileType>
-						<uap:FileType>.ac3</uap:FileType>
-						<uap:FileType>.aiff</uap:FileType>
-						<uap:FileType>.ape</uap:FileType>
-						<uap:FileType>.au</uap:FileType>
-						<uap:FileType>.dts</uap:FileType>
-						<uap:FileType>.eac3</uap:FileType>
-						<uap:FileType>.flac</uap:FileType>
-						<uap:FileType>.m4a</uap:FileType>
-						<uap:FileType>.mka</uap:FileType>
-						<uap:FileType>.mp3</uap:FileType>
-						<uap:FileType>.oga</uap:FileType>
-						<uap:FileType>.ogg</uap:FileType>
-						<uap:FileType>.ogm</uap:FileType>
-						<uap:FileType>.opus</uap:FileType>
-						<uap:FileType>.thd</uap:FileType>
-						<uap:FileType>.wav</uap:FileType>
-						<uap:FileType>.wma</uap:FileType>
-						<uap:FileType>.wv</uap:FileType>
-						<uap:FileType>.avif</uap:FileType>
-						<uap:FileType>.bmp</uap:FileType>
-						<uap:FileType>.gif</uap:FileType>
-						<uap:FileType>.heic</uap:FileType>
-						<uap:FileType>.heif</uap:FileType>
-						<uap:FileType>.j2k</uap:FileType>
-						<uap:FileType>.jp2</uap:FileType>
-						<uap:FileType>.jpeg</uap:FileType>
-						<uap:FileType>.jpg</uap:FileType>
-						<uap:FileType>.jxl</uap:FileType>
-						<uap:FileType>.png</uap:FileType>
-						<uap:FileType>.qoi</uap:FileType>
-						<uap:FileType>.svg</uap:FileType>
-						<uap:FileType>.tga</uap:FileType>
-						<uap:FileType>.tif</uap:FileType>
-						<uap:FileType>.tiff</uap:FileType>
-						<uap:FileType>.webp</uap:FileType>
-						<uap:FileType>.zip</uap:FileType>
-						<uap:FileType>.rar</uap:FileType>
-						<uap:FileType>.7z</uap:FileType>
-						<uap:FileType>.cbz</uap:FileType>
-						<uap:FileType>.cbr</uap:FileType>
-						<uap:FileType>.cue</uap:FileType>
-						<uap:FileType>.edl</uap:FileType>
-						<uap:FileType>.m3u</uap:FileType>
-						<uap:FileType>.m3u8</uap:FileType>
-						<uap:FileType>.pls</uap:FileType>
-					</uap:SupportedFileTypes>
-				</uap:FileTypeAssociation>
-				</uap:Extension>
+                <uap:Extension Category="windows.fileTypeAssociation">
+                    <uap:FileTypeAssociation Name="mpv-winui">
+                        <uap:SupportedFileTypes>
+                            <uap:FileType>.3g2</uap:FileType>
+                            <uap:FileType>.3gp</uap:FileType>
+                            <uap:FileType>.avi</uap:FileType>
+                            <uap:FileType>.flv</uap:FileType>
+                            <uap:FileType>.ivf</uap:FileType>
+                            <uap:FileType>.m2ts</uap:FileType>
+                            <uap:FileType>.m4v</uap:FileType>
+                            <uap:FileType>.mj2</uap:FileType>
+                            <uap:FileType>.mkv</uap:FileType>
+                            <uap:FileType>.mov</uap:FileType>
+                            <uap:FileType>.mp4</uap:FileType>
+                            <uap:FileType>.mpeg</uap:FileType>
+                            <uap:FileType>.mpg</uap:FileType>
+                            <uap:FileType>.ogv</uap:FileType>
+                            <uap:FileType>.rmvb</uap:FileType>
+                            <uap:FileType>.ts</uap:FileType>
+                            <uap:FileType>.webm</uap:FileType>
+                            <uap:FileType>.wmv</uap:FileType>
+                            <uap:FileType>.y4m</uap:FileType>
+                            <uap:FileType>.aac</uap:FileType>
+                            <uap:FileType>.ac3</uap:FileType>
+                            <uap:FileType>.aiff</uap:FileType>
+                            <uap:FileType>.ape</uap:FileType>
+                            <uap:FileType>.au</uap:FileType>
+                            <uap:FileType>.dts</uap:FileType>
+                            <uap:FileType>.eac3</uap:FileType>
+                            <uap:FileType>.flac</uap:FileType>
+                            <uap:FileType>.m4a</uap:FileType>
+                            <uap:FileType>.mka</uap:FileType>
+                            <uap:FileType>.mp3</uap:FileType>
+                            <uap:FileType>.oga</uap:FileType>
+                            <uap:FileType>.ogg</uap:FileType>
+                            <uap:FileType>.ogm</uap:FileType>
+                            <uap:FileType>.opus</uap:FileType>
+                            <uap:FileType>.thd</uap:FileType>
+                            <uap:FileType>.wav</uap:FileType>
+                            <uap:FileType>.wma</uap:FileType>
+                            <uap:FileType>.wv</uap:FileType>
+                            <uap:FileType>.avif</uap:FileType>
+                            <uap:FileType>.bmp</uap:FileType>
+                            <uap:FileType>.gif</uap:FileType>
+                            <uap:FileType>.heic</uap:FileType>
+                            <uap:FileType>.heif</uap:FileType>
+                            <uap:FileType>.j2k</uap:FileType>
+                            <uap:FileType>.jp2</uap:FileType>
+                            <uap:FileType>.jpeg</uap:FileType>
+                            <uap:FileType>.jpg</uap:FileType>
+                            <uap:FileType>.jxl</uap:FileType>
+                            <uap:FileType>.png</uap:FileType>
+                            <uap:FileType>.qoi</uap:FileType>
+                            <uap:FileType>.svg</uap:FileType>
+                            <uap:FileType>.tga</uap:FileType>
+                            <uap:FileType>.tif</uap:FileType>
+                            <uap:FileType>.tiff</uap:FileType>
+                            <uap:FileType>.webp</uap:FileType>
+                            <uap:FileType>.zip</uap:FileType>
+                            <uap:FileType>.rar</uap:FileType>
+                            <uap:FileType>.7z</uap:FileType>
+                            <uap:FileType>.cbz</uap:FileType>
+                            <uap:FileType>.cbr</uap:FileType>
+                            <uap:FileType>.cue</uap:FileType>
+                            <uap:FileType>.edl</uap:FileType>
+                            <uap:FileType>.m3u</uap:FileType>
+                            <uap:FileType>.m3u8</uap:FileType>
+                            <uap:FileType>.pls</uap:FileType>
+                        </uap:SupportedFileTypes>
+                    </uap:FileTypeAssociation>
+                </uap:Extension>
             </Extensions>
         </Application>
     </Applications>
