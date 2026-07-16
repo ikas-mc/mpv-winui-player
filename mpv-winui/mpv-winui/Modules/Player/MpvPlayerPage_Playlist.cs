@@ -12,7 +12,8 @@ namespace mpv_winui.Modules.Player
     {
         public int Index { get; set; } = index;
 
-        public readonly string? Title => string.IsNullOrEmpty(item.Title) ? Path.GetFileName(item.Filename) : item.Title;
+        //TODO add option
+        public readonly string? Title => Path.GetFileName(item.Filename);
     };
 
     public sealed partial class MpvPlayerPage
