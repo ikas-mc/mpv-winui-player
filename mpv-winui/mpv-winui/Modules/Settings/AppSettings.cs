@@ -11,10 +11,10 @@ namespace mpv_winui.Modules.Settings
             _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new FileSetting("config.ini");
         }
 
-        public bool EnableLog
+        public bool EnableDebugLog
         {
-            get => _dataSetting.GetValue(nameof(EnableLog), false);
-            set => _dataSetting.SetValue(nameof(EnableLog), value);
+            get => _dataSetting.GetValue(nameof(EnableDebugLog), false);
+            set => _dataSetting.SetValue(nameof(EnableDebugLog), value);
         }
 
         public bool EnableMica
