@@ -28,7 +28,9 @@
             Grid.Row="0"
             Grid.ColumnSpan="1"
             IsTabStop="False">
-            <MenuBarItem Title="File">
+            <MenuBarItem
+                Title="File"
+                Foreground="{ThemeResource SystemAccentColorLight3}">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open"
@@ -79,7 +81,9 @@
                     Text="Quit" />
             </MenuBarItem>
 
-            <MenuBarItem Title="View">
+            <MenuBarItem
+                Title="View"
+                Foreground="{ThemeResource SystemAccentColorLight3}">
                 <ToggleMenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="playlist"
@@ -94,14 +98,19 @@
                     Tag="fullscreen"
                     Text="Full Screen" />
                 <MenuFlyoutSeparator />
-
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-folder"
                     Text="Open Conf Folder" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="mpv-folder"
+                    Text="Open mpv Folder" />
             </MenuBarItem>
 
-            <MenuBarItem Title="Help">
+            <MenuBarItem
+                Title="Help"
+                Foreground="{ThemeResource SystemAccentColorLight3}">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="about"
@@ -166,19 +175,21 @@
             </ListView>
         </Grid>
 
-        <Border
+        <Grid
             Grid.Row="1"
             Grid.Column="0"
             AllowDrop="True"
-            Background="Black"
+            Background="#22000000"
             DragEnter="OnDragEnter"
             DragOver="OnDragOver"
             Drop="OnDrop">
             <SwapChainPanel
                 x:Name="PlayerView"
                 ContextRequested="PlayerView_ContextRequested"
-                Tapped="PlayerView_Tapped" />
-        </Border>
+                Tapped="PlayerView_Tapped">
+                <Border Background="Transparent" />
+            </SwapChainPanel>
+        </Grid>
 
         <local:PlayerControl
             x:Name="PlayerControl"

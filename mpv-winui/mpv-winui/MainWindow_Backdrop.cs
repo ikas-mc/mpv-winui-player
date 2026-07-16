@@ -29,7 +29,7 @@ namespace mpv_winui
                     Kind = DesktopAcrylicKind.Thin,
                     //TintOpacity = 0.15F,
                     //TintColor = Windows.UI.Color.FromArgb(255, 255, 255, 255),
-                    //LuminosityOpacity = 0.5F
+                    LuminosityOpacity = 0.2F
                 };
 
                 _acrylicController?.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
