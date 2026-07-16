@@ -37,7 +37,14 @@ namespace mpv_winui.Modules.Player
 
         private async Task OpenUrlAsync()
         {
-            var urlBox = new TextBox { PlaceholderText = "http://..." };
+            var urlBox = new TextBox
+            {
+                TextWrapping = Microsoft.UI.Xaml.TextWrapping.Wrap,
+                PlaceholderText = "http://...",
+                MinHeight = 80,
+                MaxHeight = 200,
+                MinWidth = 400
+            };
             var urlDialog = new ContentDialog
             {
                 Title = "Open URL",
@@ -46,12 +53,21 @@ namespace mpv_winui.Modules.Player
                 CloseButtonText = "Cancel",
                 XamlRoot = XamlRoot
             };
-            if (await urlDialog.ShowAsync() == ContentDialogResult.Primary)
+
+            _suppressKeyboard = true;
+            try
             {
-                if (urlBox.Text?.Trim() is string path && !string.IsNullOrEmpty(path))
+                if (await urlDialog.ShowAsync() == ContentDialogResult.Primary)
                 {
-                    await PlayFileAsync(path);
+                    if (urlBox.Text?.Trim() is string path && !string.IsNullOrEmpty(path))
+                    {
+                        await PlayFileAsync(path);
+                    }
                 }
+            }
+            finally
+            {
+                _suppressKeyboard = false;
             }
         }
 
