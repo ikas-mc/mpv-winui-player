@@ -1,0 +1,11 @@
+SetWindowsHookEx
+UnhookWindowsHookEx
+CallNextHookEx
+GetCurrentThreadId
+GetKeyState
+ToUnicode
+HIWORD
+GetKeyState
+GetKeyboardState
+MapVirtualKey
+KF_EXTENDED

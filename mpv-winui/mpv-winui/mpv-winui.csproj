@@ -43,6 +43,10 @@
         <ProjectCapability Include="Msix" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.298">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2270" />
         <PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.2.0" />
@@ -72,11 +76,6 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
-
-    <PropertyGroup Label="Globals">
-        <WebView2EnableCsWinRTProjection>False</WebView2EnableCsWinRTProjection>
-        <WebView2LoaderPreference>Dynamic</WebView2LoaderPreference>
-    </PropertyGroup>
 
     <!--
       Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

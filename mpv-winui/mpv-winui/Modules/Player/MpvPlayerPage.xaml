@@ -26,11 +26,11 @@
         </Grid.ColumnDefinitions>
         <MenuBar
             Grid.Row="0"
-            Grid.ColumnSpan="1"
-            IsTabStop="False">
+            Grid.ColumnSpan="1">
             <MenuBarItem
                 Title="File"
-                Foreground="{ThemeResource SystemAccentColorLight3}">
+                Foreground="{ThemeResource SystemAccentColorLight3}"
+                IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open"
@@ -83,7 +83,8 @@
 
             <MenuBarItem
                 Title="View"
-                Foreground="{ThemeResource SystemAccentColorLight3}">
+                Foreground="{ThemeResource SystemAccentColorLight3}"
+                IsTabStop="False">
                 <ToggleMenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="playlist"
@@ -110,7 +111,8 @@
 
             <MenuBarItem
                 Title="Help"
-                Foreground="{ThemeResource SystemAccentColorLight3}">
+                Foreground="{ThemeResource SystemAccentColorLight3}"
+                IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="about"
