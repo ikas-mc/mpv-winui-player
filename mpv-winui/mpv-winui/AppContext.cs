@@ -1,9 +1,7 @@
 using mpv_winui.Modules.Common.Utils;
-using mpv_winui.Modules.FileSystem;
 using mpv_winui.Modules.Language;
 using mpv_winui.Modules.Settings;
 using NLog;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace mpv_winui

@@ -125,36 +125,31 @@
             Grid.Row="0"
             Grid.RowSpan="3"
             Grid.Column="1"
-            Background="Transparent"
             Canvas.ZIndex="1"
             Visibility="Collapsed">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="44" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="0"
-                    VerticalAlignment="Center" />
-                <CommandBar
-                    DefaultLabelPosition="Collapsed"
-                    IsDynamicOverflowEnabled="False">
-                    <AppBarButton
-                        Grid.Column="1"
-                        Width="40"
-                        Click="ClosePlaylist_Click"
-                        Icon="ClosePane" />
-                    <AppBarButton
-                        Grid.Column="1"
-                        Width="40"
-                        Click="RefreshPlaylist_Click"
-                        Icon="Refresh" />
-                </CommandBar>
-            </Grid>
+            <CommandBar
+                Margin="8,0"
+                x:Name="PlaylistToolBar"
+                Grid.Row="0"
+                Height="44"
+                HorizontalAlignment="Right"
+                DefaultLabelPosition="Collapsed"
+                IsDynamicOverflowEnabled="False">
+                <AppBarButton
+                    Grid.Column="1"
+                    Width="40"
+                    Click="ClosePlaylist_Click"
+                    Icon="ClosePane" />
+                <AppBarButton
+                    Grid.Column="1"
+                    Width="40"
+                    Click="RefreshPlaylist_Click"
+                    Icon="Refresh" />
+            </CommandBar>
 
             <ListView
                 x:Name="PlaylistView"
@@ -231,6 +226,7 @@
                         <Setter Target="PlayControlRow.Height" Value="0" />
                         <Setter Target="MenuRow.Height" Value="0" />
                         <Setter Target="PlayerControl.(Grid.Row)" Value="1" />
+                        <Setter Target="PlaylistToolBar.HorizontalAlignment" Value="Left" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

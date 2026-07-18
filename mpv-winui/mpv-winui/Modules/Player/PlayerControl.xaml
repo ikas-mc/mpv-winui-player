@@ -141,6 +141,7 @@
                     Padding="0"
                     HorizontalAlignment="Left"
                     DefaultLabelPosition="Collapsed"
+                    IsDynamicOverflowEnabled="False"
                     Style="{StaticResource CommandBarWithoutRevealStyle}">
                     <CommandBar.Resources>
                         <Thickness x:Key="AppBarButtonInnerBorderMargin">5</Thickness>
@@ -258,6 +259,7 @@
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     DefaultLabelPosition="Collapsed"
+                    IsDynamicOverflowEnabled="False"
                     Style="{StaticResource CommandBarWithoutRevealStyle}">
 
                     <CommandBar.Resources>

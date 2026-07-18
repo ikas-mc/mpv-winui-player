@@ -9,7 +9,7 @@
     mc:Ignorable="d">
     <Grid
         Padding="8"
-        ColumnSpacing="24"
+        ColumnSpacing="8"
         RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -22,12 +22,8 @@
                 MinHeight="100" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                MinWidth="160"
-                MaxWidth="190" />
-            <ColumnDefinition
-                MinWidth="160"
-                MaxWidth="190" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
         <TextBlock
@@ -52,7 +48,9 @@
                     <TextBlock
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        ToolTipService.ToolTip="{x:Bind Label}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -79,7 +77,9 @@
                     <TextBlock
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        ToolTipService.ToolTip="{x:Bind Label}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -104,9 +104,11 @@
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:TrackItem">
                     <TextBlock
+                        MaxLines="2"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextWrapping="NoWrap"
+                        ToolTipService.ToolTip="{x:Bind Label}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -134,7 +136,9 @@
                     <TextBlock
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        ToolTipService.ToolTip="{x:Bind Label}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
