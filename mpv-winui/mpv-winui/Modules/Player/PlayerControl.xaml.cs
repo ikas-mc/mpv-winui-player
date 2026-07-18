@@ -30,11 +30,6 @@ namespace mpv_winui.Modules.Player
 
         private MpvMediaPlayer? _mediaPlayer;
 
-        public static readonly DependencyProperty ZoomButtonVisibilityProperty = DependencyProperty.Register("ZoomButtonVisibility", typeof(Visibility), typeof(PlayerControl), new PropertyMetadata(Visibility.Collapsed, (DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-        {
-            var control = (PlayerControl)d;
-            control.ZoomButton.Visibility = (Visibility)e.NewValue;
-        }));
 
         public static readonly DependencyProperty InfoButtonVisibilityProperty = DependencyProperty.Register("InfoButtonVisibility", typeof(Visibility), typeof(PlayerControl), new PropertyMetadata(Visibility.Collapsed, (DependencyObject d, DependencyPropertyChangedEventArgs e) =>
         {
@@ -104,18 +99,6 @@ namespace mpv_winui.Modules.Player
                         VolumeSlider.Value2 = _mediaPlayer?.Volume ?? 50; //TODO
                     }
                 }
-            }
-        }
-
-        public Visibility ZoomButtonVisibility
-        {
-            get
-            {
-                return (Visibility)GetValue(ZoomButtonVisibilityProperty);
-            }
-            set
-            {
-                SetValue(ZoomButtonVisibilityProperty, value);
             }
         }
 
@@ -224,12 +207,38 @@ namespace mpv_winui.Modules.Player
             _positionUpdateTimer.Tick += OnPositionUpdateTimerTick;
             _positionUpdateTimer.Start();
 
+            MoreSkipBackward.Click += SkipBackwardButton_Click;
+            MoreSkipForward.Click += SkipForwardButton_Click;
+            MoreShuffle.Click += OnShuffleClick;
+            MoreRepeat.Click += OnRepeatClick;
+            foreach (var item in MorePlaybackRate.Items)
+            {
+                if (item is MenuFlyoutItem mfi)
+                {
+                    mfi.Click += PlaybackRateFlyout_MenuFlyoutItem_Click;
+                }
+            }
+            MorePreviousTrack.Click += PreviousTrackButton_Click;
+            MoreNextTrack.Click += NextTrackButton_Click;
+            foreach (var item in MoreZoom.Items)
+            {
+                if (item is MenuFlyoutItem mfi)
+                {
+                    mfi.Click += ZoomSelectionMenu_Click;
+                }
+            }
+            MoreFullWindow.Click += FullWindowButton_Click;
+            MoreFullScreen.Click += OnFullScreenClick;
+
+            UpdateToolbarVisibility(ActualWidth);
             //UpdatePlaybackStatusUI(false);
             //UpdatePlayPauseUI(false);
             //UpdateVolumeUI(false);
             //UpdateCompactUI(false);
             //UpdateFullScreenUI();
             //UpdateRepeatButtonUI();
+
+            this.SizeChanged += PlayerControl_SizeChanged;
 
             if (_mediaPlayer is MpvMediaPlayer player)
             {
@@ -259,6 +268,30 @@ namespace mpv_winui.Modules.Player
 
             ProgressSlider.ValueChanged -= OnPositionSliderValueChanged;
             VolumeSlider.ValueChanged2 -= OnVolumeSliderValueChanged;
+
+            this.SizeChanged -= PlayerControl_SizeChanged;
+            MoreSkipBackward.Click -= SkipBackwardButton_Click;
+            MoreSkipForward.Click -= SkipForwardButton_Click;
+            MoreShuffle.Click -= OnShuffleClick;
+            MoreRepeat.Click -= OnRepeatClick;
+            foreach (var item in MorePlaybackRate.Items)
+            {
+                if (item is MenuFlyoutItem mfi)
+                {
+                    mfi.Click -= PlaybackRateFlyout_MenuFlyoutItem_Click;
+                }
+            }
+            MorePreviousTrack.Click -= PreviousTrackButton_Click;
+            MoreNextTrack.Click -= NextTrackButton_Click;
+            foreach (var item in MoreZoom.Items)
+            {
+                if (item is MenuFlyoutItem mfi)
+                {
+                    mfi.Click -= ZoomSelectionMenu_Click;
+                }
+            }
+            MoreFullWindow.Click -= FullWindowButton_Click;
+            MoreFullScreen.Click -= OnFullScreenClick;
 
             _positionUpdateTimer.Stop();
             _positionUpdateTimer.Tick -= OnPositionUpdateTimerTick;
@@ -326,6 +359,11 @@ namespace mpv_winui.Modules.Player
             item = new MenuFlyoutItem() { Text = "16:10", Tag = "16:10", };
             item.Click += ZoomSelectionMenu_Click;
             ZoomSelectionFlyout.Items.Add(item);
+
+            if (sender is MenuFlyoutItem)
+            {
+                ZoomSelectionFlyout.ShowAt(MoreButton);
+            }
         }
 
         private void ZoomSelectionMenu_Click(object sender, RoutedEventArgs e)
@@ -343,52 +381,49 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
-            if (sender is Button button && button.Flyout is Flyout flyout && flyout.Content is PlayerTrackSelectorControl trackSelectorControl)
+            try
             {
-                try
-                {
-                    trackSelectorControl.VideoTrackSelected -= TrackSelectorControl_VideoTrackSelected;
-                    trackSelectorControl.LoadVideoTracks(_mediaPlayer?.VideoTracks() ?? []);
-                    trackSelectorControl.VideoTrackSelected += TrackSelectorControl_VideoTrackSelected;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"TrackSelectionButton_Click video error: {ex.Message}");
-                }
+                TrackSelectorControl.VideoTrackSelected -= TrackSelectorControl_VideoTrackSelected;
+                TrackSelectorControl.LoadVideoTracks(_mediaPlayer?.VideoTracks() ?? []);
+                TrackSelectorControl.VideoTrackSelected += TrackSelectorControl_VideoTrackSelected;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"TrackSelectionButton_Click video error: {ex.Message}");
+            }
 
-                try
-                {
-                    trackSelectorControl.SubtitleTrackSelected -= TrackSelectorControl_SubtitleTrackSelected;
-                    trackSelectorControl.LoadSubtitleTracks(_mediaPlayer?.SubtitleTracks() ?? [], "Off");
-                    trackSelectorControl.SubtitleTrackSelected += TrackSelectorControl_SubtitleTrackSelected;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"TrackSelectionButton_Click sub error: {ex.Message}");
-                }
+            try
+            {
+                TrackSelectorControl.SubtitleTrackSelected -= TrackSelectorControl_SubtitleTrackSelected;
+                TrackSelectorControl.LoadSubtitleTracks(_mediaPlayer?.SubtitleTracks() ?? [], "Off");
+                TrackSelectorControl.SubtitleTrackSelected += TrackSelectorControl_SubtitleTrackSelected;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"TrackSelectionButton_Click sub error: {ex.Message}");
+            }
 
-                try
-                {
-                    trackSelectorControl.AudioTrackSelected -= TrackSelectorControl_AudioTrackSelected;
-                    trackSelectorControl.LoadAudioTracks(_mediaPlayer?.AudioTracks() ?? []);
-                    trackSelectorControl.AudioTrackSelected += TrackSelectorControl_AudioTrackSelected;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"TrackSelectionButton_Click audio error: {ex.Message}");
-                }
+            try
+            {
+                TrackSelectorControl.AudioTrackSelected -= TrackSelectorControl_AudioTrackSelected;
+                TrackSelectorControl.LoadAudioTracks(_mediaPlayer?.AudioTracks() ?? []);
+                TrackSelectorControl.AudioTrackSelected += TrackSelectorControl_AudioTrackSelected;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"TrackSelectionButton_Click audio error: {ex.Message}");
+            }
 
-                try
-                {
-                    trackSelectorControl.SecondSubTrackSelected -= TrackSelectorControl_SecondSubTrackSelected;
-                    trackSelectorControl.LoadSecondSubtitleTracks(_mediaPlayer?.SecondSubtitleTracks() ?? [], AppContext.AppLang.Off);
-                    trackSelectorControl.SecondSubTrackSelected += TrackSelectorControl_SecondSubTrackSelected;
-                    trackSelectorControl.SetSecondSubVisibility(true);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"TrackSelectionButton_Click second-sub error: {ex.Message}");
-                }
+            try
+            {
+                TrackSelectorControl.SecondSubTrackSelected -= TrackSelectorControl_SecondSubTrackSelected;
+                TrackSelectorControl.LoadSecondSubtitleTracks(_mediaPlayer?.SecondSubtitleTracks() ?? [], AppContext.AppLang.Off);
+                TrackSelectorControl.SecondSubTrackSelected += TrackSelectorControl_SecondSubTrackSelected;
+                TrackSelectorControl.SetSecondSubVisibility(true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"TrackSelectionButton_Click second-sub error: {ex.Message}");
             }
         }
 
@@ -590,7 +625,15 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
-            MediaPlayer?.IsMuted = !MediaPlayer?.IsMuted ?? true;
+            if (VolumeSliderContainer.Visibility != Visibility.Visible)
+            {
+                var control = new VolumeFlyoutControl(MediaPlayer);
+                var flyout = new Flyout { Content = control };
+                flyout.ShowAt(VolumeMuteButton);
+                return;
+            }
+
+            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
             UpdateVolumeUI(true);
         }
 
@@ -891,6 +934,32 @@ namespace mpv_winui.Modules.Player
                     VisualStateManager.GoToState(this, "VolumeState3", useTransitions);
                 }
             }
+        }
+
+        private int _currentSegment = -1; // 0=wide, 1=medium, 2=compact, 3=narrow
+        private void PlayerControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateToolbarVisibility(e.NewSize.Width);
+        }
+
+        private void UpdateToolbarVisibility(double w)
+        {
+            int newSegment = w >= 700 ? 0 : w >= 500 ? 1 : w >= 280 ? 2 : 3;
+            if (newSegment == _currentSegment)
+            {
+                return;
+            }
+
+            _currentSegment = newSegment;
+
+            string name = newSegment switch
+            {
+                0 => "Wide",
+                1 => "Medium",
+                2 => "Compact",
+                _ => "Narrow"
+            };
+            VisualStateManager.GoToState(this, name, false);
         }
     }
 }

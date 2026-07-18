@@ -53,7 +53,6 @@ namespace mpv_winui.Modules.Player
                 SetupPlayerView();
 
                 PlayerControl.InfoButtonVisibility = Visibility.Collapsed;
-                PlayerControl.ZoomButtonVisibility = Visibility.Visible;
                 PlayerControl.MediaPlayer = _mediaPlayer;
 
                 _mediaPlayer.MediaOpened += MediaOpened;

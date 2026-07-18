@@ -1,0 +1,23 @@
+<UserControl
+    x:Class="mpv_winui.Modules.Player.VolumeFlyoutControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Spacing="8">
+        <AppBarButton
+            x:Name="MuteButton"
+            Width="40"
+            Click="MuteButton_Click"
+            LabelPosition="Collapsed">
+            <AppBarButton.Icon>
+                <FontIcon x:Name="VolumeIcon" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+        <Slider
+            x:Name="VolumeSlider"
+            Height="100"
+            HorizontalAlignment="Center"
+            Maximum="100"
+            Minimum="0"
+            Orientation="Vertical" />
+    </StackPanel>
+</UserControl>
