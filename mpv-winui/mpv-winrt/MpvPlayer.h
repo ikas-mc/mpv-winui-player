@@ -12,6 +12,36 @@
 
 namespace winrt::mpv_winrt::implementation
 {
+
+    enum MpvObserveId : uint64_t
+    {
+        CoreIdle = 1,
+        Pause = 2,
+        Duration = 3,
+        PlaybackTime = 4,
+        TimePos = 5,
+        CacheSpeed = 6,
+        Speed = 7,
+        Volume = 8,
+        Mute = 9,
+        Filename = 20,
+        MediaTitle = 21,
+        TrackList = 30,
+        TrackListCount = 31,
+        Aid = 32,
+        Sid = 33,
+        MenuData = 41,
+        VoConfigured = 50,
+
+        // donot change
+        Fullscreen = 201,
+        Ontop = 202,
+        WindowMinimized = 203,
+        WindowMaximized = 204,
+        TitleBar = 205,
+        Border = 206,
+    };
+
     struct MpvPlayer : MpvPlayerT<MpvPlayer>
     {
         MpvPlayer();
