@@ -9,3 +9,6 @@ GetKeyState
 GetKeyboardState
 MapVirtualKey
 KF_EXTENDED
+GetDpiForWindow
+HOOKPROC
+GetModuleHandle
