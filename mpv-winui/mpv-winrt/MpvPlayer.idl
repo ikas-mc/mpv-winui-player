@@ -45,6 +45,7 @@ namespace mpv_winrt
 		void LoadFile(String url, Double position);
 		void LoadList(String url);
 		void AttachSwapChain(Microsoft.UI.Xaml.Controls.SwapChainPanel panel);
+        void UpdateSwapChainScale(Single scaleX, Single scaleY);
 
 		void Play();
 		void Pause();

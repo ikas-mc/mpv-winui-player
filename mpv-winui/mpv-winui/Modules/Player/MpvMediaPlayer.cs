@@ -224,6 +224,11 @@ namespace mpv_winui.Modules.Player
             }
         }
 
+        public void UpdatePanelScale(float scaleX, float scaleY)
+        {
+            _mpvPlayer.UpdateSwapChainScale(scaleX, scaleY);
+        }
+
         public void StartListen()
         {
             _mpvPlayer.MediaLoaded += MpvPlayer_MediaLoaded;

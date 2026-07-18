@@ -334,7 +334,7 @@ namespace winrt::mpv_winrt::implementation
                 {
                     bool value = prop->data ? *static_cast<int*>(prop->data) != 0 : false;
                     auto args = winrt::make<implementation::WindowChangedEventArgs>(
-                        winrt::to_hstring(propName), event->reply_userdata, value);
+                        winrt::to_hstring(propName), static_cast<int32_t>(event->reply_userdata), value);
                     m_windowChangedEvent(args);
                 }
             }
@@ -914,6 +914,18 @@ namespace winrt::mpv_winrt::implementation
             {
                 nativePanel->SetSwapChain(swapChain);
             }
+        }
+    }
+
+    void MpvPlayer::UpdateSwapChainScale(float scaleX, float scaleY)
+    {
+        auto swapChain = m_swapChain.load();
+        if (swapChain && scaleX > 0 && scaleY > 0)
+        {
+            DXGI_MATRIX_3X2_F inverseScale{};
+            inverseScale._11 = 1.0f / scaleX;
+            inverseScale._22 = 1.0f / scaleY;
+            swapChain->SetMatrixTransform(&inverseScale);
         }
     }
 

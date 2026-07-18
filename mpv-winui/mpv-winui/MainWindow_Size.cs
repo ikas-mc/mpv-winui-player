@@ -9,7 +9,6 @@ namespace mpv_winui
     public sealed partial class MainWindow : Window
     {
         private int _x, _y, _w, _h;
-        private double _scale;
         private void SetupWindowSize()
         {
             try
@@ -68,7 +67,7 @@ namespace mpv_winui
 
             if (AppContext.AppLogger.IsTraceEnabled)
             {
-                AppContext.AppLogger.Debug("window last rect: x={},y={},w={},h={}. scale={}", _x, _y, _w, _h, _scale);
+                AppContext.AppLogger.Debug("window last rect: x={},y={},w={},h={}.", _x, _y, _w, _h);
             }
         }
 

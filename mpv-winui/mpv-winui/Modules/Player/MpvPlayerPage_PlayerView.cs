@@ -22,12 +22,18 @@ namespace mpv_winui.Modules.Player
 
             _sizeChangedAction = DebounceUtil.Debounce<ViewSize>(UpdatePlayerViewSize, TimeSpan.FromMilliseconds(100));
             PlayerView.SizeChanged += PlayerView_SizeChanged;
+
+            //TODO 
+            _lastCompositionScaleX = PlayerView.CompositionScaleX;
+            _lastCompositionScaleY = PlayerView.CompositionScaleY;
+            PlayerView.CompositionScaleChanged += PlayerView_CompositionScaleChanged;
         }
 
         private void TeardownPlayerView()
         {
             _sizeChangedAction = null;
             PlayerView.SizeChanged -= PlayerView_SizeChanged;
+            PlayerView.CompositionScaleChanged -= PlayerView_CompositionScaleChanged;
             _mediaPlayer.VoConfigured -= MpvPlayer_VoConfigured;
         }
 
@@ -65,6 +71,23 @@ namespace mpv_winui.Modules.Player
                 height = 1;
             }
             _mediaPlayer?.UpdateSize(width, height);
+        }
+
+        private double _lastCompositionScaleX;
+        private double _lastCompositionScaleY;
+        private void PlayerView_CompositionScaleChanged(Microsoft.UI.Xaml.Controls.SwapChainPanel sender, object args)
+        {
+            if (_lastCompositionScaleX != sender.CompositionScaleX || _lastCompositionScaleY != sender.CompositionScaleY)
+            {
+                _lastCompositionScaleX = sender.CompositionScaleX;
+                _lastCompositionScaleY = sender.CompositionScaleY;
+
+                _mediaPlayer?.UpdatePanelScale(sender.CompositionScaleX, sender.CompositionScaleY);
+
+                //TODO
+                var size = new ViewSize(sender.ActualWidth, sender.ActualHeight, sender.CompositionScaleX, sender.CompositionScaleY);
+                _sizeChangedAction?.Invoke(size);
+            }
         }
     }
 }
