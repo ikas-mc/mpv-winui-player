@@ -1,8 +1,8 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using mpv_winui.Modules.Win32;
 using System;
 using Windows.Graphics;
+using WinRT;
 
 namespace mpv_winui
 {
@@ -19,14 +19,19 @@ namespace mpv_winui
                     int[] v = Array.ConvertAll(saved.Split(','), int.Parse);
                     if (v.Length == 4)
                     {
-                        var scale = Win32WindowHelper.GetWindowScale(this);
+                        //TODO
+                        if (v[2] <= 0 || v[3] <= 0)
+                        {
+                            return;
+                        }
+
                         if (v[0] > 0 && v[1] > 0)
                         {
-                            AppWindow.MoveAndResize(new RectInt32((int)(v[0] / scale), (int)(v[1] / scale), Math.Max(100, (int)(v[2] / scale)), Math.Max(100, (int)(v[3] / scale))));
+                            AppWindow.MoveAndResize(new RectInt32(v[0], v[1], Math.Max(100, v[2]), Math.Max(100, v[3])));
                         }
                         else
                         {
-                            AppWindow.Resize(new SizeInt32(Math.Max(100, (int)(v[2] / scale)), Math.Max(100, (int)(v[3] / scale))));
+                            AppWindow.Resize(new SizeInt32(Math.Max(100, v[2]), Math.Max(100, v[3])));
                         }
                     }
                 }
@@ -115,11 +120,13 @@ namespace mpv_winui
 
         public void UpdateWindowMinSize(int w, int h)
         {
-            if (Content.XamlRoot is XamlRoot root)
+            if (Content.XamlRoot is XamlRoot root && AppWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
             {
-                var scale = root.RasterizationScale > 0 ? root.RasterizationScale : 1;
-                if (AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+                //fix for winrt
+                var overlappedPresenter = AppWindow.Presenter.As<OverlappedPresenter>();
+                if (overlappedPresenter != null)
                 {
+                    var scale = root.RasterizationScale > 0 ? root.RasterizationScale : 1;
                     overlappedPresenter.PreferredMinimumWidth = (int)(250 * scale);
                     overlappedPresenter.PreferredMinimumHeight = (int)(250 * scale);
                 }
