@@ -64,5 +64,11 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(LastAudioVolume), 50);
             set => _dataSetting.SetValue(nameof(LastAudioVolume), value);
         }
+
+        public string WindowPositionAndSize
+        {
+            get => _dataSetting.GetValue(nameof(WindowPositionAndSize), string.Empty);
+            set => _dataSetting.SetValue(nameof(WindowPositionAndSize), value);
+        }
     }
 }

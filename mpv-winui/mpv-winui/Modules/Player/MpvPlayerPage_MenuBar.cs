@@ -65,6 +65,10 @@ namespace mpv_winui.Modules.Player
                         }
                         case "restart":
                         {
+                            if (App.Window is MainWindow mainWindow)
+                            {
+                                mainWindow.SaveWindowPositionAndSize();
+                            }
                             AppInstance.Restart("Reset");
                             break;
                         }

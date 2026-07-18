@@ -1,7 +1,6 @@
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppLifecycle;
 using mpv_winui.Modules.Activation;
 using mpv_winui.Modules.AppModel;
@@ -25,6 +24,8 @@ namespace mpv_winui
             AppWindow.Changed += AppWindow_Changed;
             AppWindow.Title = PackageHelper.AppName;
             AppWindow.SetIcon("App.ico");
+
+            SetupWindowSize();
         }
 
         private bool SetTitleBarColors()
@@ -112,5 +113,6 @@ namespace mpv_winui
                 TitleBarRow.Height = GridLength.Auto;
             }
         }
+
     }
 }
