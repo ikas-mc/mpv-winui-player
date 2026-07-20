@@ -1,5 +1,7 @@
 using mpv;
-using Windows.Win32;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using static Windows.Win32.PInvoke;
@@ -8,28 +10,27 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
+        private static HHOOK? _hHook;
+        private static bool _suppressKeyboard = false;
+        private static WeakReference<MpvPlayerPage>? _selfWeakReference;
 
-        private HHOOK? _hHook;
-        private bool _suppressKeyboard = false;
-        private HOOKPROC? _hookDelegate;
-
-        private void SetupWindowHook()
+        private static unsafe void SetupWindowHook(MpvPlayerPage self)
         {
-            _hookDelegate = MessageHookProc;
-            _hHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD, _hookDelegate, HINSTANCE.Null, GetCurrentThreadId());
+            _selfWeakReference = new(self);
+            _hHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD, &MessageHookProc, HINSTANCE.Null, GetCurrentThreadId());
         }
 
-        private void RemoveWindowHook()
+        private static void RemoveWindowHook()
         {
             if (_hHook is HHOOK hHook && !hHook.IsNull)
             {
                 UnhookWindowsHookEx(hHook);
             }
             _hHook = null;
-            _hookDelegate = null;
+            _selfWeakReference = null;
         }
 
-        private void SendKeydown(string keyName)
+        private static void SendKeydown(string keyName)
         {
             if (string.IsNullOrEmpty(keyName))
             {
@@ -42,24 +43,30 @@ namespace mpv_winui.Modules.Player
                 _logger.Debug("keydown: mpv-name={}, mpv-code={}", keyName, code);
             }
 
-            _mediaPlayer?.Command(["keydown", keyName]);
+            if (_selfWeakReference?.TryGetTarget(out var self) == true)
+            {
+                self?._mediaPlayer?.Command(["keydown", keyName]);
+            }
         }
 
-        private void SendKeyup(string keyName)
+        private static void SendKeyup(string keyName)
         {
             if (string.IsNullOrEmpty(keyName))
             {
                 return;
             }
 
-            _mediaPlayer?.Command(["keyup", keyName]);
+            if (_selfWeakReference?.TryGetTarget(out var self) == true)
+            {
+                self?._mediaPlayer?.Command(["keyup", keyName]);
+            }
         }
 
-        private LRESULT MessageHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+        private static LRESULT MessageHookProc(int nCode, WPARAM wParam, LPARAM lParam)
         {
             if (!_suppressKeyboard && nCode == 0)
             {
-
                 uint flags = (uint)lParam.Value;
                 uint vkey = (uint)wParam.Value;
 
@@ -74,7 +81,7 @@ namespace mpv_winui.Modules.Player
                 }
                 else
                 {
-                    uint scancode = PInvoke.HIWORD(flags);
+                    uint scancode = HIWORD(flags);
                     bool isSystemKey = (flags & (1U << 29)) != 0;
                     if (isSystemKey)
                     {
@@ -107,7 +114,7 @@ namespace mpv_winui.Modules.Player
         }
 
 
-        public void HandleKeyDown(uint vkey, uint scancode)
+        public static void HandleKeyDown(uint vkey, uint scancode)
         {
             int mpkey = W32Keyboard.mp_w32_vkey_to_mpkey((int)vkey, (scancode & KF_EXTENDED) != 0);
             if (mpkey == 0)
@@ -128,7 +135,7 @@ namespace mpv_winui.Modules.Player
             SendKeydown(ModPrefix() + $"0x{mpkey:X}");
         }
 
-        public void HandleKeyUp(uint vkey)
+        public static void HandleKeyUp(uint vkey)
         {
             if (_logger.IsTraceEnabled)
             {
@@ -145,13 +152,18 @@ namespace mpv_winui.Modules.Player
                 {
                     // Releasing all keys on key-up is simpler and ensures no keys can be
                     // get "stuck." This matches the behaviour of other VOs.
-                    SendKeyup(ModPrefix() + $"0x{Keycodes.MP_INPUT_RELEASE_ALL:X}");
+                    SendKeyup($"0x{Keycodes.MP_INPUT_RELEASE_ALL:X}");
                     break;
                 }
             }
         }
 
-        private string ModPrefix()
+        public void SendAllKeyUp()
+        {
+            SendKeyup($"0x{Keycodes.MP_INPUT_RELEASE_ALL:X}");
+        }
+
+        private static string ModPrefix()
         {
             int mod = W32Common.mod_state();
             var prefix = "";

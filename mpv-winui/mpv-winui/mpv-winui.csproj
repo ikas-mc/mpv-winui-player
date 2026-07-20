@@ -16,13 +16,16 @@
         <CsWinRTIncludes>mpv_winrt</CsWinRTIncludes>
         <IsAotCompatible>true</IsAotCompatible>
         <PublishAot>true</PublishAot>
+        <PublishTrimmed>true</PublishTrimmed>
         <SelfContained>true</SelfContained>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
         <ApplicationIcon>App.ico</ApplicationIcon>
+        <CsWin32RunAsBuildTask>true</CsWin32RunAsBuildTask>
+        <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
     </PropertyGroup>
 
     <PropertyGroup>
-        <EnabledXamlOptionalChanges>DefaultStyleOptimizations,OptimizeApplyStyles</EnabledXamlOptionalChanges>
+        <EnabledXamlOptionalChanges>DefaultStyleOptimizations,OptimizeApplyStyles,IconNoGridOptimization,DeferContextFlyoutInit</EnabledXamlOptionalChanges>
     </PropertyGroup>
 
     <ItemGroup>
@@ -109,5 +112,17 @@
         <GenerateTestArtifacts>False</GenerateTestArtifacts>
         <AppxBundle>Never</AppxBundle>
         <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+      <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+      <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     </PropertyGroup>
 </Project>

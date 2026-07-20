@@ -12,3 +12,6 @@ KF_EXTENDED
 GetDpiForWindow
 HOOKPROC
 GetModuleHandle
+SetForegroundWindow
+ShowWindow
+
