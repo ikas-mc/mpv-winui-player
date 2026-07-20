@@ -6,7 +6,8 @@
       "doNotLaunchApp": false
     },
     "mpv-winui (Unpackaged)": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "debugEngines": "managed"
     }
   }
 }

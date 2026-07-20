@@ -211,9 +211,9 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        public async Task InitializeAsync(string configFolder, int volume)
+        public async Task InitializeAsync(string configFolder, int volume, mpv_winrt.DisplayColorKind colorKind, int refreshRate)
         {
-            await Task.Run(() => { _mpvPlayer.Initialize(configFolder, 1, 1, volume); });
+            await Task.Run(() => { _mpvPlayer.Initialize(configFolder, 1, 1, volume, colorKind, refreshRate); });
         }
 
         public void UpdatePanel(object panel)
@@ -227,6 +227,16 @@ namespace mpv_winui.Modules.Player
         public void UpdatePanelScale(float scaleX, float scaleY)
         {
             _mpvPlayer.UpdateSwapChainScale(scaleX, scaleY);
+        }
+
+        public void UpdateDisplayColorInfo(mpv_winrt.DisplayColorKind colorKind)
+        {
+            _mpvPlayer.UpdateDisplayColorInfo(colorKind);
+        }
+
+        public void UpdateDisplayRefreshRate(uint refreshRate)
+        {
+            _mpvPlayer.UpdateDisplayRefreshRate((int)refreshRate);
         }
 
         public void StartListen()

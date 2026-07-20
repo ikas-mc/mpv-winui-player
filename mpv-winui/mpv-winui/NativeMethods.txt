@@ -14,4 +14,16 @@ HOOKPROC
 GetModuleHandle
 SetForegroundWindow
 ShowWindow
+MonitorFromWindow
+GetMonitorInfoW
+EnumDisplaySettingsW
+MONITORINFOEXW
+MonitorFromRect
+DefSubclassProc
+WM_WINDOWPOSCHANGED
+WM_DISPLAYCHANGE
+SetWindowSubclass
+WINDOWPOS
+WM_EXITSIZEMOVE
+RemoveWindowSubclass
 

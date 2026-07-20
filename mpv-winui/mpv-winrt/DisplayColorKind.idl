@@ -1,0 +1,9 @@
+namespace mpv_winrt
+{
+    enum DisplayColorKind
+    {
+        SDR = 0,
+        WCG = 1,
+        HDR = 2
+    };
+}

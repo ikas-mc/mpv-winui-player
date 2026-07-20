@@ -12,11 +12,9 @@ namespace mpv_winui.Modules.Player
     {
         private static HHOOK? _hHook;
         private static bool _suppressKeyboard = false;
-        private static WeakReference<MpvPlayerPage>? _selfWeakReference;
 
         private static unsafe void SetupWindowHook(MpvPlayerPage self)
         {
-            _selfWeakReference = new(self);
             _hHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD, &MessageHookProc, HINSTANCE.Null, GetCurrentThreadId());
         }
 

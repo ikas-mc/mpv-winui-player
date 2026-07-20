@@ -156,6 +156,7 @@
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="DisplayColorKind.idl" />
     <Midl Include="TrackType.idl" />
     <Midl Include="MpvPlaylistItem.idl" />
     <Midl Include="MpvChapter.idl" />

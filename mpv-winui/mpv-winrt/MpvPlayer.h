@@ -47,11 +47,13 @@ namespace winrt::mpv_winrt::implementation
         MpvPlayer();
         ~MpvPlayer();
 
-        void Initialize(hstring const& configPath, uint32_t width, uint32_t height, int32_t volume);
+        void Initialize(hstring const& configPath, uint32_t width, uint32_t height, int32_t volume, winrt::mpv_winrt::DisplayColorKind colorKind, int32_t refreshRate);
         void Destroy();
         void AttachSwapChain(winrt::Microsoft::UI::Xaml::Controls::SwapChainPanel const& panel);
         void UpdateSwapChainScale(float scaleX, float scaleY);
         void UpdateSize(uint32_t width, uint32_t height);
+        void UpdateDisplayColorInfo(winrt::mpv_winrt::DisplayColorKind colorKind);
+        void UpdateDisplayRefreshRate(int32_t refreshRate);
         void LoadFile(hstring const& url, double position);
         void LoadList(hstring const& url);
 

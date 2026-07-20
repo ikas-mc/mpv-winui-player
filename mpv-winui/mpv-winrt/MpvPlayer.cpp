@@ -64,7 +64,7 @@ namespace winrt::mpv_winrt::implementation
         m_swapChain.store(nullptr);
     }
 
-    void MpvPlayer::Initialize(hstring const& configPath, uint32_t width, uint32_t height, int32_t volume)
+    void MpvPlayer::Initialize(hstring const& configPath, uint32_t width, uint32_t height, int32_t volume, winrt::mpv_winrt::DisplayColorKind colorKind, int32_t refreshRate)
     {
         CreateContext();
         SetOption("config", "yes");
@@ -96,6 +96,9 @@ namespace winrt::mpv_winrt::implementation
         {
             throw hresult_error(E_FAIL, L"Failed to initialize mpv");
         }
+
+        UpdateDisplayColorInfo(colorKind);
+        UpdateDisplayRefreshRate(refreshRate);
 
         mpv_observe_property(m_mpv, MpvObserveId::CoreIdle, "core-idle", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Pause, "pause", MPV_FORMAT_FLAG);
@@ -1598,5 +1601,39 @@ namespace winrt::mpv_winrt::implementation
         auto result = ParseMenuNode(&node);
         mpv_free_node_contents(&node);
         return result;
+    }
+
+    void MpvPlayer::UpdateDisplayColorInfo(winrt::mpv_winrt::DisplayColorKind colorKind)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        const char* cs;
+        switch (colorKind)
+        {
+        case winrt::mpv_winrt::DisplayColorKind::HDR:
+            cs = "HDR";
+            break;
+        case winrt::mpv_winrt::DisplayColorKind::WCG:
+            cs = "WCG";
+            break;
+        default:
+            cs = "SDR";
+            break;
+        }
+        SetStringProperty("user-data/mpvw/color-kind", cs);
+    }
+
+    void MpvPlayer::UpdateDisplayRefreshRate(int32_t refreshRate)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        SetOption("override-display-fps", std::to_string(refreshRate));
+        SetInt64Property("user-data/mpvw/refresh-rate", refreshRate);
     }
 } // namespace winrt::mpv_winrt::implementation

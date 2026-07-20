@@ -19,17 +19,11 @@ namespace mpv_winui
                     int[] v = Array.ConvertAll(saved.Split(','), int.Parse);
                     if (v.Length == 4)
                     {
-                        //TODO
-                        if (v[2] <= 0 || v[3] <= 0)
-                        {
-                            return;
-                        }
-
-                        if (v[0] > 0 && v[1] > 0)
+                        if (v[0] > 0 && v[1] > 0 && v[2] > 0 && v[3] > 0)
                         {
                             AppWindow.MoveAndResize(new RectInt32(v[0], v[1], Math.Max(100, v[2]), Math.Max(100, v[3])));
                         }
-                        else
+                        else if (v[2] > 0 && v[3] > 0)
                         {
                             AppWindow.Resize(new SizeInt32(Math.Max(100, v[2]), Math.Max(100, v[3])));
                         }
@@ -122,7 +116,6 @@ namespace mpv_winui
         {
             if (Content.XamlRoot is XamlRoot root && AppWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
             {
-                //fix for winrt
                 var overlappedPresenter = AppWindow.Presenter.As<OverlappedPresenter>();
                 if (overlappedPresenter != null)
                 {

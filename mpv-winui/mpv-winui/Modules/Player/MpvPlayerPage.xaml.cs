@@ -18,6 +18,7 @@ namespace mpv_winui.Modules.Player
         private const string MpvConfigFolderName = "mpv";
         private readonly MpvMediaPlayer _mediaPlayer = new();
         private bool _isPlayerInitialized;
+        private static WeakReference<MpvPlayerPage>? _selfWeakReference;
 
         private readonly AppWindow _appWindow;
 
@@ -25,6 +26,7 @@ namespace mpv_winui.Modules.Player
 
         public MpvPlayerPage()
         {
+            _selfWeakReference = new(this);
             _appWindow = App.Window?.AppWindow!;
             InitializeComponent();
 
@@ -73,6 +75,8 @@ namespace mpv_winui.Modules.Player
 
         private void MpvPlayerPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            CleanupDisplayInfo();
+
             _mediaPlayer.MediaOpened -= MediaOpened;
             _mediaPlayer.VolumeChangedChanged -= VolumeChangedChanged;
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
@@ -84,12 +88,15 @@ namespace mpv_winui.Modules.Player
 
         public async Task CreateAsync()
         {
+            InitDisplayInfo();
+
             var configFolder = await AppData.Current.OpenOrCreateLocalDataFolderAsync(MpvConfigFolderName);
             if (_logger.IsDebugEnabled)
             {
                 _logger.Debug("mpv config folder, path={}", configFolder.Path);
             }
-            await _mediaPlayer.InitializeAsync(configFolder.Path, AppContext.AppSetting.LastVideoVolume);
+
+            await _mediaPlayer.InitializeAsync(configFolder.Path, AppContext.AppSetting.LastVideoVolume, _lastColorKind, (int)_lastRefreshRate);
 
             _isPlayerInitialized = true;
         }
