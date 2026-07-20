@@ -8,10 +8,7 @@ namespace mpv_winui.Modules.FileSystem
 {
     public class AppData
     {
-        private static readonly Lazy<AppData> _lazy = new(() =>
-        {
-            return new AppData();
-        }, true);
+        private static readonly Lazy<AppData> _lazy = new(() => new AppData(), true);
 
         public static AppData Current => _lazy.Value;
 
@@ -38,9 +35,12 @@ namespace mpv_winui.Modules.FileSystem
             }
             else
             {
-                var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId, path);
-                Directory.CreateDirectory(folderPath);
-                return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+                return await Task.Run(async () =>
+                {
+                    var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId, path);
+                    Directory.CreateDirectory(folderPath);
+                    return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+                });
             }
         }
 
@@ -52,9 +52,12 @@ namespace mpv_winui.Modules.FileSystem
             }
             else
             {
-                var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
-                Directory.CreateDirectory(folderPath);
-                return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+                return await Task.Run(async () =>
+                {
+                    var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
+                    Directory.CreateDirectory(folderPath);
+                    return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+                });
             }
         }
     }

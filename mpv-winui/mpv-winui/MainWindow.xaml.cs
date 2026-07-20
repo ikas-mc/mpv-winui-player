@@ -4,6 +4,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using mpv_winui.Modules.Activation;
 using mpv_winui.Modules.AppModel;
+using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.Player;
 
 namespace mpv_winui
@@ -100,6 +102,22 @@ namespace mpv_winui
             var pathList = ActivationService.Instance.Parse(activatedArgs);
 
             ShellFrame.Navigate(typeof(MpvPlayerPage), pathList);
+        }
+
+        public void Refresh(AppActivationArguments activatedArgs)
+        {
+            var pathList = ActivationService.Instance.Parse(activatedArgs);
+            if (pathList?.Count > 0)
+            {
+                DispatcherQueue.RunAsync(() =>
+                {
+                    if (ShellFrame?.Content is IParameterRefreshSupportView view)
+                    {
+                        view.OnRefresh(pathList);
+                        this.ShowWindow();
+                    }
+                });
+            }
         }
 
         public void ChangeFullWindow(bool full)

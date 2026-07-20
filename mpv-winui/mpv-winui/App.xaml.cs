@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml;
-using mpv_winui.Modules.FileSystem;
+using Microsoft.Windows.AppLifecycle;
 using NLog;
-using System.Text;
 
 namespace mpv_winui
 {
@@ -26,6 +25,19 @@ namespace mpv_winui
             Window = window;
             window.Open();
             window.Activate();
+        }
+
+        public void OnActivated(AppActivationArguments args)
+        {
+            if (_logger.IsDebugEnabled)
+            {
+                _logger.Debug("OnActivated, kind={}", args.Kind);
+            }
+
+            if (Window is MainWindow mainWindow)
+            {
+                mainWindow?.Refresh(args);
+            }
         }
     }
 }

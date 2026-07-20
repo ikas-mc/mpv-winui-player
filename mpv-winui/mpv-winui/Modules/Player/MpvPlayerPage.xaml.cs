@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.FileSystem;
 using NLog;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.Player
 {
-    public sealed partial class MpvPlayerPage : Page
+    public sealed partial class MpvPlayerPage : Page, IParameterRefreshSupportView
     {
         private static readonly Logger _logger = LogManager.GetLogger("MpvPlayer");
         private const string MpvConfigFolderName = "mpv";
@@ -60,7 +61,7 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.WindowChanged += MpvPlayerPage_WindowChanged;
                 _mediaPlayer.StartListen();
 
-                SetupWindowHook();
+                SetupWindowHook(this);
 
                 OpenPedingPath();
             }
@@ -140,6 +141,17 @@ namespace mpv_winui.Modules.Player
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+        }
+
+        void IParameterRefreshSupportView.OnRefresh(object? parameter)
+        {
+            var paths = parameter as IReadOnlyList<string>;
+            if (paths?.Count > 0)
+            {
+                //TODO impl open 
+                _pendingPaths = paths;
+                OpenPedingPath();
+            }
         }
     }
 }
