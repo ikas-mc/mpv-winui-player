@@ -63,7 +63,7 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.WindowChanged += MpvPlayerPage_WindowChanged;
                 _mediaPlayer.StartListen();
 
-                SetupWindowHook(this);
+                SetupKeyboardInput();
 
                 OpenPedingPath();
             }
@@ -82,7 +82,7 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
             _mediaPlayer.StopListen();
             TeardownPlayerView();
-            RemoveWindowHook();
+            CleanupKeyboardInput();
             _mediaPlayer.Close();
         }
 

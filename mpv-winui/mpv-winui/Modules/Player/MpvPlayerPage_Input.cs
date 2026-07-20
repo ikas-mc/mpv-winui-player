@@ -1,5 +1,5 @@
+using Microsoft.UI.Xaml;
 using mpv;
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Windows.Win32.Foundation;
@@ -10,16 +10,29 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
-        private static HHOOK? _hHook;
+        private HHOOK? _hHook;
         private static bool _suppressKeyboard = false;
 
-        private static unsafe void SetupWindowHook(MpvPlayerPage self)
+        private unsafe void SetupKeyboardInput()
         {
             _hHook = SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD, &MessageHookProc, HINSTANCE.Null, GetCurrentThreadId());
+
+            //TODO
+            App.Window?.Activated += Window_Activated;
         }
 
-        private static void RemoveWindowHook()
+        private void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
+            if (args.WindowActivationState == WindowActivationState.Deactivated)
+            {
+                SendAllKeyUp();
+            }
+        }
+
+        private void CleanupKeyboardInput()
+        {
+            App.Window?.Activated -= Window_Activated;
+
             if (_hHook is HHOOK hHook && !hHook.IsNull)
             {
                 UnhookWindowsHookEx(hHook);
@@ -102,10 +115,12 @@ namespace mpv_winui.Modules.Player
                 }
             }
 
-
-            if (_hHook is HHOOK hHook && !hHook.IsNull)
+            if (_selfWeakReference?.TryGetTarget(out var self) == true)
             {
-                return CallNextHookEx(hHook, nCode, wParam, lParam);
+                if (self?._hHook is HHOOK hHook && !hHook.IsNull)
+                {
+                    return CallNextHookEx(hHook, nCode, wParam, lParam);
+                }
             }
 
             return (LRESULT)0;

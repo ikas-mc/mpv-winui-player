@@ -22,8 +22,9 @@ MonitorFromRect
 DefSubclassProc
 WM_WINDOWPOSCHANGED
 WM_DISPLAYCHANGE
+WM_EXITSIZEMOVE
+WM_KILLFOCUS
+WM_ACTIVATE
+RemoveWindowSubclass
 SetWindowSubclass
 WINDOWPOS
-WM_EXITSIZEMOVE
-RemoveWindowSubclass
-
