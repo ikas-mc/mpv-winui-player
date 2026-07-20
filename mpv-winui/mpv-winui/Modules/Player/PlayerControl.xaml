@@ -393,7 +393,7 @@
                         x:Name="ZoomButton"
                         Grid.Column="15"
                         Style="{StaticResource AppBarButtonStyle}"
-                        Visibility="Collapsed">
+                        Visibility="Visible">
                         <AppBarButton.Icon>
                             <FontIcon Glyph="&#xE799;" />
                         </AppBarButton.Icon>

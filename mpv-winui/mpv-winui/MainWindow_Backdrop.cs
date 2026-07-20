@@ -1,6 +1,7 @@
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
+using Windows.UI.ViewManagement;
 using WinRT;
 
 namespace mpv_winui
@@ -9,6 +10,7 @@ namespace mpv_winui
     {
         private SystemBackdropConfiguration? _configurationSource;
         private DesktopAcrylicController? _acrylicController;
+        private UISettings _uISettings;
 
         private void TrySetBackdrop()
         {
@@ -18,23 +20,27 @@ namespace mpv_winui
             Activated += Window_Activated;
             Closed += Window_Closed;
             ((FrameworkElement)Content).ActualThemeChanged += Window_ThemeChanged;
-
             _configurationSource.IsInputActive = true;
             SetConfigurationSourceTheme();
+
+            var uISettings = new UISettings();
+            uISettings.ColorValuesChanged += Settings_ColorValuesChanged;
+            _uISettings = uISettings;
 
             if (DesktopAcrylicController.IsSupported())
             {
                 _acrylicController = new DesktopAcrylicController
                 {
                     Kind = DesktopAcrylicKind.Thin,
-                    //TintOpacity = 0.15F,
-                    //TintColor = Windows.UI.Color.FromArgb(255, 255, 255, 255),
-                    //LuminosityOpacity = 0.2F
+                    TintOpacity = 0.2F,
+                    TintColor = uISettings.GetColorValue(UIColorType.AccentLight1),
+                    LuminosityOpacity = 0.1F
                 };
 
                 _acrylicController?.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
                 _acrylicController?.SetSystemBackdropConfiguration(_configurationSource);
             }
+
         }
 
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
@@ -48,7 +54,7 @@ namespace mpv_winui
             Closed -= Window_Closed;
             ((FrameworkElement)Content).ActualThemeChanged -= Window_ThemeChanged;
             Activated -= Window_Activated;
-
+            _uISettings?.ColorValuesChanged -= Settings_ColorValuesChanged;
             _acrylicController?.Dispose();
             _acrylicController = null;
             _configurationSource = null;
@@ -65,6 +71,11 @@ namespace mpv_winui
         private void SetConfigurationSourceTheme()
         {
             _configurationSource?.Theme = (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme;
+        }
+
+        private void Settings_ColorValuesChanged(UISettings sender, object args)
+        {
+            _acrylicController?.TintColor = sender.GetColorValue(UIColorType.AccentLight1);
         }
     }
 }
