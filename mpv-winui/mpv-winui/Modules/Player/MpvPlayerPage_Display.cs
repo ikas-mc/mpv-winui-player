@@ -138,14 +138,23 @@ namespace mpv_winui.Modules.Player
         private void CheckAndUpdateDisplayInfo(int type)
         {
             var monitor = Win32WindowHelper.GetMonitor(App.Window!);
+            if (_logger.IsTraceEnabled)
+            {
+                _logger.Trace("display check, monitor={}", monitor.ToString());
+            }
+
             if (type > 1 || _lastMonitor != monitor)
             {
                 _lastMonitor = monitor;
-                var newFps = ReadRefreshRate();
-                if (newFps != _lastRefreshRate)
+                var rate = ReadRefreshRate();
+                if (_logger.IsDebugEnabled)
                 {
-                    _lastRefreshRate = newFps;
-                    _mediaPlayer?.UpdateDisplayRefreshRate(newFps);
+                    _logger.Trace("display update, last monitor={},,lastRefreshRate={}, new monitor={}, newRefreshRates={}", monitor.ToString(), _lastRefreshRate, monitor.ToString(), rate);
+                }
+                if (rate != _lastRefreshRate)
+                {
+                    _lastRefreshRate = rate;
+                    _mediaPlayer?.UpdateDisplayRefreshRate(rate);
                 }
             }
         }

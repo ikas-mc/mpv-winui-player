@@ -10,7 +10,7 @@ namespace mpv_winui
     {
         private SystemBackdropConfiguration? _configurationSource;
         private DesktopAcrylicController? _acrylicController;
-        private UISettings _uISettings;
+        private UISettings? _uISettings;
 
         private void TrySetBackdrop()
         {
