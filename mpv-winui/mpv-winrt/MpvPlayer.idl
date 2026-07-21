@@ -36,6 +36,9 @@ namespace mpv_winrt
 	delegate void TrackListCountChangedEventHandler(TrackListCountChangedEventArgs args);
 	delegate void VoConfiguredEventHandler();
 	delegate void WindowChangedEventHandler(WindowChangedEventArgs args);
+	delegate void LoopFileChangedEventHandler();
+	delegate void LoopPlaylistChangedEventHandler();
+	delegate void ShuffleChangedEventHandler();
 
 	runtimeclass MpvPlayer
 	{
@@ -121,5 +124,8 @@ namespace mpv_winrt
 		event TrackListCountChangedEventHandler TrackListCountChanged;
 		event VoConfiguredEventHandler VoConfigured;
 		event WindowChangedEventHandler WindowChanged;
+		event LoopFileChangedEventHandler LoopFileChanged;
+		event LoopPlaylistChangedEventHandler LoopPlaylistChanged;
+		event ShuffleChangedEventHandler ShuffleChanged;
 	};
 }

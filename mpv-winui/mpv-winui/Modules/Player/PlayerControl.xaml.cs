@@ -310,6 +310,8 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer?.VolumeChangedChanged += PlaybackSession_VolumeChangedChanged;
             _mediaPlayer?.Seeked += MediaPlayer_Seeked;
             _mediaPlayer?.SeekingStarted += MediaPlayer_SeekingStarted;
+            _mediaPlayer?.RepeatStateChanged += MediaPlayer_RepeatStateChanged;
+            _mediaPlayer?.ShuffleEnabledChanged += MediaPlayer_ShuffleEnabledChanged;
         }
 
         private void removeEventListeners()
@@ -323,6 +325,8 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer?.VolumeChangedChanged -= PlaybackSession_VolumeChangedChanged;
             _mediaPlayer?.Seeked -= MediaPlayer_Seeked;
             _mediaPlayer?.SeekingStarted -= MediaPlayer_SeekingStarted;
+            _mediaPlayer?.RepeatStateChanged -= MediaPlayer_RepeatStateChanged;
+            _mediaPlayer?.ShuffleEnabledChanged -= MediaPlayer_ShuffleEnabledChanged;
         }
 
         private void InfoButton_Click(object sender, RoutedEventArgs e)
@@ -594,6 +598,16 @@ namespace mpv_winui.Modules.Player
                 VolumeSlider.Value2 = volume;
                 UpdateVolumeUI(true);
             });
+        }
+
+        private void MediaPlayer_RepeatStateChanged(MpvMediaPlayer sender, RepeatState state)
+        {
+            DispatcherQueue.RunAsync(UpdateRepeatButtonUI);
+        }
+
+        private void MediaPlayer_ShuffleEnabledChanged(MpvMediaPlayer sender, bool enabled)
+        {
+            DispatcherQueue.RunAsync(UpdateShuffleButtonUI);
         }
 
         private void OnPlayPauseClick(object sender, RoutedEventArgs e)

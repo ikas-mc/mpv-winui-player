@@ -132,5 +132,9 @@ namespace mpv_winui
             }
         }
 
+        public void UpdateTitle(string title)
+        {
+            ShellTitleBar?.Title = title;
+        }
     }
 }

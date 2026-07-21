@@ -30,6 +30,9 @@ namespace winrt::mpv_winrt::implementation
         TrackListCount = 31,
         Aid = 32,
         Sid = 33,
+        LoopFile = 10,
+        LoopPlaylist = 11,
+        Shuffle = 12,
         MenuData = 41,
         VoConfigured = 50,
 
@@ -143,6 +146,12 @@ namespace winrt::mpv_winrt::implementation
         void VoConfigured(winrt::event_token const& token) noexcept;
         winrt::event_token WindowChanged(winrt::mpv_winrt::WindowChangedEventHandler const& handler);
         void WindowChanged(winrt::event_token const& token) noexcept;
+        winrt::event_token LoopFileChanged(winrt::mpv_winrt::LoopFileChangedEventHandler const& handler);
+        void LoopFileChanged(winrt::event_token const& token) noexcept;
+        winrt::event_token LoopPlaylistChanged(winrt::mpv_winrt::LoopPlaylistChangedEventHandler const& handler);
+        void LoopPlaylistChanged(winrt::event_token const& token) noexcept;
+        winrt::event_token ShuffleChanged(winrt::mpv_winrt::ShuffleChangedEventHandler const& handler);
+        void ShuffleChanged(winrt::event_token const& token) noexcept;
 
     private:
         static mpv_node* FindMapField(mpv_node* map, const char* key);
@@ -185,6 +194,9 @@ namespace winrt::mpv_winrt::implementation
         winrt::event<winrt::mpv_winrt::TrackListCountChangedEventHandler> m_trackListCountChangedEvent;
         winrt::event<winrt::mpv_winrt::VoConfiguredEventHandler> m_voConfiguredEvent;
         winrt::event<winrt::mpv_winrt::WindowChangedEventHandler> m_windowChangedEvent;
+        winrt::event<winrt::mpv_winrt::LoopFileChangedEventHandler> m_loopFileChangedEvent;
+        winrt::event<winrt::mpv_winrt::LoopPlaylistChangedEventHandler> m_loopPlaylistChangedEvent;
+        winrt::event<winrt::mpv_winrt::ShuffleChangedEventHandler> m_shuffleChangedEvent;
     };
 }
 

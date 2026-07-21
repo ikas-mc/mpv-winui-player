@@ -61,6 +61,7 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.MediaOpened += MediaOpened;
                 _mediaPlayer.VolumeChangedChanged += VolumeChangedChanged;
                 _mediaPlayer.WindowChanged += MpvPlayerPage_WindowChanged;
+                _mediaPlayer.MediaInfoChanged += MpvPlayerPage_MediaInfoChanged;
                 _mediaPlayer.StartListen();
 
                 SetupKeyboardInput();
@@ -80,6 +81,7 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.MediaOpened -= MediaOpened;
             _mediaPlayer.VolumeChangedChanged -= VolumeChangedChanged;
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
+            _mediaPlayer.MediaInfoChanged -= MpvPlayerPage_MediaInfoChanged;
             _mediaPlayer.StopListen();
             TeardownPlayerView();
             CleanupKeyboardInput();

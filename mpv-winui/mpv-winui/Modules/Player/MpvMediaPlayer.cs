@@ -68,11 +68,11 @@ namespace mpv_winui.Modules.Player
         {
             get; set;
         }
-        public Action<MpvMediaPlayer, object?>? RepeatStateChanged
+        public Action<MpvMediaPlayer, RepeatState>? RepeatStateChanged
         {
             get; set;
         }
-        public Action<MpvMediaPlayer, object?>? ShuffleEnabledChanged
+        public Action<MpvMediaPlayer, bool>? ShuffleEnabledChanged
         {
             get; set;
         }
@@ -92,6 +92,11 @@ namespace mpv_winui.Modules.Player
         }
 
         public Action<MpvMediaPlayer, object?>? SeekingStarted
+        {
+            get; set;
+        }
+
+        public Action<MpvMediaPlayer, MediaInfoChangedEventArgs>? MediaInfoChanged
         {
             get; set;
         }
@@ -164,12 +169,6 @@ namespace mpv_winui.Modules.Player
         public string AspectRatio
         {
             set => _mpvPlayer.SetAspectRatio(value);
-        }
-
-        public bool IsLoopingEnabled
-        {
-            get => _mpvPlayer.LoopFile();
-            set => _mpvPlayer.LoopFile(value);
         }
 
         public int CurrentChapter => _mpvPlayer.CurrentChapter();
@@ -251,6 +250,10 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.SpeedChanged += MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged += MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked += MpvPlayer_Seeked;
+            _mpvPlayer.MediaInfoChanged += MpvPlayer_MediaInfoChanged;
+            _mpvPlayer.LoopFileChanged += MpvPlayer_LoopFileChanged;
+            _mpvPlayer.LoopPlaylistChanged += MpvPlayer_LoopPlaylistChanged;
+            _mpvPlayer.ShuffleChanged += MpvPlayer_ShuffleChanged;
             _mpvPlayer.WindowChanged += MpvPlayer_WindowChanged;
         }
 
@@ -265,6 +268,10 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.SpeedChanged -= MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged -= MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked -= MpvPlayer_Seeked;
+            _mpvPlayer.MediaInfoChanged -= MpvPlayer_MediaInfoChanged;
+            _mpvPlayer.LoopFileChanged -= MpvPlayer_LoopFileChanged;
+            _mpvPlayer.LoopPlaylistChanged -= MpvPlayer_LoopPlaylistChanged;
+            _mpvPlayer.ShuffleChanged -= MpvPlayer_ShuffleChanged;
             _mpvPlayer.WindowChanged -= MpvPlayer_WindowChanged;
         }
 
@@ -276,6 +283,26 @@ namespace mpv_winui.Modules.Player
         private void MpvPlayer_WindowChanged(WindowChangedEventArgs args)
         {
             WindowChanged?.Invoke(this, args);
+        }
+
+        private void MpvPlayer_MediaInfoChanged(MediaInfoChangedEventArgs args)
+        {
+            MediaInfoChanged?.Invoke(this, args);
+        }
+
+        private void MpvPlayer_LoopFileChanged()
+        {
+            RepeatStateChanged?.Invoke(this, RepeatState);
+        }
+
+        private void MpvPlayer_LoopPlaylistChanged()
+        {
+            RepeatStateChanged?.Invoke(this, RepeatState);
+        }
+
+        private void MpvPlayer_ShuffleChanged()
+        {
+            ShuffleEnabledChanged?.Invoke(this, ShuffleEnabled);
         }
 
         private void MpvPlayer_Seeked()

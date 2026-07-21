@@ -86,6 +86,7 @@ namespace winrt::mpv_winrt::implementation
         // SetOption("ao", "wasapi"); // Use WASAPI audio output for Windows
         SetOption("volume", std::to_string(volume));
 
+        SetOption("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
         SetOption("gpu-api", "d3d11");
         SetOption("d3d11-output-mode", "composition");
         SetOption("auto-window-resize", "no");
@@ -106,6 +107,10 @@ namespace winrt::mpv_winrt::implementation
         // mpv_observe_property(m_mpv, MpvObserveId::PlaybackTime, "playback-time", MPV_FORMAT_DOUBLE);
         // mpv_observe_property(m_mpv, MpvObserveId::TimePos, "time-pos", MPV_FORMAT_DOUBLE);
 
+        mpv_observe_property(m_mpv, MpvObserveId::LoopFile, "loop-file", MPV_FORMAT_STRING);
+        mpv_observe_property(m_mpv, MpvObserveId::LoopPlaylist, "loop-playlist", MPV_FORMAT_STRING);
+        mpv_observe_property(m_mpv, MpvObserveId::Shuffle, "shuffle", MPV_FORMAT_STRING);
+
         // mpv_observe_property(m_mpv, MpvObserveId::CacheSpeed, "cache-speed", MPV_FORMAT_INT64);
         mpv_observe_property(m_mpv, MpvObserveId::Speed, "speed", MPV_FORMAT_DOUBLE);
 
@@ -113,10 +118,10 @@ namespace winrt::mpv_winrt::implementation
         mpv_observe_property(m_mpv, MpvObserveId::Volume, "volume", MPV_FORMAT_DOUBLE);
         mpv_observe_property(m_mpv, MpvObserveId::Mute, "mute", MPV_FORMAT_FLAG);
 
-        mpv_observe_property(m_mpv, MpvObserveId::Aid, "aid", MPV_FORMAT_INT64);
-        mpv_observe_property(m_mpv, MpvObserveId::Sid, "sid", MPV_FORMAT_INT64);
+        // mpv_observe_property(m_mpv, MpvObserveId::Aid, "aid", MPV_FORMAT_INT64);
+        // mpv_observe_property(m_mpv, MpvObserveId::Sid, "sid", MPV_FORMAT_INT64);
 
-        mpv_observe_property(m_mpv, MpvObserveId::Filename, "filename", MPV_FORMAT_STRING);
+        // mpv_observe_property(m_mpv, MpvObserveId::Filename, "filename", MPV_FORMAT_STRING);
         mpv_observe_property(m_mpv, MpvObserveId::MediaTitle, "media-title", MPV_FORMAT_STRING);
 
         // mpv_observe_property(m_mpv, MpvObserveId::TrackList, "track-list", MPV_FORMAT_NODE);
@@ -311,6 +316,24 @@ namespace winrt::mpv_winrt::implementation
             {
                 auto args = winrt::make<implementation::MediaInfoChangedEventArgs>(GetHStringProperty("filename"), GetHStringProperty("media-title"));
                 m_mediaInfoChangedEvent(args);
+                break;
+            }
+
+            case MpvObserveId::LoopFile:
+            {
+                m_loopFileChangedEvent();
+                break;
+            }
+
+            case MpvObserveId::LoopPlaylist:
+            {
+                m_loopPlaylistChangedEvent();
+                break;
+            }
+
+            case MpvObserveId::Shuffle:
+            {
+                m_shuffleChangedEvent();
                 break;
             }
 
@@ -539,6 +562,36 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::WindowChanged(winrt::event_token const& token) noexcept
     {
         m_windowChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::LoopFileChanged(winrt::mpv_winrt::LoopFileChangedEventHandler const& handler)
+    {
+        return m_loopFileChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::LoopFileChanged(winrt::event_token const& token) noexcept
+    {
+        m_loopFileChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::LoopPlaylistChanged(winrt::mpv_winrt::LoopPlaylistChangedEventHandler const& handler)
+    {
+        return m_loopPlaylistChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::LoopPlaylistChanged(winrt::event_token const& token) noexcept
+    {
+        m_loopPlaylistChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::ShuffleChanged(winrt::mpv_winrt::ShuffleChangedEventHandler const& handler)
+    {
+        return m_shuffleChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::ShuffleChanged(winrt::event_token const& token) noexcept
+    {
+        m_shuffleChangedEvent.remove(token);
     }
 
     void MpvPlayer::UpdateSize(uint32_t width, uint32_t height)
