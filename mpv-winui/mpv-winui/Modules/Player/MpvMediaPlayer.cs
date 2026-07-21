@@ -81,7 +81,7 @@ namespace mpv_winui.Modules.Player
             get; set;
         }
 
-        public Action<MpvMediaPlayer, object?>? VoConfigured
+        public Action<MpvMediaPlayer, object?>? SwapChainChanged
         {
             get; set;
         }
@@ -213,6 +213,7 @@ namespace mpv_winui.Modules.Player
 
         public async Task InitializeAsync(string configFolder, int volume, mpv_winrt.DisplayColorKind colorKind, int refreshRate)
         {
+            _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
             await Task.Run(() => { _mpvPlayer.Initialize(configFolder, 1, 1, volume, colorKind, refreshRate); });
         }
 
@@ -250,7 +251,6 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.SpeedChanged += MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged += MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked += MpvPlayer_Seeked;
-            _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
             _mpvPlayer.WindowChanged += MpvPlayer_WindowChanged;
         }
 
@@ -265,13 +265,12 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.SpeedChanged -= MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged -= MpvPlayer_VolumeChanged;
             _mpvPlayer.Seeked -= MpvPlayer_Seeked;
-            _mpvPlayer.VoConfigured -= MpvPlayer_VoConfigured;
             _mpvPlayer.WindowChanged -= MpvPlayer_WindowChanged;
         }
 
         private void MpvPlayer_VoConfigured()
         {
-            VoConfigured?.Invoke(this, null);
+            SwapChainChanged?.Invoke(this, null);
         }
 
         private void MpvPlayer_WindowChanged(WindowChangedEventArgs args)
@@ -481,6 +480,7 @@ namespace mpv_winui.Modules.Player
 
         public void Close()
         {
+            _mpvPlayer.VoConfigured -= MpvPlayer_VoConfigured;
             _mpvPlayer?.Destroy();
         }
     }

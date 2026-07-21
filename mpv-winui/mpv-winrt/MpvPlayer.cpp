@@ -89,7 +89,7 @@ namespace winrt::mpv_winrt::implementation
         SetOption("gpu-api", "d3d11");
         SetOption("d3d11-output-mode", "composition");
         SetOption("auto-window-resize", "no");
-        // SetOption("force-window", "immediate");
+        SetOption("force-window", "yes");
         SetOption("d3d11-composition-size", std::to_string(width) + "x" + std::to_string(height));
 
         if (mpv_initialize(m_mpv) < 0)
@@ -123,14 +123,14 @@ namespace winrt::mpv_winrt::implementation
         // mpv_observe_property(m_mpv, MpvObserveId::TrackListCount, "track-list/count", MPV_FORMAT_INT64);
         // mpv_observe_property(m_mpv, MpvObserveId::MenuData, "menu-data", MPV_FORMAT_NODE);
 
-        mpv_observe_property(m_mpv, MpvObserveId::VoConfigured, "vo-configured", MPV_FORMAT_FLAG);
-
         mpv_observe_property(m_mpv, MpvObserveId::Fullscreen, "fullscreen", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Ontop, "ontop", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::WindowMinimized, "window-minimized", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::WindowMaximized, "window-maximized", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::TitleBar, "title-bar", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Border, "border", MPV_FORMAT_FLAG);
+
+        // mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &m_swapChain);
 
         StartEventThread();
     }
@@ -231,6 +231,18 @@ namespace winrt::mpv_winrt::implementation
         case MPV_EVENT_SEEK:
         {
             m_seekedEvent();
+            break;
+        }
+
+        case MPV_EVENT_VIDEO_RECONFIG:
+        {
+            IDXGISwapChain* swapChain = nullptr;
+            mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
+            if (swapChain != m_swapChain.load())
+            {
+                m_swapChain.store(swapChain);
+                m_voConfiguredEvent();
+            }
             break;
         }
 
@@ -342,15 +354,6 @@ namespace winrt::mpv_winrt::implementation
                     auto args = winrt::make<implementation::TrackListChangedEventArgs>(tracks.GetView());
                     m_trackListChangedEvent(args);
                 }
-                break;
-            }
-
-            case MpvObserveId::VoConfigured:
-            {
-                IDXGISwapChain3* swapChain = nullptr;
-                mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
-                m_swapChain.store(swapChain);
-                m_voConfiguredEvent();
                 break;
             }
 
@@ -934,31 +937,43 @@ namespace winrt::mpv_winrt::implementation
 
     void MpvPlayer::AttachSwapChain(SwapChainPanel const& panel)
     {
-        auto swapChain = m_swapChain.load();
+        IDXGISwapChain* swapChain = nullptr;
+        mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
+
         if (swapChain)
         {
-            DXGI_MATRIX_3X2_F inverseScale{};
-            inverseScale._11 = 1.0f / panel.CompositionScaleX();
-            inverseScale._22 = 1.0f / panel.CompositionScaleY();
-            swapChain->SetMatrixTransform(&inverseScale);
-
-            winrt::com_ptr<ISwapChainPanelNative> nativePanel;
-            if (panel.try_as(nativePanel))
+            winrt::com_ptr<IDXGISwapChain2> swapChain2{nullptr};
+            if (S_OK == swapChain->QueryInterface(swapChain2.put()))
             {
-                nativePanel->SetSwapChain(swapChain);
-            }
+                DXGI_MATRIX_3X2_F inverseScale{};
+                inverseScale._11 = 1.0f / panel.CompositionScaleX();
+                inverseScale._22 = 1.0f / panel.CompositionScaleY();
+                swapChain2->SetMatrixTransform(&inverseScale);
+            };
+        }
+
+        winrt::com_ptr<ISwapChainPanelNative> nativePanel;
+        if (panel.try_as(nativePanel))
+        {
+            nativePanel->SetSwapChain(swapChain);
         }
     }
 
     void MpvPlayer::UpdateSwapChainScale(float scaleX, float scaleY)
     {
-        auto swapChain = m_swapChain.load();
+        IDXGISwapChain* swapChain = nullptr;
+        mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
+
         if (swapChain && scaleX > 0 && scaleY > 0)
         {
-            DXGI_MATRIX_3X2_F inverseScale{};
-            inverseScale._11 = 1.0f / scaleX;
-            inverseScale._22 = 1.0f / scaleY;
-            swapChain->SetMatrixTransform(&inverseScale);
+            winrt::com_ptr<IDXGISwapChain2> swapChain2{nullptr};
+            if (S_OK == swapChain->QueryInterface(swapChain2.put()))
+            {
+                DXGI_MATRIX_3X2_F inverseScale{};
+                inverseScale._11 = 1.0f / scaleX;
+                inverseScale._22 = 1.0f / scaleY;
+                swapChain2->SetMatrixTransform(&inverseScale);
+            }
         }
     }
 

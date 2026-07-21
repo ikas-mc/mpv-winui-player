@@ -96,6 +96,7 @@ namespace mpv_winui.Modules.Player
                 _logger.Debug("mpv config folder, path={}", configFolder.Path);
             }
 
+            _mediaPlayer.SwapChainChanged += MpvPlayer_SwapChainChanged;
             await _mediaPlayer.InitializeAsync(configFolder.Path, AppContext.AppSetting.LastVideoVolume, _lastColorKind, (int)_lastRefreshRate);
 
             _isPlayerInitialized = true;

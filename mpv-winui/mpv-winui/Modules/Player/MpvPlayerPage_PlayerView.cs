@@ -10,15 +10,14 @@ namespace mpv_winui.Modules.Player
     public sealed partial class MpvPlayerPage
     {
         private Action<ViewSize>? _sizeChangedAction;
-
+        private bool _playerViewSetuped = false;
         private void SetupPlayerView()
         {
-            //TODO fix SetOption("force-window", "immediate");
-            //var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
-            //UpdatePlayerViewSize(size);
-            //_mediaPlayer.UpdatePanel(PlayerView);
-
-            _mediaPlayer.VoConfigured += MpvPlayer_VoConfigured;
+            //TODO 
+            var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
+            UpdatePlayerViewSize(size);
+            _mediaPlayer.UpdatePanel(PlayerView);
+            _playerViewSetuped = true;
 
             _sizeChangedAction = DebounceUtil.Debounce<ViewSize>(UpdatePlayerViewSize, TimeSpan.FromMilliseconds(100));
             PlayerView.SizeChanged += PlayerView_SizeChanged;
@@ -34,16 +33,19 @@ namespace mpv_winui.Modules.Player
             _sizeChangedAction = null;
             PlayerView.SizeChanged -= PlayerView_SizeChanged;
             PlayerView.CompositionScaleChanged -= PlayerView_CompositionScaleChanged;
-            _mediaPlayer.VoConfigured -= MpvPlayer_VoConfigured;
+            _mediaPlayer.SwapChainChanged -= MpvPlayer_SwapChainChanged;
         }
 
-        private void MpvPlayer_VoConfigured(MpvMediaPlayer player, object? arg)
+        private void MpvPlayer_SwapChainChanged(MpvMediaPlayer player, object? arg)
         {
             DispatcherQueue.RunAsync(() =>
             {
-                var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
-                UpdatePlayerViewSize(size);
-                _mediaPlayer.UpdatePanel(PlayerView);
+                if (_playerViewSetuped)
+                {
+                    var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
+                    UpdatePlayerViewSize(size);
+                    _mediaPlayer.UpdatePanel(PlayerView);
+                }
             });
         }
 

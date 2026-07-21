@@ -163,7 +163,7 @@ namespace winrt::mpv_winrt::implementation
         void SetStringProperty(const char* name, const std::string& value);
 
         mpv_handle* m_mpv{nullptr};
-        std::atomic<IDXGISwapChain3*> m_swapChain{nullptr};
+        std::atomic<IDXGISwapChain*> m_swapChain{nullptr};
 
         std::thread m_eventThread;
         std::atomic<bool> m_eventThreadRunning{false};
