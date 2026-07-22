@@ -1,7 +1,10 @@
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using mpv_winrt;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.Player
@@ -27,13 +30,33 @@ namespace mpv_winui.Modules.Player
     {
     }
 
-    public class MpvMediaPlayer
+    public partial class MpvMediaPlayer
     {
         private readonly MpvPlayer _mpvPlayer;
+
+        private readonly Lazy<HashSet<string>> _subtitleExtensions;
+
+        private MpvPlayer GetMpvPlayer()
+        {
+            return _mpvPlayer;
+        }
 
         public MpvMediaPlayer()
         {
             this._mpvPlayer = new MpvPlayer();
+            _subtitleExtensions = new(() =>
+            {
+                var exts = _mpvPlayer.GetSubtitleExtensions();
+                var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(exts))
+                {
+                    foreach (var ext in exts.Split(','))
+                    {
+                        set.Add(ext.Trim());
+                    }
+                }
+                return set;
+            });
         }
 
         public Action<MpvMediaPlayer, object?>? MediaOpened
@@ -356,16 +379,6 @@ namespace mpv_winui.Modules.Player
         public void NextTrack() => _mpvPlayer.Command(["playlist-next"]);//TODO move
         public void PreviousTrack() => _mpvPlayer.Command(["playlist-prev"]);
 
-        public async ValueTask PlayUrlAsync(string url, TimeSpan? position = null)
-        {
-            await Task.Run(() => _mpvPlayer.LoadFile(url, position?.TotalSeconds ?? 0));
-        }
-
-        public async ValueTask PlayFolderAsync(string url)
-        {
-            await Task.Run(() => _mpvPlayer.LoadList(url));
-        }
-
         public void Stop() => _mpvPlayer.Stop();
 
         public void Command(IList<string> args)
@@ -493,16 +506,17 @@ namespace mpv_winui.Modules.Player
             return _mpvPlayer.GetProfiles();
         }
 
-        public void AddSubtitle(string url, bool selected, string title)
+        public void AddSubtitle(string path, bool selected = true, string? title = null)
         {
-            void MpvPlayerFileLoaded()
-            {
-                _mpvPlayer.FileLoaded -= MpvPlayerFileLoaded;
-                _mpvPlayer.AddSubtitle(url, selected, title);
-            }
+            _mpvPlayer.AddSubtitle(path, selected, title ?? "");
+        }
 
-            _mpvPlayer.FileLoaded -= MpvPlayerFileLoaded;
-            _mpvPlayer.FileLoaded += MpvPlayerFileLoaded;
+        public void AddSubtitles(IReadOnlyList<string> paths)
+        {
+            foreach (var path in paths)
+            {
+                _mpvPlayer.AddSubtitle(path, false, string.Empty);
+            }
         }
 
         public void Close()

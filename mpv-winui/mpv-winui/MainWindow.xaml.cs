@@ -7,6 +7,9 @@ using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.Player;
+using NLog;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace mpv_winui
 {
@@ -96,27 +99,43 @@ namespace mpv_winui
             }
         }
 
-        public void Open()
+        public async void Open()
         {
-            var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
-            var pathList = ActivationService.Instance.Parse(activatedArgs);
+            IReadOnlyList<FileItem>? fileItems = null;
+            try
+            {
+                var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
+                fileItems = await ActivationService.Instance.ParseFileItemsAsync(activatedArgs);
+            }
+            catch (System.Exception ex)
+            {
+                AppContext.AppLogger.Error(ex);
+            }
 
-            ShellFrame.Navigate(typeof(MpvPlayerPage), pathList);
+            ShellFrame.Navigate(typeof(MpvPlayerPage), fileItems);
+
         }
 
-        public void Refresh(AppActivationArguments activatedArgs)
+        public async void Refresh(AppActivationArguments activatedArgs)
         {
-            var pathList = ActivationService.Instance.Parse(activatedArgs);
-            if (pathList?.Count > 0)
+            try
             {
-                DispatcherQueue.RunAsync(() =>
+                var fileItems = await ActivationService.Instance.ParseFileItemsAsync(activatedArgs);
+                if (fileItems?.Count > 0)
                 {
-                    if (ShellFrame?.Content is IParameterRefreshSupportView view)
+                    DispatcherQueue.RunAsync(() =>
                     {
-                        view.OnRefresh(pathList);
-                        this.ShowWindow();
-                    }
-                });
+                        if (ShellFrame?.Content is IParameterRefreshSupportView view)
+                        {
+                            view.OnRefresh(fileItems);
+                            this.ShowWindow();
+                        }
+                    });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                AppContext.AppLogger.Error(ex);
             }
         }
 

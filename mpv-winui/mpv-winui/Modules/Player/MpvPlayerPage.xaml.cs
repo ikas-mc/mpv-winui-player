@@ -144,7 +144,7 @@ namespace mpv_winui.Modules.Player
             _pendingPaths = null;
             if (e.NavigationMode == NavigationMode.New)
             {
-                _pendingPaths = e.Parameter as IReadOnlyList<string>;
+                _pendingPaths = e.Parameter as IReadOnlyList<FileItem>;
             }
         }
 
@@ -154,12 +154,11 @@ namespace mpv_winui.Modules.Player
 
         void IParameterRefreshSupportView.OnRefresh(object? parameter)
         {
-            var paths = parameter as IReadOnlyList<string>;
+            var paths = parameter as IReadOnlyList<FileItem>;
             if (paths?.Count > 0)
             {
-                //TODO impl open 
                 _pendingPaths = paths;
-                OpenPendingPath();
+                OpenPendingPath().FireAndForget(OnException);
             }
         }
     }

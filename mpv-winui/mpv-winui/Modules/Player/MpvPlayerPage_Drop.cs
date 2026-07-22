@@ -66,12 +66,7 @@ namespace mpv_winui.Modules.Player
 
             if (items.Count > 0)
             {
-                foreach (var item in items)
-                {
-                    PlayFileAsync(item.Path).FireAndForget(OnException);
-                    //TODO
-                    break;
-                }
+                await PlayStorageItems(items, OpenMode.Replace);
             }
         }
 

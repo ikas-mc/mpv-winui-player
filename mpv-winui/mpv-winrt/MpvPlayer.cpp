@@ -1005,9 +1005,10 @@ namespace winrt::mpv_winrt::implementation
             };
         }
 
-        winrt::com_ptr<ISwapChainPanelNative> nativePanel;
+        winrt::com_ptr<ISwapChainPanelNative> nativePanel{nullptr};
         if (panel.try_as(nativePanel))
         {
+#pragma warning(suppress : 6387)
             nativePanel->SetSwapChain(swapChain);
         }
     }
@@ -1651,6 +1652,11 @@ namespace winrt::mpv_winrt::implementation
         }
 
         return items.GetView();
+    }
+
+    winrt::hstring MpvPlayer::GetSubtitleExtensions()
+    {
+        return GetHStringProperty("sub-auto-exts");
     }
 
     winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> MpvPlayer::GetMenu()

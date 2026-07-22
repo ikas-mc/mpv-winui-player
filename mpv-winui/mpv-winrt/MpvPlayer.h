@@ -112,6 +112,7 @@ namespace winrt::mpv_winrt::implementation
         int32_t CurrentEdition();
 
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> GetMenu();
+        winrt::hstring GetSubtitleExtensions();
 
         winrt::event_token MediaLoaded(winrt::mpv_winrt::MediaLoadedEventHandler const& handler);
         void MediaLoaded(winrt::event_token const& token) noexcept;

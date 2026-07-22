@@ -106,6 +106,7 @@ namespace mpv_winrt
 		Int32 CurrentEdition();
 
 		Windows.Foundation.Collections.IVectorView<MpvMenuItem> GetMenu();
+		String GetSubtitleExtensions();
 
 		event MediaLoadedEventHandler MediaLoaded;
 		event PlaybackEndedEventHandler PlaybackEnded;
