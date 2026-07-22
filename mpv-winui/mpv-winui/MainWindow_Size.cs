@@ -50,7 +50,7 @@ namespace mpv_winui
             }
 
             //TODO Maximized
-            if (sender.Presenter.Kind == AppWindowPresenterKind.Overlapped || sender.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
+            if (sender.Presenter.Kind is AppWindowPresenterKind.Overlapped or AppWindowPresenterKind.CompactOverlay)
             {
                 if (sender.Position.X > 0)
                 {

@@ -1,4 +1,3 @@
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using mpv_winui.Modules.Common.Utils;
 using System;
@@ -10,14 +9,14 @@ namespace mpv_winui.Modules.Player
     public sealed partial class MpvPlayerPage
     {
         private Action<ViewSize>? _sizeChangedAction;
-        private bool _playerViewSetuped = false;
+        private bool _playerViewLoaded = false;
         private void SetupPlayerView()
         {
             //TODO 
             var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
             UpdatePlayerViewSize(size);
             _mediaPlayer.UpdatePanel(PlayerView);
-            _playerViewSetuped = true;
+            _playerViewLoaded = true;
 
             _sizeChangedAction = DebounceUtil.Debounce<ViewSize>(UpdatePlayerViewSize, TimeSpan.FromMilliseconds(100));
             PlayerView.SizeChanged += PlayerView_SizeChanged;
@@ -40,7 +39,7 @@ namespace mpv_winui.Modules.Player
         {
             DispatcherQueue.RunAsync(() =>
             {
-                if (_playerViewSetuped)
+                if (_playerViewLoaded)
                 {
                     var size = new ViewSize(PlayerView.ActualWidth, PlayerView.ActualHeight, PlayerView.CompositionScaleX, PlayerView.CompositionScaleY);
                     UpdatePlayerViewSize(size);

@@ -208,7 +208,7 @@ namespace mpv_winui.Modules.Player
                 _logger.Debug("mpv menu item click, args={}", args);
             }
 
-            _mediaPlayer?.RunCommandAsync(args).FireAndForget(OnException);
+            _mediaPlayer.RunCommandAsync(args).FireAndForget(OnException);
         }
 
         private List<string> TokenizeCommand(string cmd)

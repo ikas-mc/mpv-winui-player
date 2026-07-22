@@ -41,7 +41,7 @@ namespace mpv_winui
 
         private static void OnActivated(object? _, AppActivationArguments args)
         {
-            if (App.Current is App app)
+            if (Application.Current is App app)
             {
                 app.OnActivated(args);
             }

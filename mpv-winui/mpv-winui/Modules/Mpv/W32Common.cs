@@ -104,7 +104,7 @@ namespace mpv
             // keys from the current keyboard layout.
             do
             {
-                ToUnicode(vkey, scancode, keys, buf, 0);
+                ret = ToUnicode(vkey, scancode, keys, buf, 0);
             } while (ret < 0);
         }
 

@@ -11,23 +11,20 @@ namespace mpv_winui.Modules.Common.Threading
             get; set;
         }
 
-        private readonly DispatcherQueue m_dispatcherQueue;
+        private readonly DispatcherQueue _dispatcherQueue;
 
         public DefaultSynchronizationContext(DispatcherQueue dispatcherQueue)
         {
             ArgumentNullException.ThrowIfNull(dispatcherQueue);
 
-            m_dispatcherQueue = dispatcherQueue;
+            _dispatcherQueue = dispatcherQueue;
         }
 
         public override void Post(SendOrPostCallback d, object? state)
         {
-            if (d == null)
-            {
-                throw new ArgumentNullException("d");
-            }
+            ArgumentNullException.ThrowIfNull(d);
 
-            m_dispatcherQueue.TryEnqueue(delegate
+            _dispatcherQueue.TryEnqueue(delegate
             {
                 try
                 {
@@ -50,7 +47,7 @@ namespace mpv_winui.Modules.Common.Threading
 
         public override SynchronizationContext CreateCopy()
         {
-            return new DispatcherQueueSynchronizationContext(m_dispatcherQueue);
+            return new DispatcherQueueSynchronizationContext(_dispatcherQueue);
         }
     }
 }

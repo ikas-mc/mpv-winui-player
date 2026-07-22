@@ -7,7 +7,7 @@ namespace mpv_winui.Modules.Common.View
     {
         extension(Window window)
         {
-            public async void ShowWindow()
+            public void ShowWindow()
             {
                 Win32WindowHelper.SetForegroundWindow(window);
             }

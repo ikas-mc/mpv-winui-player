@@ -13,7 +13,7 @@ namespace mpv_winui.Modules.Common.Utils
                 timer?.Cancel();
                 timer = ThreadPoolTimer.CreateTimer((sender) =>
                 {
-                    if (Object.ReferenceEquals(sender, timer))
+                    if (object.ReferenceEquals(sender, timer))
                     {
                         action();
                     }
@@ -29,7 +29,7 @@ namespace mpv_winui.Modules.Common.Utils
                 timer?.Cancel();
                 timer = ThreadPoolTimer.CreateTimer((sender) =>
                 {
-                    if (Object.ReferenceEquals(sender, timer))
+                    if (object.ReferenceEquals(sender, timer))
                     {
                         action(arg);
                     }

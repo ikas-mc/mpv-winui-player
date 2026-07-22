@@ -55,7 +55,6 @@ namespace mpv_winui.Modules.Player
             {
                 SetupPlayerView();
 
-                PlayerControl.InfoButtonVisibility = Visibility.Collapsed;
                 PlayerControl.MediaPlayer = _mediaPlayer;
 
                 _mediaPlayer.MediaOpened += MediaOpened;
@@ -66,7 +65,7 @@ namespace mpv_winui.Modules.Player
 
                 SetupKeyboardInput();
 
-                OpenPedingPath();
+                OpenPendingPath();
             }
             else
             {
@@ -88,7 +87,7 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.Close();
         }
 
-        public async Task CreateAsync()
+        private async Task CreateAsync()
         {
             InitDisplayInfo();
 
@@ -160,7 +159,7 @@ namespace mpv_winui.Modules.Player
             {
                 //TODO impl open 
                 _pendingPaths = paths;
-                OpenPedingPath();
+                OpenPendingPath();
             }
         }
     }

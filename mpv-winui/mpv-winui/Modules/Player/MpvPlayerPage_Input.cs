@@ -33,7 +33,7 @@ namespace mpv_winui.Modules.Player
         {
             App.Window?.Activated -= Window_Activated;
 
-            if (_hHook is HHOOK hHook && !hHook.IsNull)
+            if (_hHook is { IsNull: false } hHook)
             {
                 UnhookWindowsHookEx(hHook);
             }
@@ -117,7 +117,7 @@ namespace mpv_winui.Modules.Player
 
             if (_selfWeakReference?.TryGetTarget(out var self) == true)
             {
-                if (self?._hHook is HHOOK hHook && !hHook.IsNull)
+                if (self?._hHook is { IsNull: false } hHook)
                 {
                     return CallNextHookEx(hHook, nCode, wParam, lParam);
                 }
@@ -127,7 +127,7 @@ namespace mpv_winui.Modules.Player
         }
 
 
-        public static void HandleKeyDown(uint vkey, uint scancode)
+        private static void HandleKeyDown(uint vkey, uint scancode)
         {
             int mpkey = W32Keyboard.mp_w32_vkey_to_mpkey((int)vkey, (scancode & KF_EXTENDED) != 0);
             if (mpkey == 0)
@@ -148,14 +148,14 @@ namespace mpv_winui.Modules.Player
             SendKeydown(ModPrefix() + $"0x{mpkey:X}");
         }
 
-        public static void HandleKeyUp(uint vkey)
+        private static void HandleKeyUp(uint key)
         {
             if (_logger.IsTraceEnabled)
             {
-                _logger.Debug("keyup: key={}", vkey);
+                _logger.Debug("keyup: key={}", key);
             }
 
-            switch (vkey)
+            switch (key)
             {
                 case WinUser.VK_MENU:
                 case WinUser.VK_CONTROL:
@@ -163,15 +163,13 @@ namespace mpv_winui.Modules.Player
                     break;
                 default:
                 {
-                    // Releasing all keys on key-up is simpler and ensures no keys can be
-                    // get "stuck." This matches the behaviour of other VOs.
                     SendKeyup($"0x{Keycodes.MP_INPUT_RELEASE_ALL:X}");
                     break;
                 }
             }
         }
 
-        public void SendAllKeyUp()
+        private void SendAllKeyUp()
         {
             SendKeyup($"0x{Keycodes.MP_INPUT_RELEASE_ALL:X}");
         }

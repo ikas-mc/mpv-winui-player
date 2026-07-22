@@ -90,7 +90,7 @@ namespace mpv_winui.Modules.Settings
             }
         }
 
-        private async Task SaveAsync()
+        public async Task SaveAsync()
         {
             try
             {

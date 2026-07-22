@@ -7,12 +7,9 @@ namespace mpv_winui.Modules.Activation
 {
     public class ActivationService
     {
-        private static readonly Lazy<ActivationService> _lazy = new(() =>
-        {
-            return new ActivationService();
-        }, true);
+        private static readonly Lazy<ActivationService> _lazyValue = new(() => new ActivationService(), true);
 
-        public static ActivationService Instance => _lazy.Value;
+        public static ActivationService Instance => _lazyValue.Value;
 
         private ActivationService()
         {

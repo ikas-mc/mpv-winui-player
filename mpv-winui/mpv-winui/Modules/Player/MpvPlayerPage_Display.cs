@@ -14,12 +14,12 @@ namespace mpv_winui.Modules.Player
     {
         private DisplayInformation? _displayInfo;
         private mpv_winrt.DisplayColorKind _lastColorKind = mpv_winrt.DisplayColorKind.SDR;
-        private const uint _defaultRefreshRate = 60;
-        private uint _lastRefreshRate = _defaultRefreshRate;
+        private const uint DefaultRefreshRate = 60;
+        private uint _lastRefreshRate = DefaultRefreshRate;
         private HMONITOR? _lastMonitor;
         private DispatcherTimerDebouncer<int>? _displayInfoDebouncer;
 
-        public void InitDisplayInfo()
+        private void InitDisplayInfo()
         {
             //TODO use player view rect
             _displayInfo = DisplayInformation.CreateForWindowId(_appWindow.Id);
@@ -39,7 +39,7 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        public void CleanupDisplayInfo()
+        private void CleanupDisplayInfo()
         {
             //_appWindow?.Changed -= OnDisplayAppWindowChanged;
 
@@ -53,7 +53,7 @@ namespace mpv_winui.Modules.Player
                 }
                 catch (Exception)
                 {
-
+                    //
                 }
             }
 
@@ -66,7 +66,7 @@ namespace mpv_winui.Modules.Player
                 }
                 catch (Exception)
                 {
-
+                    //
                 }
             }
 
@@ -105,14 +105,14 @@ namespace mpv_winui.Modules.Player
             {
                 try
                 {
-                    return Win32WindowHelper.GetDisplayFrequency(monitor, _defaultRefreshRate);
+                    return Win32WindowHelper.GetDisplayFrequency(monitor, DefaultRefreshRate);
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex);
                 }
             }
-            return _defaultRefreshRate;
+            return DefaultRefreshRate;
         }
 
         private void OnAdvancedColorInfoChanged(DisplayInformation sender, object args)
@@ -160,7 +160,7 @@ namespace mpv_winui.Modules.Player
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-        private unsafe static LRESULT SubclassWindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
+        private static LRESULT SubclassWindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam, nuint uIdSubclass, nuint dwRefData)
         {
             switch (uMsg)
             {

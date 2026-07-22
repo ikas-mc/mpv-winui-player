@@ -22,20 +22,13 @@ namespace mpv_winui.Modules.Player
 
         private bool _controlPanelIsVisible = true;
 
-        private DispatcherTimer _positionUpdateTimer;
+        private readonly DispatcherTimer _positionUpdateTimer;
         private bool _hasError = false;
         private bool _isBuffering = false;
         private bool _isInScrubMode = false;
         private bool _sourceLoaded = false;
 
         private MpvMediaPlayer? _mediaPlayer;
-
-
-        public static readonly DependencyProperty InfoButtonVisibilityProperty = DependencyProperty.Register("InfoButtonVisibility", typeof(Visibility), typeof(PlayerControl), new PropertyMetadata(Visibility.Collapsed, (DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-        {
-            var control = (PlayerControl)d;
-            control.InfoButton.Visibility = (Visibility)e.NewValue;
-        }));
 
         public static readonly DependencyProperty FullWindowButtonVisibilityProperty = DependencyProperty.Register("FullWindowButtonVisibility", typeof(Visibility), typeof(PlayerControl), new PropertyMetadata(Visibility.Collapsed, (DependencyObject d, DependencyPropertyChangedEventArgs e) =>
         {
@@ -86,7 +79,7 @@ namespace mpv_winui.Modules.Player
             {
                 if (_mediaPlayer != value)
                 {
-                    removeEventListeners();
+                    RemoveEventListeners();
 
                     _mediaPlayer = value;
 
@@ -99,18 +92,6 @@ namespace mpv_winui.Modules.Player
                         VolumeSlider.Value2 = _mediaPlayer?.Volume ?? 50; //TODO
                     }
                 }
-            }
-        }
-
-        public Visibility InfoButtonVisibility
-        {
-            get
-            {
-                return (Visibility)GetValue(InfoButtonVisibilityProperty);
-            }
-            set
-            {
-                SetValue(InfoButtonVisibilityProperty, value);
             }
         }
 
@@ -189,7 +170,6 @@ namespace mpv_winui.Modules.Player
             ZoomButton.Click += ZoomButton_Click;
             PreviousTrackButton.Click += PreviousTrackButton_Click;
             NextTrackButton.Click += NextTrackButton_Click;
-            InfoButton.Click += InfoButton_Click;
 
             foreach (var item in PlaybackRateFlyout.Items)
             {
@@ -240,7 +220,7 @@ namespace mpv_winui.Modules.Player
 
             this.SizeChanged += PlayerControl_SizeChanged;
 
-            if (_mediaPlayer is MpvMediaPlayer player)
+            if (_mediaPlayer is { } player)
             {
                 VolumeSlider.Value2 = player.Volume;
             }
@@ -257,7 +237,6 @@ namespace mpv_winui.Modules.Player
             RepeatButton.Click -= OnRepeatClick;
             ShuffleButton.Click -= OnShuffleClick;
             StopButton.Click -= StopButton_Click;
-            InfoButton.Click -= InfoButton_Click;
             foreach (var item in PlaybackRateFlyout.Items)
             {
                 if (item is MenuFlyoutItem menuFlyoutItem)
@@ -269,7 +248,7 @@ namespace mpv_winui.Modules.Player
             ProgressSlider.ValueChanged -= OnPositionSliderValueChanged;
             VolumeSlider.ValueChanged2 -= OnVolumeSliderValueChanged;
 
-            this.SizeChanged -= PlayerControl_SizeChanged;
+            SizeChanged -= PlayerControl_SizeChanged;
             MoreSkipBackward.Click -= SkipBackwardButton_Click;
             MoreSkipForward.Click -= SkipForwardButton_Click;
             MoreShuffle.Click -= OnShuffleClick;
@@ -296,7 +275,7 @@ namespace mpv_winui.Modules.Player
             _positionUpdateTimer.Stop();
             _positionUpdateTimer.Tick -= OnPositionUpdateTimerTick;
 
-            removeEventListeners();
+            RemoveEventListeners();
         }
 
         private void AddEventListeners()
@@ -314,7 +293,7 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer?.ShuffleEnabledChanged += MediaPlayer_ShuffleEnabledChanged;
         }
 
-        private void removeEventListeners()
+        private void RemoveEventListeners()
         {
             _mediaPlayer?.MediaOpened -= MediaPlayer_MediaOpened;
             _mediaPlayer?.MediaFailed -= MediaPlayer_MediaFailed;
@@ -327,11 +306,6 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer?.SeekingStarted -= MediaPlayer_SeekingStarted;
             _mediaPlayer?.RepeatStateChanged -= MediaPlayer_RepeatStateChanged;
             _mediaPlayer?.ShuffleEnabledChanged -= MediaPlayer_ShuffleEnabledChanged;
-        }
-
-        private void InfoButton_Click(object sender, RoutedEventArgs e)
-        {
-            //
         }
 
         private void NextTrackButton_Click(object sender, RoutedEventArgs e)
@@ -729,16 +703,6 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        private void OnPositionSliderPressed(object sender, PointerRoutedEventArgs e)
-        {
-            //_isInScrubMode = true;
-        }
-
-        private void OnPositionSliderReleased(object sender, PointerRoutedEventArgs e)
-        {
-            //_isInScrubMode = false;
-        }
-
         private void OnVolumeSliderValueChanged(object sender, double value)
         {
             MediaPlayer?.Volume = value;
@@ -774,11 +738,11 @@ namespace mpv_winui.Modules.Player
         private string FormatTime(double second)
         {
             var ts = TimeSpan.FromSeconds(second);
-            if (ts.TotalHours >= 1)
+            return ts.TotalHours switch
             {
-                return $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
-            }
-            return $"{ts.Minutes:D2}:{ts.Seconds:D2}";
+                >= 1 => $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}",
+                _ => $"{ts.Minutes:D2}:{ts.Seconds:D2}"
+            };
         }
 
         public bool IsVisible()
@@ -820,8 +784,6 @@ namespace mpv_winui.Modules.Player
             OnPanelVisibleChanged?.Invoke(true);
         }
 
-
-
         private void AppBarElementContainer_GotFocus(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource != sender)
@@ -829,16 +791,13 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
-            if (sender is AppBarElementContainer c)
+            if (sender is AppBarElementContainer { Content: Panel control })
             {
-                if (c.Content is Panel control)
+                foreach (var item in control.Children)
                 {
-                    foreach (var item in control.Children)
+                    if (item is Control cc)
                     {
-                        if (item is Control cc)
-                        {
-                            cc.Focus(FocusState.Programmatic);
-                        }
+                        cc.Focus(FocusState.Programmatic);
                     }
                 }
             }
@@ -931,21 +890,20 @@ namespace mpv_winui.Modules.Player
             else
             {
                 var volume = MediaPlayer?.Volume;
-                if (volume < 0.01)
+                switch (volume)
                 {
-                    VisualStateManager.GoToState(this, "VolumeState0", useTransitions);
-                }
-                else if (volume < 34)
-                {
-                    VisualStateManager.GoToState(this, "VolumeState1", useTransitions);
-                }
-                else if (volume < 67)
-                {
-                    VisualStateManager.GoToState(this, "VolumeState2", useTransitions);
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, "VolumeState3", useTransitions);
+                    case < 0.01:
+                        VisualStateManager.GoToState(this, "VolumeState0", useTransitions);
+                        break;
+                    case < 34:
+                        VisualStateManager.GoToState(this, "VolumeState1", useTransitions);
+                        break;
+                    case < 67:
+                        VisualStateManager.GoToState(this, "VolumeState2", useTransitions);
+                        break;
+                    default:
+                        VisualStateManager.GoToState(this, "VolumeState3", useTransitions);
+                        break;
                 }
             }
         }

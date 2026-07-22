@@ -295,20 +295,6 @@
                     </AppBarElementContainer>
 
                     <AppBarButton
-                        x:Name="InfoButton"
-                        Grid.Column="10"
-                        x:FieldModifier="public"
-                        Label="Info"
-                        Style="{StaticResource AppBarButtonStyle}"
-                        Visibility="Collapsed">
-                        <AppBarButton.Icon>
-                            <FontIcon
-                                FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xE946;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-
-                    <AppBarButton
                         x:Name="PlaybackRateButton"
                         Grid.Column="9"
                         Style="{StaticResource AppBarButtonStyle}"

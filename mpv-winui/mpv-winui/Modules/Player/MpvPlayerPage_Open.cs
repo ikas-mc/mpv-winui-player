@@ -12,14 +12,14 @@ namespace mpv_winui.Modules.Player
     {
         private async Task PlayFileAsync(string path)
         {
-            await _mediaPlayer.PlayUrlAsync(path, null);
+            await _mediaPlayer.PlayUrlAsync(path);
         }
 
         private async Task OpenFileAsync()
         {
             var picker = new FileOpenPicker(_appWindow.Id);
             var file = await picker.PickSingleFileAsync();
-            if (file?.Path is string path && !string.IsNullOrEmpty(path))
+            if (file?.Path is { } path && !string.IsNullOrEmpty(path))
             {
                 await PlayFileAsync(file.Path);
             }
@@ -29,7 +29,7 @@ namespace mpv_winui.Modules.Player
         {
             var picker = new FolderPicker(_appWindow.Id);
             var folder = await picker.PickSingleFolderAsync();
-            if (folder?.Path is string path && !string.IsNullOrEmpty(path))
+            if (folder?.Path is { } path && !string.IsNullOrEmpty(path))
             {
                 await PlayFileAsync(folder.Path);
             }
@@ -137,7 +137,7 @@ namespace mpv_winui.Modules.Player
 
         //TODO list
         private IReadOnlyList<string>? _pendingPaths;
-        private void OpenPedingPath()
+        private void OpenPendingPath()
         {
             if (_pendingPaths is { } paths && paths.Count > 0)
             {

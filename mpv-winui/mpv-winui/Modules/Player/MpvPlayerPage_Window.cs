@@ -18,7 +18,7 @@ namespace mpv_winui.Modules.Player
                             HandleFullscreenProperty(args.Value);
                             break;
                         case 202:
-                            HandleOntopProperty(args.Value);
+                            HandleOnTopProperty(args.Value);
                             break;
                         case 203:
                             HandleWindowMinimizedProperty(args.Value);
@@ -47,11 +47,11 @@ namespace mpv_winui.Modules.Player
             PlayerControl.ToggleFullScreen();
         }
 
-        private void HandleOntopProperty(bool ontop)
+        private void HandleOnTopProperty(bool enable)
         {
             if (_appWindow.Presenter is OverlappedPresenter presenter)
             {
-                presenter.IsAlwaysOnTop = ontop;
+                presenter.IsAlwaysOnTop = enable;
             }
         }
 
@@ -92,7 +92,10 @@ namespace mpv_winui.Modules.Player
         }
 
         private void HandleBorderProperty(bool hasBorder)
-        {
+        { if (_appWindow.Presenter is OverlappedPresenter presenter)
+            {
+                presenter.SetBorderAndTitleBar(hasBorder,true);
+            }
         }
     }
 }

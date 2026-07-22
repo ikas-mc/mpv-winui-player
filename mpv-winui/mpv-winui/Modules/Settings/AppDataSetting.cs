@@ -20,7 +20,7 @@ namespace mpv_winui.Modules.Settings
             }
 
             var value = _container.Values[propertyName];
-            if (value != null && value is T t)
+            if (value is T t)
             {
                 return t;
             }
