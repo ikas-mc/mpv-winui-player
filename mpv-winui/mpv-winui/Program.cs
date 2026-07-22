@@ -5,7 +5,6 @@ using Microsoft.Windows.AppLifecycle;
 using mpv_winui.Modules.Common.Threading;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using WinRT;
 
 namespace mpv_winui
@@ -13,7 +12,7 @@ namespace mpv_winui
     public class Program
     {
         [STAThread]
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             ComWrappersSupport.InitializeComWrappers();
 
@@ -22,7 +21,7 @@ namespace mpv_winui
             var instance = AppInstance.FindOrRegisterForKey("main");
             if (!instance.IsCurrent)
             {
-                await instance.RedirectActivationToAsync(activatedArgs);
+                instance.RedirectActivationToAsync(activatedArgs).GetAwaiter().GetResult();
                 return;
             }
             instance.Activated += OnActivated;
