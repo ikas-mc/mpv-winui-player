@@ -7,9 +7,7 @@ using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.Player;
-using NLog;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace mpv_winui
 {

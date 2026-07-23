@@ -310,12 +310,12 @@ namespace mpv_winui.Modules.Player
 
         private void NextTrackButton_Click(object sender, RoutedEventArgs e)
         {
-            _mediaPlayer?.NextTrack();
+            _mediaPlayer?.PlaylistNext();
         }
 
         private void PreviousTrackButton_Click(object sender, RoutedEventArgs e)
         {
-            _mediaPlayer?.PreviousTrack();
+            _mediaPlayer?.PlaylistPrevious();
         }
 
         private void ZoomButton_Click(object sender, RoutedEventArgs e)
@@ -684,7 +684,7 @@ namespace mpv_winui.Modules.Player
                     player.ShuffleEnabled = true;
 
                     //TODO 
-                    player.RunCommandAsync(["playlist-shuffle"]).FireAndForget();
+                    player.PlaylistShuffle();
                 }
                 UpdateShuffleButtonUI();
             }

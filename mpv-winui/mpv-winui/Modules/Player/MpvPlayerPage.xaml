@@ -3,10 +3,92 @@
     x:Class="mpv_winui.Modules.Player.MpvPlayerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bc="using:mpv_winui.Modules.Common.Convertor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <MenuFlyout x:Key="PlaylistContextMenu">
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="play"
+                Text="Play">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE768;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="move-top"
+                Text="Move to Top">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xF090;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="move-up"
+                Text="Move Up">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE70E;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="move-down"
+                Text="Move Down">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE70D;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="move-bottom"
+                Text="Move to Bottom">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xF08E;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="remove"
+                Text="Remove">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE74D;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="copy-title"
+                Text="Copy Title">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE8C8;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="copy-path"
+                Text="Copy File Path">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE62F;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="PlaylistMenu_Click"
+                Tag="open-location"
+                Text="Open File Location">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE838;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -155,19 +237,67 @@
             <ListView
                 x:Name="PlaylistView"
                 Grid.Row="1"
+                Padding="4,0,8,4"
                 Background="Transparent"
                 BorderThickness="0"
+                ContextRequested="PlaylistView_ContextRequested"
                 IsItemClickEnabled="True"
                 ItemClick="PlaylistView_ItemClick"
                 ItemsSource="{x:Bind PlaylistItems, Mode=OneWay}"
                 SelectionMode="Single">
+                <ListView.ItemContainerStyle>
+                    <Style
+                        BasedOn="{StaticResource DefaultListViewItemStyle}"
+                        TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="16,8,8,8" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:PlaylistItem">
-                        <Grid Padding="4">
+                        <Grid
+                            Height="28"
+                            ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <FontIcon
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Margin="0,0,4,0"
+                                FontSize="14"
+                                Glyph="&#xE768;"
+                                Visibility="{x:Bind IsCurrent}" />
+                            <FontIcon
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Margin="0,0,4,0"
+                                FontSize="14"
+                                Glyph="&#xE8B2;"
+                                Visibility="{x:Bind bc:BindConvertor.InvertVisibility(IsCurrent)}" />
                             <TextBlock
-                                Text="{x:Bind Title}"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontSize="12"
                                 TextTrimming="CharacterEllipsis"
-                                ToolTipService.ToolTip="{x:Bind Title}" />
+                                ToolTipService.ToolTip="{x:Bind Title}">
+                                <Run Text="{x:Bind Index}" />
+                                <Run Text="{x:Bind Title}" />
+                            </TextBlock>
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                FontSize="10"
+                                Opacity="0.8"
+                                Text="{x:Bind Filename}"
+                                TextTrimming="CharacterEllipsis"
+                                ToolTipService.ToolTip="{x:Bind Filename}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

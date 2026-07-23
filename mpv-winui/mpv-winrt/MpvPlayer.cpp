@@ -1179,8 +1179,7 @@ namespace winrt::mpv_winrt::implementation
                     }
                 }
 
-                auto item = winrt::make<implementation::MpvPlaylistItem>(
-                    i, winrt::to_hstring(filename), winrt::to_hstring(title), isCurrent, isPlaying);
+                auto item = winrt::make<implementation::MpvPlaylistItem>(id, i, winrt::to_hstring(filename), winrt::to_hstring(title), isCurrent, isPlaying);
                 items.Append(item);
             }
         }

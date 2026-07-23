@@ -376,8 +376,6 @@ namespace mpv_winui.Modules.Player
 
         public void Pause() => _mpvPlayer.Pause();
         public void Play() => _mpvPlayer.Play();
-        public void NextTrack() => _mpvPlayer.Command(["playlist-next"]);//TODO move
-        public void PreviousTrack() => _mpvPlayer.Command(["playlist-prev"]);
 
         public void Stop() => _mpvPlayer.Stop();
 

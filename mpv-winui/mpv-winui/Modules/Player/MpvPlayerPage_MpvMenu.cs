@@ -31,7 +31,7 @@ namespace mpv_winui.Modules.Player
 
         private void AddOpenHeaderItems(IList<MenuFlyoutItemBase> target)
         {
-            var openSub = new MenuFlyoutSubItem { Text = "Open" };
+            var openSub = new MenuFlyoutSubItem { Text = "File" };
 
             var item = new MenuFlyoutItem { Text = "Open File", Tag = "open" };
             item.Click += Item_Click;
@@ -50,8 +50,11 @@ namespace mpv_winui.Modules.Player
             openSub.Items.Add(item);
 
             openSub.Items.Add(new MenuFlyoutSeparator());
-
             target.Add(openSub);
+
+            item = new MenuFlyoutItem { Text = "Playlist", Tag = "playlist" };
+            item.Click += Item_Click;
+            target.Add(item);
         }
 
         private void AddCustomFooterItems(IList<MenuFlyoutItemBase> target)
