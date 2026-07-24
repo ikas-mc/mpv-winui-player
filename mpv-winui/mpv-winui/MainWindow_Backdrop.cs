@@ -10,6 +10,7 @@ namespace mpv_winui
     {
         private SystemBackdropConfiguration? _configurationSource;
         private DesktopAcrylicController? _acrylicController;
+        private MicaController? _micaController;
         private UISettings? _uISettings;
 
         private void TrySetBackdrop()
@@ -23,24 +24,43 @@ namespace mpv_winui
             _configurationSource.IsInputActive = true;
             SetConfigurationSourceTheme();
 
-            var uISettings = new UISettings();
-            uISettings.ColorValuesChanged += Settings_ColorValuesChanged;
-            _uISettings = uISettings;
-
-            if (DesktopAcrylicController.IsSupported())
+            switch (AppContext.AppSetting.BackdropType)
             {
-                _acrylicController = new DesktopAcrylicController
+                case 1:
                 {
-                    Kind = DesktopAcrylicKind.Thin,
-                    TintOpacity = 0.2F,
-                    TintColor = uISettings.GetColorValue(UIColorType.AccentLight1),
-                    LuminosityOpacity = 0.1F
-                };
+                    if (MicaController.IsSupported())
+                    {
+                        _micaController = new MicaController
+                        {
+                        };
 
-                _acrylicController?.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                _acrylicController?.SetSystemBackdropConfiguration(_configurationSource);
+                        _micaController?.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
+                        _micaController?.SetSystemBackdropConfiguration(_configurationSource);
+                    }
+                    break;
+                }
+                default:
+                {
+                    if (DesktopAcrylicController.IsSupported())
+                    {
+                        var uISettings = new UISettings();
+                        uISettings.ColorValuesChanged += Settings_ColorValuesChanged;
+                        _uISettings = uISettings;
+
+                        _acrylicController = new DesktopAcrylicController
+                        {
+                            Kind = DesktopAcrylicKind.Thin,
+                            TintOpacity = 0.2F,
+                            TintColor = uISettings.GetColorValue(UIColorType.AccentLight1),
+                            LuminosityOpacity = 0.1F
+                        };
+
+                        _acrylicController?.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
+                        _acrylicController?.SetSystemBackdropConfiguration(_configurationSource);
+                    }
+                    break;
+                }
             }
-
         }
 
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
@@ -56,6 +76,8 @@ namespace mpv_winui
             Activated -= Window_Activated;
             _uISettings?.ColorValuesChanged -= Settings_ColorValuesChanged;
             _acrylicController?.Dispose();
+            _acrylicController = null;
+            _micaController?.Dispose();
             _acrylicController = null;
             _configurationSource = null;
         }

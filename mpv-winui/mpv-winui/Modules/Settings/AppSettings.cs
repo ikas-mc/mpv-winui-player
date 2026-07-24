@@ -17,10 +17,10 @@ namespace mpv_winui.Modules.Settings
             set => _dataSetting.SetValue(nameof(EnableDebugLog), value);
         }
 
-        public bool EnableMica
+        public int BackdropType
         {
-            get => _dataSetting.GetValue(nameof(EnableMica), false);
-            set => _dataSetting.SetValue(nameof(EnableMica), value);
+            get => _dataSetting.GetValue(nameof(BackdropType), 0);
+            set => _dataSetting.SetValue(nameof(BackdropType), value);
         }
 
         public int PatchVersion
