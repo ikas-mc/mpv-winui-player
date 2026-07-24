@@ -49,19 +49,25 @@ namespace mpv_winui
                 return;
             }
 
-            //TODO Maximized
-            if (sender.Presenter.Kind is AppWindowPresenterKind.Overlapped or AppWindowPresenterKind.CompactOverlay)
+            if (sender.Presenter.Kind is AppWindowPresenterKind.Overlapped)
             {
-                if (sender.Position.X > 0)
+                var overlappedPresenter = AppWindow.Presenter.As<OverlappedPresenter>();
+                if (overlappedPresenter != null)
                 {
-                    _x = sender.Position.X;
+                    if (overlappedPresenter.State is OverlappedPresenterState.Restored)
+                    {
+                        if (sender.Position.X > 0)
+                        {
+                            _x = sender.Position.X;
+                        }
+                        if (sender.Position.Y > 0)
+                        {
+                            _y = sender.Position.Y;
+                        }
+                        _w = sender.Size.Width;
+                        _h = sender.Size.Height;
+                    }
                 }
-                if (sender.Position.Y > 0)
-                {
-                    _y = sender.Position.Y;
-                }
-                _w = sender.Size.Width;
-                _h = sender.Size.Height;
             }
 
             if (AppContext.AppLogger.IsTraceEnabled)

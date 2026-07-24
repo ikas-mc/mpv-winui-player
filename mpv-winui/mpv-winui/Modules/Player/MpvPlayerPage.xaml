@@ -288,6 +288,7 @@
                                 TextTrimming="CharacterEllipsis"
                                 ToolTipService.ToolTip="{x:Bind Title}">
                                 <Run Text="{x:Bind Index}" />
+                                <Run Text="." />
                                 <Run Text="{x:Bind Title}" />
                             </TextBlock>
                             <TextBlock

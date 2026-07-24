@@ -149,6 +149,7 @@
                     <AppBarButton
                         x:Name="PlayPauseButton"
                         Grid.Column="1"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}">
                         <AppBarButton.Icon>
                             <FontIcon
@@ -160,6 +161,7 @@
                     <AppBarButton
                         x:Name="RewindButton"
                         Grid.Column="4"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>
@@ -170,6 +172,7 @@
                     <AppBarButton
                         x:Name="FastForwardButton"
                         Grid.Column="5"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>
@@ -180,6 +183,7 @@
                     <AppBarButton
                         x:Name="PreviousTrackButton"
                         Grid.Column="6"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>
@@ -190,6 +194,7 @@
                     <AppBarButton
                         x:Name="NextTrackButton"
                         Grid.Column="7"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>
@@ -200,6 +205,7 @@
                     <AppBarButton
                         x:Name="SkipBackwardButton"
                         Grid.Column="2"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
                         <AppBarButton.Icon>
@@ -210,6 +216,7 @@
                     <AppBarButton
                         x:Name="SkipForwardButton"
                         Grid.Column="3"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
                         <AppBarButton.Icon>
@@ -221,11 +228,13 @@
                         x:Name="StopButton"
                         Grid.Column="8"
                         Icon="Stop"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed" />
 
                     <AppBarButton
                         x:Name="ShuffleButton"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
                         <AppBarButton.Icon>
@@ -241,6 +250,7 @@
                     <AppBarButton
                         x:Name="RepeatButton"
                         Grid.Column="10"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
                         <AppBarButton.Icon>
@@ -267,9 +277,11 @@
                     </CommandBar.Resources>
 
                     <AppBarButton
+                        PointerWheelChanged="VolumeMuteButton_PointerWheelChanged"
                         x:Name="VolumeMuteButton"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}">
                         <AppBarButton.Resources>
                             <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,12</Thickness>
@@ -289,6 +301,7 @@
                             Margin="0,4,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
+                            IsTabStop="False"
                             IsThumbToolTipEnabled="False"
                             SmallChange="10"
                             Value="50" />
@@ -297,6 +310,7 @@
                     <AppBarButton
                         x:Name="PlaybackRateButton"
                         Grid.Column="9"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
 
@@ -349,6 +363,7 @@
                     <AppBarButton
                         x:Name="TrackSelectionButton"
                         Grid.Column="13"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}">
                         <AppBarButton.Icon>
                             <FontIcon
@@ -377,6 +392,7 @@
                     <AppBarButton
                         x:Name="ZoomButton"
                         Grid.Column="15"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Visible">
                         <AppBarButton.Icon>
@@ -395,6 +411,7 @@
                     <AppBarButton
                         x:Name="FullWindowButton"
                         Grid.Column="18"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>
@@ -407,6 +424,7 @@
                     <AppBarButton
                         x:Name="FullScreenButton"
                         Grid.Column="18"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}">
                         <AppBarButton.Icon>
                             <SymbolIcon
@@ -417,6 +435,7 @@
 
                     <AppBarButton
                         x:Name="MoreButton"
+                        IsTabStop="False"
                         Style="{StaticResource AppBarButtonStyle}"
                         Visibility="Collapsed">
                         <AppBarButton.Icon>

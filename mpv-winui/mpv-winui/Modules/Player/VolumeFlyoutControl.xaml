@@ -8,6 +8,7 @@
             Width="40"
             HorizontalAlignment="Center"
             Click="MuteButton_Click"
+            IsTabStop="False"
             LabelPosition="Collapsed">
             <AppBarButton.Icon>
                 <FontIcon x:Name="VolumeIcon" />
@@ -17,6 +18,7 @@
             x:Name="VolumeSlider"
             Height="100"
             HorizontalAlignment="Center"
+            IsTabStop="False"
             Maximum="100"
             Minimum="0"
             Orientation="Vertical" />

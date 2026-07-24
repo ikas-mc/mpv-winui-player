@@ -92,9 +92,10 @@ namespace mpv_winui.Modules.Player
         }
 
         private void HandleBorderProperty(bool hasBorder)
-        { if (_appWindow.Presenter is OverlappedPresenter presenter)
+        {
+            if (_appWindow.Presenter is OverlappedPresenter presenter)
             {
-                presenter.SetBorderAndTitleBar(hasBorder,true);
+                presenter.SetBorderAndTitleBar(hasBorder, true);
             }
         }
     }

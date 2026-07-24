@@ -7,6 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style
+            x:Key="TrackListViewItemStyle"
+            BasedOn="{StaticResource DefaultListViewItemStyle}"
+            TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="IsTabStop" Value="False" />
+        </Style>
+    </UserControl.Resources>
     <Grid
         Padding="8"
         ColumnSpacing="8"
@@ -39,7 +49,9 @@
             Grid.Row="1"
             Grid.Column="0"
             IsItemClickEnabled="True"
+            IsTabStop="False"
             ItemClick="VideoListView_ItemClick"
+            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
             ItemsSource="{x:Bind VideoItems, Mode=OneWay}"
             SelectionMode="Single"
             SingleSelectionFollowsFocus="False">
@@ -68,7 +80,9 @@
             Grid.Row="3"
             Grid.Column="0"
             IsItemClickEnabled="True"
+            IsTabStop="False"
             ItemClick="AudioListView_ItemClick"
+            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
             ItemsSource="{x:Bind AudioItems, Mode=OneWay}"
             SelectionMode="Single"
             SingleSelectionFollowsFocus="False">
@@ -97,7 +111,9 @@
             Grid.Row="1"
             Grid.Column="1"
             IsItemClickEnabled="True"
+            IsTabStop="False"
             ItemClick="SubtitleListView_ItemClick"
+            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
             ItemsSource="{x:Bind SubtitleItems, Mode=OneWay}"
             SelectionMode="Single"
             SingleSelectionFollowsFocus="False">
@@ -127,7 +143,9 @@
             Grid.Row="3"
             Grid.Column="1"
             IsItemClickEnabled="True"
+            IsTabStop="False"
             ItemClick="SecondSubListView_ItemClick"
+            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
             ItemsSource="{x:Bind SecondSubItems, Mode=OneWay}"
             SelectionMode="Single"
             SingleSelectionFollowsFocus="False">

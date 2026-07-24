@@ -933,5 +933,22 @@ namespace mpv_winui.Modules.Player
             };
             VisualStateManager.GoToState(this, name, false);
         }
+
+        private void VolumeMuteButton_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (_mediaPlayer?.Volume is double value && sender is UIElement element)
+            {
+                var delta = e.GetCurrentPoint(element).Properties.MouseWheelDelta;
+
+                if (delta > 0)
+                {
+                    _mediaPlayer?.Volume = Math.Min(value + 2, 100);
+                }
+                else if (delta < 0)
+                {
+                    _mediaPlayer?.Volume = Math.Max(value - 2, 0);
+                }
+            }
+        }
     }
 }
