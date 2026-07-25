@@ -47,7 +47,7 @@ namespace mpv_winui.Modules.Activation
                                 var file = query.Substring(6);
                                 if (!string.IsNullOrEmpty(file))
                                 {
-                                    return [Uri.UnescapeDataString(file)];
+                                    return (string[])[Uri.UnescapeDataString(file)];
                                 }
                             }
                         }
@@ -115,7 +115,7 @@ namespace mpv_winui.Modules.Activation
                                         return null;
                                     });
 
-                                    return item == null ? [] : [item];
+                                    return item == null ? [] : (FileItem[])[item];
                                 }
                             }
                         }

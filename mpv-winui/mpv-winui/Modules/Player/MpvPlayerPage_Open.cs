@@ -17,7 +17,7 @@ namespace mpv_winui.Modules.Player
             var files = await picker.PickMultipleFilesAsync();
             if (files?.Count > 0)
             {
-                await PlayFiles([.. files.Select(x => x.Path)], OpenMode.Replace);
+                await PlayFiles(files.Select(x => x.Path).ToList(), OpenMode.Replace);
             }
         }
 
@@ -27,7 +27,7 @@ namespace mpv_winui.Modules.Player
             var folders = await picker.PickMultipleFoldersAsync();
             if (folders?.Count > 0)
             {
-                await PlayFolders([.. folders.Select(x => x.Path)], OpenMode.Replace);
+                await PlayFolders(folders.Select(x => x.Path).ToList(), OpenMode.Replace);
             }
         }
 
@@ -169,17 +169,17 @@ namespace mpv_winui.Modules.Player
 
         private async ValueTask PlayUrl(string url, OpenMode openMode)
         {
-            await _mediaPlayer.OpenAsync([new FileItem(url, FileType.Url)], openMode);
+            await _mediaPlayer.OpenAsync((FileItem[])[new FileItem(url, FileType.Url)], openMode);
         }
 
         private async ValueTask PlayFile(string file, OpenMode openMode)
         {
-            await _mediaPlayer.OpenAsync([new FileItem(file, FileType.File)], openMode);
+            await _mediaPlayer.OpenAsync((FileItem[])[new FileItem(file, FileType.File)], openMode);
         }
 
         private async ValueTask PlayFolder(string folder, OpenMode openMode)
         {
-            await _mediaPlayer.OpenAsync([new FileItem(folder, FileType.Folder)], openMode);
+            await _mediaPlayer.OpenAsync((FileItem[])[new FileItem(folder, FileType.Folder)], openMode);
         }
     }
 }

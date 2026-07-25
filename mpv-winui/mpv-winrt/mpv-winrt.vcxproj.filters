@@ -55,6 +55,7 @@
     <Midl Include="TrackListChangedEventArgs.idl" />
     <Midl Include="TrackListCountChangedEventArgs.idl" />
     <Midl Include="WindowChangedEventArgs.idl" />
+    <Midl Include="DisplayColorKind.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mpv_winrt.def" />

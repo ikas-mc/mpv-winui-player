@@ -277,11 +277,11 @@
                     </CommandBar.Resources>
 
                     <AppBarButton
-                        PointerWheelChanged="VolumeMuteButton_PointerWheelChanged"
                         x:Name="VolumeMuteButton"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         IsTabStop="False"
+                        PointerWheelChanged="VolumeMuteButton_PointerWheelChanged"
                         Style="{StaticResource AppBarButtonStyle}">
                         <AppBarButton.Resources>
                             <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,12</Thickness>

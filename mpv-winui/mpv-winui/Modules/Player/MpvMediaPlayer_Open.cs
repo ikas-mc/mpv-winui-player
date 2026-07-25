@@ -31,7 +31,7 @@ namespace mpv_winui.Modules.Player
 
         public void Open(FileItem file, OpenMode action = OpenMode.Replace)
         {
-            Open([file], action);
+            Open((FileItem[])[file], action);
         }
 
         public void Open(IReadOnlyList<FileItem> files, OpenMode action = OpenMode.Replace)

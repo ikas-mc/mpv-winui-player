@@ -112,7 +112,6 @@
             Grid.ColumnSpan="1">
             <MenuBarItem
                 Title="File"
-                Foreground="{ThemeResource SystemAccentColorLight3}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
@@ -166,7 +165,6 @@
 
             <MenuBarItem
                 Title="View"
-                Foreground="{ThemeResource SystemAccentColorLight3}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
@@ -194,7 +192,6 @@
 
             <MenuBarItem
                 Title="Help"
-                Foreground="{ThemeResource SystemAccentColorLight3}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
