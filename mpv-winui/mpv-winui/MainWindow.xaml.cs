@@ -7,7 +7,9 @@ using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.Player;
+using mpv_winui.Modules.Settings;
 using System.Collections.Generic;
+using Windows.Graphics;
 
 namespace mpv_winui
 {
@@ -28,6 +30,9 @@ namespace mpv_winui
             AppWindow.SetIcon("App.ico");
 
             SetupWindowSize();
+
+            Activated += Window_Activated;
+            Closed += Window_Closed;
         }
 
         private bool SetTitleBarColors()
@@ -108,6 +113,45 @@ namespace mpv_winui
         public void UpdateTitle(string title)
         {
             ShellTitleBar?.Title = title;
+        }
+
+        private SettingsWindow? _settingsWindow;
+        public void OpenSettingWindow()
+        {
+            if (null == _settingsWindow)
+            {
+                _settingsWindow = new();
+                _settingsWindow?.Activate();
+                _settingsWindow?.Closed += SettingsWindow_Closed;
+            }
+
+            var position = AppWindow.Position;
+            var size = AppWindow.Size;
+            var rect = new RectInt32(
+                (int)(position.X + (size.Width * 0.1)),
+                (int)(position.Y + (size.Height * 0.1)),
+                (int)(size.Width * 0.8),
+                (int)(size.Height * 0.8)
+                );
+            _settingsWindow?.MoveAndResize(rect);
+
+            _settingsWindow?.ShowWindow();
+        }
+
+        private void SettingsWindow_Closed(object sender, WindowEventArgs args)
+        {
+            _settingsWindow = null;
+        }
+
+        private void Window_Activated(object sender, WindowActivatedEventArgs args)
+        {
+        }
+
+        private void Window_Closed(object sender, WindowEventArgs args)
+        {
+            Activated -= Window_Activated;
+            _settingsWindow?.Close();
+            CleanupBackdrop();
         }
     }
 }

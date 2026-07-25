@@ -1,6 +1,7 @@
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
+using mpv_winui.Modules.Settings;
 using Windows.UI.ViewManagement;
 using WinRT;
 
@@ -18,15 +19,13 @@ namespace mpv_winui
             DispatcherQueue.EnsureSystemDispatcherQueue();
             _configurationSource = new SystemBackdropConfiguration();
 
-            Activated += Window_Activated;
-            Closed += Window_Closed;
             ((FrameworkElement)Content).ActualThemeChanged += Window_ThemeChanged;
             _configurationSource.IsInputActive = true;
             SetConfigurationSourceTheme();
 
             switch (AppContext.AppSetting.BackdropType)
             {
-                case 1:
+                case AppSettings.BackdropType_Mica:
                 {
                     if (MicaController.IsSupported())
                     {
@@ -63,22 +62,16 @@ namespace mpv_winui
             }
         }
 
-        private void Window_Activated(object sender, WindowActivatedEventArgs args)
-        {
-            //TODO config
-            // configurationSource?.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
-        }
 
-        private void Window_Closed(object sender, WindowEventArgs args)
+
+        private void CleanupBackdrop()
         {
-            Closed -= Window_Closed;
             ((FrameworkElement)Content).ActualThemeChanged -= Window_ThemeChanged;
-            Activated -= Window_Activated;
             _uISettings?.ColorValuesChanged -= Settings_ColorValuesChanged;
             _acrylicController?.Dispose();
             _acrylicController = null;
             _micaController?.Dispose();
-            _acrylicController = null;
+            _micaController = null;
             _configurationSource = null;
         }
 

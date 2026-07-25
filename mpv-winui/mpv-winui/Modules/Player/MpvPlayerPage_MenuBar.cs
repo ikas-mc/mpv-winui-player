@@ -84,12 +84,23 @@ namespace mpv_winui.Modules.Player
                         case "fullscreen":
                             PlayerControl.ToggleFullScreen();
                             break;
+                        case "options":
+                            ShowSettingsWindow();
+                            break;
                     }
                 }
             }
             catch (Exception ex)
             {
                 OnException(ex);
+            }
+        }
+
+        private void ShowSettingsWindow()
+        {
+            if (App.Window is MainWindow window)
+            {
+                window.OpenSettingWindow();
             }
         }
 

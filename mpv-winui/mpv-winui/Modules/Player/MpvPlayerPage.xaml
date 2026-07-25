@@ -182,6 +182,11 @@
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
+                    Tag="options"
+                    Text="Options" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
                     Tag="conf-folder"
                     Text="Open Conf Folder" />
                 <MenuFlyoutItem

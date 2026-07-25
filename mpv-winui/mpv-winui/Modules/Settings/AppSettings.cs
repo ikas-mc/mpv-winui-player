@@ -11,46 +11,46 @@ namespace mpv_winui.Modules.Settings
             _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new FileSetting("config.ini");
         }
 
+        public const string ThemeType_Auto = "Auto";
+        public const string ThemeType_Light = "Light";
+        public const string ThemeType_Dark = "Dark";
+        public string ThemeType
+        {
+            get => _dataSetting.GetValue(nameof(ThemeType), ThemeType_Dark);
+            set => _dataSetting.SetValue(nameof(ThemeType), value);
+        }
+
+        public const string BackdropType_Acrylic = "Acrylic";
+        public const string BackdropType_Mica = "Mica";
+        public string BackdropType
+        {
+            get => _dataSetting.GetValue(nameof(BackdropType), BackdropType_Acrylic);
+            set => _dataSetting.SetValue(nameof(BackdropType), value);
+        }
+
         public bool EnableDebugLog
         {
             get => _dataSetting.GetValue(nameof(EnableDebugLog), false);
             set => _dataSetting.SetValue(nameof(EnableDebugLog), value);
         }
 
-        public int BackdropType
+        public string CurrentLanguage
         {
-            get => _dataSetting.GetValue(nameof(BackdropType), 0);
-            set => _dataSetting.SetValue(nameof(BackdropType), value);
+            get => _dataSetting.GetValue(nameof(CurrentLanguage), string.Empty);
+            set => _dataSetting.SetValue(nameof(CurrentLanguage), value);
         }
 
-        public int PatchVersion
-        {
-            get => _dataSetting.GetValue(nameof(PatchVersion), 0);
-            set => _dataSetting.SetValue(nameof(PatchVersion), value);
-        }
-
+        // TODO
         public ulong AppVersion
         {
             get => _dataSetting.GetValue(nameof(AppVersion), (ulong)0);
             set => _dataSetting.SetValue(nameof(AppVersion), value);
         }
 
-        public string CurrentLanguage
+        public int PatchVersion
         {
-            get => _dataSetting.GetValue(nameof(CurrentLanguage), "");
-            set => _dataSetting.SetValue(nameof(CurrentLanguage), value);
-        }
-
-        public int ThemeType
-        {
-            get => _dataSetting.GetValue(nameof(ThemeType), 0);
-            set => _dataSetting.SetValue(nameof(ThemeType), value);
-        }
-
-        public bool EnableUISound
-        {
-            get => _dataSetting.GetValue(nameof(EnableUISound), false);
-            set => _dataSetting.SetValue(nameof(EnableUISound), value);
+            get => _dataSetting.GetValue(nameof(PatchVersion), 0);
+            set => _dataSetting.SetValue(nameof(PatchVersion), value);
         }
 
         public int LastVideoVolume

@@ -1,0 +1,58 @@
+<UserControl
+    x:Class="mpv_winui.Modules.Settings.Controls.OptionListControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:mpv_winui.Modules.Settings.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="BooleanTemplate">
+            <ctl:OptionBooleanControl Margin="0,0,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="TextTemplate">
+            <ctl:OptionStringControl Margin="0,0,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="NumberTemplate">
+            <ctl:OptionNumberControl Margin="0,0,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="TextListTemplate">
+            <ctl:OptionStringListControl Margin="0,0,0,2" />
+        </DataTemplate>
+
+        <ctl:OptionTemplateSelector
+            x:Key="TemplateSelector"
+            BooleanTemplate="{StaticResource BooleanTemplate}"
+            NumberTemplate="{StaticResource NumberTemplate}"
+            TextListTemplate="{StaticResource TextListTemplate}"
+            TextTemplate="{StaticResource TextTemplate}" />
+
+        <Style
+            x:Key="OptionListViewItemStyle"
+            BasedOn="{StaticResource DefaultListViewItemStyle}"
+            TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="MinHeight" Value="60" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Background" Value="#22000000" />
+            <Setter Property="IsTabStop" Value="False" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ListView
+            x:Name="SettingsList"
+            Grid.Row="1"
+            Padding="8,0,8,0"
+            ContainerContentChanging="OnContainerContentChanging"
+            IsItemClickEnabled="False"
+            ItemContainerStyle="{ThemeResource OptionListViewItemStyle}"
+            ItemTemplateSelector="{StaticResource TemplateSelector}"
+            ItemsSource="{x:Bind OptionList, Mode=OneWay}"
+            SelectionMode="None" />
+    </Grid>
+</UserControl>
