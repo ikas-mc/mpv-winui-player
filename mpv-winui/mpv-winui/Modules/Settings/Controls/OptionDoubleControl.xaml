@@ -1,10 +1,11 @@
 <base:OptionControlBase
-    x:Class="mpv_winui.Modules.Settings.Controls.OptionStringControl"
+    x:Class="mpv_winui.Modules.Settings.Controls.OptionDoubleControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:mpv_winui.Modules.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ws="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <Grid>
@@ -12,9 +13,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid
-            Grid.Row="0"
-            ColumnSpacing="12">
+        <Grid Grid.Row="0" ColumnSpacing="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -24,13 +23,14 @@
                 VerticalAlignment="Center"
                 Style="{StaticResource BodyTextBlockStyle}"
                 TextWrapping="Wrap" />
-            <TextBox
-                x:Name="InputBox"
+            <ws:NumberBox
+                x:Name="NumberBox"
                 Grid.Column="1"
                 MinWidth="160"
                 HorizontalAlignment="Right"
                 LostFocus="OnLostFocus"
-                TextChanged="InputBox_TextChanged" />
+                SpinButtonPlacementMode="Inline"
+                ValueChanged="OnValueChanged" />
         </Grid>
         <TextBlock
             x:Name="ErrorText"

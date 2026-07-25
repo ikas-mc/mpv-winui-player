@@ -2,7 +2,8 @@ namespace mpv_winui.Modules.Settings.Controls;
 
 public enum OptionType
 {
-    Number,
+    Integer,
+    Double,
     String,
     StringList,
     Boolean,

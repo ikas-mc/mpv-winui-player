@@ -39,6 +39,8 @@ public sealed partial class OptionStringListControl : OptionControlBase
         }
     }
 
+    public override (bool IsValid, string? ErrorMessage) Validate() => (true, null);
+
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (Setting?.Setter is not null && Combo.SelectedItem is string val)

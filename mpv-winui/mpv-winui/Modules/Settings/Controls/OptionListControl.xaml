@@ -16,8 +16,12 @@
             <ctl:OptionStringControl Margin="0,0,0,2" />
         </DataTemplate>
 
-        <DataTemplate x:Key="NumberTemplate">
-            <ctl:OptionNumberControl Margin="0,0,0,2" />
+        <DataTemplate x:Key="IntegerTemplate">
+            <ctl:OptionIntegerControl Margin="0,0,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="DoubleTemplate">
+            <ctl:OptionDoubleControl Margin="0,0,0,2" />
         </DataTemplate>
 
         <DataTemplate x:Key="TextListTemplate">
@@ -27,7 +31,8 @@
         <ctl:OptionTemplateSelector
             x:Key="TemplateSelector"
             BooleanTemplate="{StaticResource BooleanTemplate}"
-            NumberTemplate="{StaticResource NumberTemplate}"
+            DoubleTemplate="{StaticResource DoubleTemplate}"
+            IntegerTemplate="{StaticResource IntegerTemplate}"
             TextListTemplate="{StaticResource TextListTemplate}"
             TextTemplate="{StaticResource TextTemplate}" />
 

@@ -34,6 +34,11 @@ public sealed class Option
         get; set;
     }
 
+    public bool AllowEmpty
+    {
+        get; set;
+    }
+
     public Func<object>? Getter
     {
         get; set;

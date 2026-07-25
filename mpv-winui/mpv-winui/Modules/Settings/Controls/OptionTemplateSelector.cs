@@ -7,7 +7,8 @@ public partial class OptionTemplateSelector : DataTemplateSelector
 {
     public DataTemplate BooleanTemplate { get; set; } = null!;
     public DataTemplate TextTemplate { get; set; } = null!;
-    public DataTemplate NumberTemplate { get; set; } = null!;
+    public DataTemplate IntegerTemplate { get; set; } = null!;
+    public DataTemplate DoubleTemplate { get; set; } = null!;
     public DataTemplate TextListTemplate { get; set; } = null!;
 
     protected override DataTemplate SelectTemplateCore(object item)
@@ -18,7 +19,8 @@ public partial class OptionTemplateSelector : DataTemplateSelector
             {
                 OptionType.Boolean => BooleanTemplate,
                 OptionType.String => TextTemplate,
-                OptionType.Number => NumberTemplate,
+                OptionType.Integer => IntegerTemplate,
+                OptionType.Double => DoubleTemplate,
                 OptionType.StringList => TextListTemplate,
                 _ => base.SelectTemplateCore(item)
             };

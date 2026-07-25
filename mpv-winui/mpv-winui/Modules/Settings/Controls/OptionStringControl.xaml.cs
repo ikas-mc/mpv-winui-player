@@ -30,13 +30,37 @@ public sealed partial class OptionStringControl : OptionControlBase
         }
     }
 
-    private void Commit()
+    public override (bool IsValid, string? ErrorMessage) Validate()
     {
+        if (!(Setting?.AllowEmpty ?? false) && string.IsNullOrWhiteSpace(InputBox.Text))
+        {
+            return (false, "Value cannot be empty");
+        }
+
+        return (true, null);
+    }
+
+    private bool TryCommit()
+    {
+        var (valid, error) = Validate();
+        if (!valid)
+        {
+            ErrorText.Text = error;
+            ErrorText.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            return false;
+        }
+        ErrorText.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         Setting?.Setter?.Invoke(InputBox.Text);
+        return true;
     }
 
     private void InputBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        Commit();
+        TryCommit();
+    }
+
+    private void OnLostFocus(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        TryCommit();
     }
 }

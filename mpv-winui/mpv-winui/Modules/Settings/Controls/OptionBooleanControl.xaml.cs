@@ -30,9 +30,13 @@ public sealed partial class OptionBooleanControl : OptionControlBase
             }
         }
     }
+    public override (bool IsValid, string? ErrorMessage) Validate() => (true, null);
 
     private void OnToggled(object sender, RoutedEventArgs e)
     {
-        Setting?.Setter?.Invoke(ToggleSwitch.IsOn);
+        if (Setting?.Setter is not null)
+        {
+            Setting?.Setter?.Invoke(ToggleSwitch.IsOn);
+        }
     }
 }

@@ -27,4 +27,6 @@ public abstract class OptionControlBase : UserControl
     protected virtual void OnSettingChanged(Option? oldValue, Option? newValue)
     {
     }
+
+    public virtual (bool IsValid, string? ErrorMessage) Validate() => (true, null);
 }
