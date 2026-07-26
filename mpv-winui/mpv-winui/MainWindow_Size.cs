@@ -1,5 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using mpv_winui.Modules.Common.View;
 using System;
 using Windows.Graphics;
 using WinRT;
@@ -101,7 +102,7 @@ namespace mpv_winui
             if (sender is FrameworkElement body)
             {
                 body.XamlRoot?.Changed += RootGridXamlRoot_Changed;
-                UpdateWindowMinSize(240, 240);
+                this.SetWindowMinSize(250, 250);
             }
         }
 
@@ -115,21 +116,7 @@ namespace mpv_winui
 
         private void RootGridXamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
         {
-            UpdateWindowMinSize(240, 240);
-        }
-
-        public void UpdateWindowMinSize(int w, int h)
-        {
-            if (Content.XamlRoot is XamlRoot root && AppWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
-            {
-                var overlappedPresenter = AppWindow.Presenter.As<OverlappedPresenter>();
-                if (overlappedPresenter != null)
-                {
-                    var scale = root.RasterizationScale > 0 ? root.RasterizationScale : 1;
-                    overlappedPresenter.PreferredMinimumWidth = (int)(250 * scale);
-                    overlappedPresenter.PreferredMinimumHeight = (int)(250 * scale);
-                }
-            }
+            this.SetWindowMinSize(250, 250);
         }
     }
 }

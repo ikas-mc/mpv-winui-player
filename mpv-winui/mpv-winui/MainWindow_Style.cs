@@ -77,6 +77,10 @@ namespace mpv_winui
                 {
                     UpdateCurrentTheme(theme);
                 }
+                else
+                {
+                    _acrylicController?.TintColor = _uISettings.GetColorValue(UIColorType.AccentLight1);
+                }
             });
         }
 
