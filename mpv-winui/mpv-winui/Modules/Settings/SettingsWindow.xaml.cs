@@ -17,8 +17,6 @@ public sealed partial class SettingsWindow : Window
         //appWindow.SetIcon("\\App.ico");
         appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
-        appWindow.TitleBar.ForegroundColor = Colors.White;
-        appWindow.TitleBar.ButtonForegroundColor = Colors.White;
         appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
         appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 

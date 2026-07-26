@@ -1,4 +1,3 @@
-using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
@@ -8,22 +7,25 @@ using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.Player;
 using mpv_winui.Modules.Settings;
+using System;
 using System.Collections.Generic;
 using Windows.Graphics;
+using Windows.UI.ViewManagement;
 
 namespace mpv_winui
 {
     public sealed partial class MainWindow : Window
     {
+        private readonly UISettings _uISettings = new();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            TrySetBackdrop();
+            SetupStyle();
 
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             ShellTitleBar.Title = PackageHelper.AppName;
-            SetTitleBarColors();
             SetTitleBar(ShellTitleBar);
 
             AppWindow.Title = PackageHelper.AppName;
@@ -33,30 +35,6 @@ namespace mpv_winui
 
             Activated += Window_Activated;
             Closed += Window_Closed;
-        }
-
-        private bool SetTitleBarColors()
-        {
-            if (AppWindowTitleBar.IsCustomizationSupported())
-            {
-                AppWindowTitleBar titleBar = AppWindow.TitleBar;
-
-                titleBar.ForegroundColor = Colors.White;
-                //titleBar.BackgroundColor = Colors.Green;
-                titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.ButtonBackgroundColor = Colors.Transparent;
-                //titleBar.ButtonHoverForegroundColor = Colors.Gainsboro;
-                //titleBar.ButtonHoverBackgroundColor = Colors.Transparent;
-                //titleBar.ButtonPressedForegroundColor = Colors.Gray;
-                //titleBar.ButtonPressedBackgroundColor = Colors.LightGreen;
-
-                //titleBar.InactiveForegroundColor = Colors.Gainsboro;
-                //titleBar.InactiveBackgroundColor = Colors.SeaGreen;
-                //titleBar.ButtonInactiveForegroundColor = Colors.Gainsboro;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                return true;
-            }
-            return false;
         }
 
         public async void Open()
@@ -151,7 +129,7 @@ namespace mpv_winui
         {
             Activated -= Window_Activated;
             _settingsWindow?.Close();
-            CleanupBackdrop();
+            CleanupTheme();
         }
     }
 }

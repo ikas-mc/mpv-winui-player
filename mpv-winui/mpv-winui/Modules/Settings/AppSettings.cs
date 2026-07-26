@@ -8,7 +8,7 @@ namespace mpv_winui.Modules.Settings
 
         public AppSettings()
         {
-            _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new FileSetting("config.ini");
+            _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new UnpackageAppDataSetting("app");
         }
 
         public const string ThemeType_Auto = "Auto";
@@ -16,7 +16,7 @@ namespace mpv_winui.Modules.Settings
         public const string ThemeType_Dark = "Dark";
         public string ThemeType
         {
-            get => _dataSetting.GetValue(nameof(ThemeType), ThemeType_Dark);
+            get => _dataSetting.GetValue(nameof(ThemeType), ThemeType_Auto);
             set => _dataSetting.SetValue(nameof(ThemeType), value);
         }
 
@@ -40,7 +40,6 @@ namespace mpv_winui.Modules.Settings
             set => _dataSetting.SetValue(nameof(CurrentLanguage), value);
         }
 
-        // TODO
         public ulong AppVersion
         {
             get => _dataSetting.GetValue(nameof(AppVersion), (ulong)0);

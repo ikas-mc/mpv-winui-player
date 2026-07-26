@@ -43,6 +43,7 @@ public sealed class Option
     {
         get; set;
     }
+
     public Action<object>? Setter
     {
         get; set;

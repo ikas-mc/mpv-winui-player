@@ -42,22 +42,21 @@
             TargetType="ListViewItem">
             <Setter Property="Margin" Value="0,0,0,8" />
             <Setter Property="MinHeight" Value="60" />
-            <Setter Property="Padding" Value="8" />
-            <Setter Property="Background" Value="#22000000" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
             <Setter Property="IsTabStop" Value="False" />
         </Style>
     </UserControl.Resources>
 
     <Grid>
         <ListView
-            x:Name="SettingsList"
+            x:Name="OptionListView"
             Grid.Row="1"
             Padding="8,0,8,0"
             ContainerContentChanging="OnContainerContentChanging"
             IsItemClickEnabled="False"
-            ItemContainerStyle="{ThemeResource OptionListViewItemStyle}"
+            ItemContainerStyle="{StaticResource OptionListViewItemStyle}"
             ItemTemplateSelector="{StaticResource TemplateSelector}"
-            ItemsSource="{x:Bind OptionList, Mode=OneWay}"
             SelectionMode="None" />
     </Grid>
 </UserControl>

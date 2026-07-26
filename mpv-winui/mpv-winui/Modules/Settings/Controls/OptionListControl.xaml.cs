@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using mpv_winui.Modules.Settings.Controls;
 using System.Collections.Generic;
 
 namespace mpv_winui.Modules.Settings.Controls;
@@ -37,8 +36,18 @@ public sealed partial class OptionListControl : UserControl
         set => SetValue(SettingProperty, value);
     }
 
-    public static readonly DependencyProperty SettingProperty =
-        DependencyProperty.Register(nameof(OptionList), typeof(List<Option>),
-            typeof(OptionListControl), new PropertyMetadata((List<Option>)[]));
+    public static readonly DependencyProperty SettingProperty = DependencyProperty.Register(
+            nameof(OptionList),
+            typeof(List<Option>),
+            typeof(OptionListControl),
+            new PropertyMetadata((List<Option>)[], OnOptionListChanged)
+            );
 
+    private static void OnOptionListChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is OptionListControl self)
+        {
+            self.OptionListView.ItemsSource = e.NewValue as List<Option> ?? [];
+        }
+    }
 }

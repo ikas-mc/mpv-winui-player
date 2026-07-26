@@ -12,13 +12,21 @@ namespace mpv_winui.Modules.FileSystem
 
         public static AppData Current => _lazy.Value;
 
-        private const string AppDataId = "mpv-winui";
+        public const string AppDataId = "mpv-winui";
+
+        //https://learn.microsoft.com/zh-cn/windows/windows-app-sdk/api/winrt/microsoft.windows.storage.applicationdata.getforunpackaged
+        private readonly bool _useUnpackagedAppData = false;
 
         public string ResolveLocalData(string path)
         {
             if (PackageHelper.IsPackaged)
             {
                 var application = ApplicationData.GetDefault();
+                return Path.Combine(application.LocalPath, path);
+            }
+            else if (_useUnpackagedAppData)
+            {
+                var application = ApplicationData.GetForUnpackaged(AppDataId, AppDataId);
                 return Path.Combine(application.LocalPath, path);
             }
             else
@@ -32,6 +40,10 @@ namespace mpv_winui.Modules.FileSystem
             if (PackageHelper.IsPackaged)
             {
                 return await ApplicationData.GetDefault().LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
+            }
+            else if (_useUnpackagedAppData)
+            {
+                return await ApplicationData.GetForUnpackaged(AppDataId, AppDataId).LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
             }
             else
             {
@@ -50,14 +62,18 @@ namespace mpv_winui.Modules.FileSystem
             {
                 return ApplicationData.GetDefault().LocalFolder;
             }
+            else if (_useUnpackagedAppData)
+            {
+                return ApplicationData.GetForUnpackaged(AppDataId, AppDataId).LocalFolder;
+            }
             else
             {
                 return await Task.Run(async () =>
-                {
-                    var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
-                    Directory.CreateDirectory(folderPath);
-                    return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
-                });
+                 {
+                     var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
+                     Directory.CreateDirectory(folderPath);
+                     return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
+                 });
             }
         }
     }

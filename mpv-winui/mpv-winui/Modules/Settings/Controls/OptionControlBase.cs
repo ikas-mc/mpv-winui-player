@@ -1,8 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using mpv_winui.Modules.Settings.Controls;
 
-namespace mpv_winui.Modules.Settings;
+namespace mpv_winui.Modules.Settings.Controls;
 
 public abstract class OptionControlBase : UserControl
 {

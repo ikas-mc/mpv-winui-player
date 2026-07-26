@@ -18,20 +18,34 @@ public sealed partial class OptionDoubleControl : OptionControlBase
             LabelText.Text = newValue.Label;
 
             if (newValue.Min.HasValue)
+            {
                 NumberBox.Minimum = newValue.Min.Value;
+            }
+
             if (newValue.Max.HasValue)
+            {
                 NumberBox.Maximum = newValue.Max.Value;
+            }
+
             if (newValue.Step.HasValue)
+            {
                 NumberBox.SmallChange = newValue.Step.Value;
+            }
             else
+            {
                 NumberBox.SmallChange = 0.1;
+            }
 
             if (newValue.Getter is Func<object?> func)
             {
                 if (func() is double value)
+                {
                     NumberBox.Value = value;
+                }
                 else
+                {
                     NumberBox.Value = 0;
+                }
             }
         }
     }
@@ -42,9 +56,14 @@ public sealed partial class OptionDoubleControl : OptionControlBase
         if (Setting is not null)
         {
             if (Setting.Min.HasValue && val < Setting.Min.Value)
+            {
                 return (false, $"Minimum value is {Setting.Min.Value}");
+            }
+
             if (Setting.Max.HasValue && val > Setting.Max.Value)
+            {
                 return (false, $"Maximum value is {Setting.Max.Value}");
+            }
         }
         return (true, null);
     }
