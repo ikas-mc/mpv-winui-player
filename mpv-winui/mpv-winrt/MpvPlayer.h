@@ -99,6 +99,10 @@ namespace winrt::mpv_winrt::implementation
 
         void SetAspectRatio(hstring const& ratio);
 
+        void SetHoverSec(double sec);
+        void SetDrawPreview(int32_t x, int32_t y, int32_t w, int32_t h);
+        void ClearPreview();
+
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvPlaylistItem> GetPlaylist();
 
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvTrack> GetAudioTracks();

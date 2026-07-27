@@ -69,5 +69,11 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(WindowPositionAndSize), string.Empty);
             set => _dataSetting.SetValue(nameof(WindowPositionAndSize), value);
         }
+
+        public bool EnableVideoPreview
+        {
+            get => _dataSetting.GetValue(nameof(EnableVideoPreview), false);
+            set => _dataSetting.SetValue(nameof(EnableVideoPreview), value);
+        }
     }
 }

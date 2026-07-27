@@ -64,6 +64,7 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.StartListen();
 
                 SetupKeyboardInput();
+                SetupPreview();
 
                 OpenPendingPath().FireAndForget(OnException);
             }
@@ -84,6 +85,7 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.StopListen();
             TeardownPlayerView();
             CleanupKeyboardInput();
+            CleanupPreview();
             _mediaPlayer.Close();
         }
 

@@ -988,6 +988,58 @@ namespace winrt::mpv_winrt::implementation
         SetStringProperty("video-aspect-override", aspectRatio);
     }
 
+    void MpvPlayer::SetHoverSec(double sec)
+    {
+        SetDoubleProperty("user-data/osc/hover-sec", sec);
+    }
+
+    void MpvPlayer::SetDrawPreview(int32_t x, int32_t y, int32_t w, int32_t h)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        mpv_node node{};
+        mpv_node_list list{};
+        mpv_node values[4]{};
+        const char* keyPtrs[4] = {"x", "y", "w", "h"};
+
+        values[0].format = MPV_FORMAT_INT64;
+        values[0].u.int64 = static_cast<int64_t>(x);
+
+        values[1].format = MPV_FORMAT_INT64;
+        values[1].u.int64 = static_cast<int64_t>(y);
+
+        values[2].format = MPV_FORMAT_INT64;
+        values[2].u.int64 = static_cast<int64_t>(w);
+
+        values[3].format = MPV_FORMAT_INT64;
+        values[3].u.int64 = static_cast<int64_t>(h);
+
+        list.num = 4;
+        list.keys = (char**)keyPtrs;
+        list.values = values;
+
+        node.format = MPV_FORMAT_NODE_MAP;
+        node.u.list = &list;
+
+        mpv_set_property(m_mpv, "user-data/osc/draw-preview", MPV_FORMAT_NODE, &node);
+    }
+
+    void MpvPlayer::ClearPreview()
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        mpv_node null_node{};
+        null_node.format = MPV_FORMAT_NONE;
+        mpv_set_property(m_mpv, "user-data/osc/draw-preview", MPV_FORMAT_NODE, &null_node);
+        mpv_del_property(m_mpv, "user-data/osc/hover-sec");
+    }
+
     void MpvPlayer::AttachSwapChain(SwapChainPanel const& panel)
     {
         IDXGISwapChain* swapChain = nullptr;

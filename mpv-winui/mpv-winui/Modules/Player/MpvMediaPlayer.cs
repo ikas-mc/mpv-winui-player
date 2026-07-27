@@ -517,6 +517,21 @@ namespace mpv_winui.Modules.Player
             }
         }
 
+        public void SetHoverSec(double sec)
+        {
+            _mpvPlayer?.SetHoverSec(sec);
+        }
+
+        public void SetDrawPreview(int x, int y, int w, int h)
+        {
+            _mpvPlayer?.SetDrawPreview(x, y, w, h);
+        }
+
+        public void ClearPreview()
+        {
+            _mpvPlayer?.ClearPreview();
+        }
+
         public void Close()
         {
             _mpvPlayer.VoConfigured -= MpvPlayer_VoConfigured;

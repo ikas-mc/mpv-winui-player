@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using mpv_winui.Modules.Common.Utils;
 using System;
 using System.Diagnostics;
+using Windows.Foundation;
 
 namespace mpv_winui.Modules.Player
 {
@@ -20,12 +21,16 @@ namespace mpv_winui.Modules.Player
         public event OnPanelVisibleChangedHandler? OnPanelVisibleChanged;
         public event OnPositionChangedHandler? OnPositionChanged;
 
+        public event EventHandler<(double HoverSec, double RelativeX, double RelativeY)>? PreviewUpdateRequested;
+        public event EventHandler? PreviewClearRequested;
+
         private bool _controlPanelIsVisible = true;
 
         private readonly DispatcherTimer _positionUpdateTimer;
         private bool _hasError = false;
         private bool _isBuffering = false;
         private bool _isInScrubMode = false;
+        private bool _isDragging = false;
         private bool _sourceLoaded = false;
 
         private MpvMediaPlayer? _mediaPlayer;
@@ -182,6 +187,13 @@ namespace mpv_winui.Modules.Player
             TimeElapsedElement.Text = "00:00";
             TimeRemainingElement.Text = "00:00";
             ProgressSlider.ValueChanged += OnPositionSliderValueChanged;
+            if (AppContext.AppSetting.EnableVideoPreview)
+            {
+                ProgressSlider.PointerEntered += ProgressSlider_PointerEntered;
+                ProgressSlider.PointerMoved += ProgressSlider_PointerMoved;
+                ProgressSlider.PointerExited += ProgressSlider_PointerExited;
+            }
+
             VolumeSlider.ValueChanged2 += OnVolumeSliderValueChanged;
 
             _positionUpdateTimer.Tick += OnPositionUpdateTimerTick;
@@ -246,6 +258,10 @@ namespace mpv_winui.Modules.Player
             }
 
             ProgressSlider.ValueChanged -= OnPositionSliderValueChanged;
+            ProgressSlider.PointerEntered -= ProgressSlider_PointerEntered;
+            ProgressSlider.PointerMoved -= ProgressSlider_PointerMoved;
+            ProgressSlider.PointerExited -= ProgressSlider_PointerExited;
+
             VolumeSlider.ValueChanged2 -= OnVolumeSliderValueChanged;
 
             SizeChanged -= PlayerControl_SizeChanged;
@@ -932,6 +948,46 @@ namespace mpv_winui.Modules.Player
                 _ => "Narrow"
             };
             VisualStateManager.GoToState(this, name, false);
+        }
+
+        private void ProgressSlider_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            _isDragging = true;
+        }
+
+        private void ProgressSlider_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_isDragging)
+            {
+                UpdatePreview(e);
+            }
+        }
+
+        private void ProgressSlider_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _isDragging = false;
+            ClearPreview();
+        }
+
+        private void UpdatePreview(PointerRoutedEventArgs e)
+        {
+            if (MediaPlayer == null || MediaPlayer.Duration <= 0)
+            {
+                return;
+            }
+
+            var point = e.GetCurrentPoint(ProgressSlider);
+            var fraction = point.Position.X / ProgressSlider.ActualWidth;
+            var hoverSec = Math.Max(0, fraction * MediaPlayer.Duration);
+
+            var controlPoint = ProgressSlider.TransformToVisual(this).TransformPoint(new Point(point.Position.X, 0));
+
+            PreviewUpdateRequested?.Invoke(this, (hoverSec, controlPoint.X, controlPoint.Y));
+        }
+
+        private void ClearPreview()
+        {
+            PreviewClearRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private void VolumeMuteButton_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
