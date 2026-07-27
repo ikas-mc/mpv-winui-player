@@ -59,7 +59,7 @@ public sealed partial class SettingsPage : Page
         {
             if (App.Window is MainWindow mainWindow)
             {
-                mainWindow.UpdateCurrentTheme(mainWindow.GetThemeType());
+                mainWindow.UpdateCurrentTheme();
             }
         });
     }

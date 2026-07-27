@@ -1,30 +1,32 @@
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using mpv_winui.Modules.Common.View;
 using Windows.Graphics;
 
 namespace mpv_winui.Modules.Settings;
 
 public sealed partial class SettingsWindow : Window
 {
+    private WindowStyleManager? _styleManager;
+
     public SettingsWindow()
     {
         InitializeComponent();
 
-        var appWindow = AppWindow;
-        appWindow.Title = "Settings";
+        Closed += SettingsWindow_Closed;
 
-        //appWindow.SetIcon("\\App.ico");
-        appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+        AppWindow.Title = "Settings";
+        AppWindow.SetIcon("App.ico");
+        AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
-        appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
-        appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+        _styleManager = new WindowStyleManager(this);
+        _styleManager?.Setup();
+    }
 
-        if (appWindow.Presenter is OverlappedPresenter presenter)
-        {
-            presenter.IsMaximizable = true;
-            presenter.IsResizable = true;
-        }
+    private void SettingsWindow_Closed(object sender, WindowEventArgs args)
+    {
+        Closed -= SettingsWindow_Closed;
+        _styleManager?.Dispose();
+        _styleManager = null;
     }
 
     private void PageFrame_Loaded(object sender, RoutedEventArgs e)
@@ -35,5 +37,10 @@ public sealed partial class SettingsWindow : Window
     public void MoveAndResize(RectInt32 rect)
     {
         AppWindow?.MoveAndResize(rect);
+    }
+
+    public void UpdateCurrentTheme()
+    {
+        _styleManager?.UpdateTheme(_styleManager.GetThemeType());
     }
 }

@@ -10,14 +10,11 @@ using mpv_winui.Modules.Settings;
 using System;
 using System.Collections.Generic;
 using Windows.Graphics;
-using Windows.UI.ViewManagement;
 
 namespace mpv_winui
 {
     public sealed partial class MainWindow : Window
     {
-        private readonly UISettings _uISettings = new();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -129,7 +126,7 @@ namespace mpv_winui
         {
             Activated -= Window_Activated;
             _settingsWindow?.Close();
-            CleanupTheme();
+            CleanupStyle();
         }
     }
 }
