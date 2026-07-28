@@ -28,7 +28,7 @@ d3d11-output-format=rgb10_a2
 
 ## Screenshot
 
-<img src="https://github.com/ikas-mc/mpv-winui-player/raw/refs/heads/main/screenshot.png" width="600" />
+<img src="https://raw.githubusercontent.com/ikas-mc/mpv-winui-player/main/screenshot/screenshot.png" width="600" />
 
 ## License
 
