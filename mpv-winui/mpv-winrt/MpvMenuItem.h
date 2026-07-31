@@ -3,11 +3,11 @@
 
 namespace winrt::mpv_winrt::implementation
 {
-    struct MpvMenuItem : MpvMenuItemT<MpvMenuItem>
+    struct MpvMenuItem: MpvMenuItemT<MpvMenuItem>
     {
-        MpvMenuItem(hstring const& title, hstring const& command, hstring const& type, bool isChecked, bool isDisabled, winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> const& items)
+        MpvMenuItem(hstring const& title, hstring const& command, hstring const& type, bool isChecked, bool isDisabled, bool isHidden, winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> const& items)
             : m_title(title), m_command(command), m_type(type),
-              m_isChecked(isChecked), m_isDisabled(isDisabled), m_items(items)
+            m_isChecked(isChecked), m_isDisabled(isDisabled), m_isHidden(isHidden), m_items(items)
         {
         }
 
@@ -31,6 +31,10 @@ namespace winrt::mpv_winrt::implementation
         {
             return m_isDisabled;
         }
+        bool IsHidden()
+        {
+            return m_isHidden;
+        }
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> Items()
         {
             return m_items;
@@ -42,6 +46,7 @@ namespace winrt::mpv_winrt::implementation
         hstring m_type;
         bool m_isChecked{};
         bool m_isDisabled{};
+        bool m_isHidden{};
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> m_items;
     };
 }

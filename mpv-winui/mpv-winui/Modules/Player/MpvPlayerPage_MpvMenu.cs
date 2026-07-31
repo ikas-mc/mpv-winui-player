@@ -110,6 +110,11 @@ namespace mpv_winui.Modules.Player
                     continue;
                 }
 
+                if (entry.IsHidden)
+                {
+                    continue;
+                }
+
                 if (entry.Type == "separator")
                 {
                     target.Add(new MenuFlyoutSeparator());
@@ -205,13 +210,7 @@ namespace mpv_winui.Modules.Player
                 _logger.Debug("mpv menu item click, cmd={}", cmd);
             }
 
-            var args = TokenizeCommand(cmd);
-            if (_logger.IsDebugEnabled)
-            {
-                _logger.Debug("mpv menu item click, args={}", args);
-            }
-
-            _mediaPlayer.RunCommandAsync(args).FireAndForget(OnException);
+            _mediaPlayer.RunCommandAsync(cmd).FireAndForget(OnException);
         }
 
         private List<string> TokenizeCommand(string cmd)

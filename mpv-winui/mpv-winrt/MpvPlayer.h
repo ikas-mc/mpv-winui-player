@@ -13,7 +13,7 @@
 namespace winrt::mpv_winrt::implementation
 {
 
-    enum MpvObserveId : uint64_t
+    enum MpvObserveId: uint64_t
     {
         CoreIdle = 1,
         Pause = 2,
@@ -45,7 +45,7 @@ namespace winrt::mpv_winrt::implementation
         Border = 206,
     };
 
-    struct MpvPlayer : MpvPlayerT<MpvPlayer>
+    struct MpvPlayer: MpvPlayerT<MpvPlayer>
     {
         MpvPlayer();
         ~MpvPlayer();
@@ -67,6 +67,7 @@ namespace winrt::mpv_winrt::implementation
         bool IsPaused();
 
         void Command(winrt::Windows::Foundation::Collections::IVector<hstring> const& args);
+        void CommandString(hstring const& cmd);
 
         double Volume();
         void Volume(double value);
@@ -207,7 +208,7 @@ namespace winrt::mpv_winrt::implementation
 
 namespace winrt::mpv_winrt::factory_implementation
 {
-    struct MpvPlayer : MpvPlayerT<MpvPlayer, implementation::MpvPlayer>
+    struct MpvPlayer: MpvPlayerT<MpvPlayer, implementation::MpvPlayer>
     {
     };
 }
