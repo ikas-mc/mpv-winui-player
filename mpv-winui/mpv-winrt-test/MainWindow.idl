@@ -1,8 +1,0 @@
-namespace mpv_winrt_test
-{
-    [default_interface]
-    runtimeclass MainWindow : Microsoft.UI.Xaml.Window
-    {
-        MainWindow();
-    }
-}
