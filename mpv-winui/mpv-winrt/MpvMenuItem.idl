@@ -7,6 +7,7 @@ namespace mpv_winrt
 		String Type { get; };
 		Boolean IsChecked { get; };
 		Boolean IsDisabled { get; };
+		Boolean IsHidden{ get; };
 		Windows.Foundation.Collections.IVectorView<MpvMenuItem> Items { get; };
 	};
 }

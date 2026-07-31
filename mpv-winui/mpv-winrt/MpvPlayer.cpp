@@ -149,7 +149,7 @@ namespace winrt::mpv_winrt::implementation
 
         m_eventThreadRunning.store(true);
         m_eventThread = std::thread([this]()
-                                    { ProcessEvents(); });
+        { ProcessEvents(); });
     }
 
     void MpvPlayer::StopEventThread()
@@ -200,205 +200,205 @@ namespace winrt::mpv_winrt::implementation
     {
         switch (event->event_id)
         {
-        case MPV_EVENT_FILE_LOADED:
-        {
-            m_fileLoadedEvent();
-            break;
-        }
-
-        case MPV_EVENT_START_FILE:
-        {
-            break;
-        }
-
-        case MPV_EVENT_PLAYBACK_RESTART:
-        {
-            m_mediaLoadedEvent();
-            break;
-        }
-
-        case MPV_EVENT_END_FILE:
-        {
-            auto end_file = static_cast<mpv_event_end_file*>(event->data);
-            if (end_file->reason == MPV_END_FILE_REASON_EOF)
-            {
-                m_playbackEndedEvent();
-            }
-            else if (end_file->reason == MPV_END_FILE_REASON_ERROR)
-            {
-                auto args = winrt::make<implementation::PlaybackFailedEventArgs>(
-                    winrt::to_hstring(mpv_error_string(end_file->error)));
-                m_playbackFailedEvent(args);
-            }
-            break;
-        }
-
-        case MPV_EVENT_SEEK:
-        {
-            m_seekedEvent();
-            break;
-        }
-
-        case MPV_EVENT_VIDEO_RECONFIG:
-        {
-            IDXGISwapChain* swapChain = nullptr;
-            mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
-            if (swapChain != m_swapChain.load())
-            {
-                m_swapChain.store(swapChain);
-                m_voConfiguredEvent();
-            }
-            break;
-        }
-
-        case MPV_EVENT_PROPERTY_CHANGE:
-        {
-            auto prop = static_cast<mpv_event_property*>(event->data);
-            if (!prop)
-            {
-                break;
-            }
-
-            switch (event->reply_userdata)
-            {
-            case MpvObserveId::CoreIdle:
-                break;
-
-            case MpvObserveId::Pause:
-            {
-                int video_paused = prop->data ? *static_cast<int*>(prop->data) : 0;
-                auto args = winrt::make<implementation::PlaybackStateChangedEventArgs>(video_paused, false);
-                m_playbackStateChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::Volume:
-            case MpvObserveId::Mute:
-            {
-                double volume = GetDoubleProperty("volume");
-                bool isMuted = IsStringPropertyEqual("mute", "yes");
-                auto args = winrt::make<implementation::VolumeChangedEventArgs>(volume, isMuted);
-                m_volumeChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::PlaybackTime:
-            case MpvObserveId::TimePos:
-            case MpvObserveId::Duration:
-            {
-                double position = GetDoubleProperty("time-pos");
-                double duration = GetDoubleProperty("duration");
-                double percentPos = GetDoubleProperty("percent-pos");
-                auto args = winrt::make<implementation::PositionChangedEventArgs>(
-                    position, duration, percentPos);
-                m_positionChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::Speed:
-            {
-                double speed = GetDoubleProperty("speed");
-                auto args = winrt::make<implementation::SpeedChangedEventArgs>(speed);
-                m_speedChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::CacheSpeed:
-            {
-                int64_t cacheSpeed = GetInt64Property("cache-speed");
-                auto args = winrt::make<implementation::NetworkInfoChangedEventArgs>(cacheSpeed);
-                m_networkInfoChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::Filename:
-            case MpvObserveId::MediaTitle:
-            {
-                auto args = winrt::make<implementation::MediaInfoChangedEventArgs>(GetHStringProperty("filename"), GetHStringProperty("media-title"));
-                m_mediaInfoChangedEvent(args);
-                break;
-            }
-
-            case MpvObserveId::LoopFile:
-            {
-                m_loopFileChangedEvent();
-                break;
-            }
-
-            case MpvObserveId::LoopPlaylist:
-            {
-                m_loopPlaylistChangedEvent();
-                break;
-            }
-
-            case MpvObserveId::Shuffle:
-            {
-                m_shuffleChangedEvent();
-                break;
-            }
-
-            case MpvObserveId::Aid:
-            case MpvObserveId::Sid:
-            {
-                m_trackChangedEvent();
-                break;
-            }
-
-            case MpvObserveId::MenuData:
-            {
-                if (prop->format == MPV_FORMAT_NODE)
+            case MPV_EVENT_FILE_LOADED:
                 {
-                    mpv_node* root = static_cast<mpv_node*>(prop->data);
-                    if (root && root->format == MPV_FORMAT_NODE_ARRAY)
+                    m_fileLoadedEvent();
+                    break;
+                }
+
+            case MPV_EVENT_START_FILE:
+                {
+                    break;
+                }
+
+            case MPV_EVENT_PLAYBACK_RESTART:
+                {
+                    m_mediaLoadedEvent();
+                    break;
+                }
+
+            case MPV_EVENT_END_FILE:
+                {
+                    auto end_file = static_cast<mpv_event_end_file*>(event->data);
+                    if (end_file->reason == MPV_END_FILE_REASON_EOF)
                     {
-                        // TODO
+                        m_playbackEndedEvent();
                     }
+                    else if (end_file->reason == MPV_END_FILE_REASON_ERROR)
+                    {
+                        auto args = winrt::make<implementation::PlaybackFailedEventArgs>(
+                            winrt::to_hstring(mpv_error_string(end_file->error)));
+                        m_playbackFailedEvent(args);
+                    }
+                    break;
                 }
-                break;
-            }
 
-            case MpvObserveId::TrackListCount:
-            {
-                if (prop->format == MPV_FORMAT_INT64 && prop->data)
+            case MPV_EVENT_SEEK:
                 {
-                    auto count = *static_cast<int*>(prop->data);
-                    auto args = winrt::make<implementation::TrackListCountChangedEventArgs>(count);
-                    m_trackListCountChangedEvent(args);
+                    m_seekedEvent();
+                    break;
                 }
-                break;
-            }
 
-            case MpvObserveId::TrackList:
-            {
-                if (prop->format == MPV_FORMAT_NODE && prop->data)
+            case MPV_EVENT_VIDEO_RECONFIG:
                 {
-                    // TODO
-                    auto tracks = winrt::single_threaded_vector<winrt::mpv_winrt::MpvTrack>();
-                    auto args = winrt::make<implementation::TrackListChangedEventArgs>(tracks.GetView());
-                    m_trackListChangedEvent(args);
+                    IDXGISwapChain* swapChain = nullptr;
+                    mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &swapChain);
+                    if (swapChain != m_swapChain.load())
+                    {
+                        m_swapChain.store(swapChain);
+                        m_voConfiguredEvent();
+                    }
+                    break;
                 }
-                break;
-            }
 
-            case MpvObserveId::Fullscreen:
-            case MpvObserveId::Ontop:
-            case MpvObserveId::WindowMinimized:
-            case MpvObserveId::WindowMaximized:
-            case MpvObserveId::TitleBar:
-            case MpvObserveId::Border:
-            {
-                bool value = prop->data ? *static_cast<int*>(prop->data) != 0 : false;
-                auto args = winrt::make<implementation::WindowChangedEventArgs>(
-                    winrt::to_hstring(prop->name), static_cast<int32_t>(event->reply_userdata), value);
-                m_windowChangedEvent(args);
-                break;
-            }
+            case MPV_EVENT_PROPERTY_CHANGE:
+                {
+                    auto prop = static_cast<mpv_event_property*>(event->data);
+                    if (!prop)
+                    {
+                        break;
+                    }
 
-            default:
-                break;
-            }
-            break;
-        }
+                    switch (event->reply_userdata)
+                    {
+                        case MpvObserveId::CoreIdle:
+                            break;
+
+                        case MpvObserveId::Pause:
+                            {
+                                int video_paused = prop->data ? *static_cast<int*>(prop->data) : 0;
+                                auto args = winrt::make<implementation::PlaybackStateChangedEventArgs>(video_paused, false);
+                                m_playbackStateChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::Volume:
+                        case MpvObserveId::Mute:
+                            {
+                                double volume = GetDoubleProperty("volume");
+                                bool isMuted = IsStringPropertyEqual("mute", "yes");
+                                auto args = winrt::make<implementation::VolumeChangedEventArgs>(volume, isMuted);
+                                m_volumeChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::PlaybackTime:
+                        case MpvObserveId::TimePos:
+                        case MpvObserveId::Duration:
+                            {
+                                double position = GetDoubleProperty("time-pos");
+                                double duration = GetDoubleProperty("duration");
+                                double percentPos = GetDoubleProperty("percent-pos");
+                                auto args = winrt::make<implementation::PositionChangedEventArgs>(
+                                    position, duration, percentPos);
+                                m_positionChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::Speed:
+                            {
+                                double speed = GetDoubleProperty("speed");
+                                auto args = winrt::make<implementation::SpeedChangedEventArgs>(speed);
+                                m_speedChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::CacheSpeed:
+                            {
+                                int64_t cacheSpeed = GetInt64Property("cache-speed");
+                                auto args = winrt::make<implementation::NetworkInfoChangedEventArgs>(cacheSpeed);
+                                m_networkInfoChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::Filename:
+                        case MpvObserveId::MediaTitle:
+                            {
+                                auto args = winrt::make<implementation::MediaInfoChangedEventArgs>(GetHStringProperty("filename"), GetHStringProperty("media-title"));
+                                m_mediaInfoChangedEvent(args);
+                                break;
+                            }
+
+                        case MpvObserveId::LoopFile:
+                            {
+                                m_loopFileChangedEvent();
+                                break;
+                            }
+
+                        case MpvObserveId::LoopPlaylist:
+                            {
+                                m_loopPlaylistChangedEvent();
+                                break;
+                            }
+
+                        case MpvObserveId::Shuffle:
+                            {
+                                m_shuffleChangedEvent();
+                                break;
+                            }
+
+                        case MpvObserveId::Aid:
+                        case MpvObserveId::Sid:
+                            {
+                                m_trackChangedEvent();
+                                break;
+                            }
+
+                        case MpvObserveId::MenuData:
+                            {
+                                if (prop->format == MPV_FORMAT_NODE)
+                                {
+                                    mpv_node* root = static_cast<mpv_node*>(prop->data);
+                                    if (root && root->format == MPV_FORMAT_NODE_ARRAY)
+                                    {
+                                        // TODO
+                                    }
+                                }
+                                break;
+                            }
+
+                        case MpvObserveId::TrackListCount:
+                            {
+                                if (prop->format == MPV_FORMAT_INT64 && prop->data)
+                                {
+                                    auto count = *static_cast<int*>(prop->data);
+                                    auto args = winrt::make<implementation::TrackListCountChangedEventArgs>(count);
+                                    m_trackListCountChangedEvent(args);
+                                }
+                                break;
+                            }
+
+                        case MpvObserveId::TrackList:
+                            {
+                                if (prop->format == MPV_FORMAT_NODE && prop->data)
+                                {
+                                    // TODO
+                                    auto tracks = winrt::single_threaded_vector<winrt::mpv_winrt::MpvTrack>();
+                                    auto args = winrt::make<implementation::TrackListChangedEventArgs>(tracks.GetView());
+                                    m_trackListChangedEvent(args);
+                                }
+                                break;
+                            }
+
+                        case MpvObserveId::Fullscreen:
+                        case MpvObserveId::Ontop:
+                        case MpvObserveId::WindowMinimized:
+                        case MpvObserveId::WindowMaximized:
+                        case MpvObserveId::TitleBar:
+                        case MpvObserveId::Border:
+                            {
+                                bool value = prop->data ? *static_cast<int*>(prop->data) != 0 : false;
+                                auto args = winrt::make<implementation::WindowChangedEventArgs>(
+                                    winrt::to_hstring(prop->name), static_cast<int32_t>(event->reply_userdata), value);
+                                m_windowChangedEvent(args);
+                                break;
+                            }
+
+                        default:
+                            break;
+                    }
+                    break;
+                }
         }
     }
 
@@ -710,6 +710,12 @@ namespace winrt::mpv_winrt::implementation
         mpv_command(m_mpv, cArgs.data());
     }
 
+    void MpvPlayer::CommandString(hstring const& cmd)
+    {
+        const auto args = winrt::to_string(cmd);
+        mpv_command_string(m_mpv, args.c_str());
+    }
+
     bool MpvPlayer::IsPaused()
     {
         if (!m_mpv)
@@ -740,9 +746,9 @@ namespace winrt::mpv_winrt::implementation
         {
             value = 0;
         }
-        if (value > 150)
+        if (value > 100)
         {
-            value = 150;
+            value = 100;
         }
         SetDoubleProperty("volume", value);
     }
@@ -1649,6 +1655,7 @@ namespace winrt::mpv_winrt::implementation
             winrt::hstring type{L"command"};
             bool isChecked = false;
             bool isDisabled = false;
+            bool isHidden = false;
             mpv_node* subItemsNode = nullptr;
 
             auto* itemList = itemNode->u.list;
@@ -1685,6 +1692,10 @@ namespace winrt::mpv_winrt::implementation
                             {
                                 isDisabled = true;
                             }
+                            if (s == "hidden")
+                            {
+                                isHidden = true;
+                            }
                         }
                     }
                 }
@@ -1695,11 +1706,11 @@ namespace winrt::mpv_winrt::implementation
             }
 
             auto subItems = subItemsNode
-                                ? ParseMenuNode(subItemsNode)
-                                : winrt::single_threaded_vector<winrt::mpv_winrt::MpvMenuItem>().GetView();
+                ? ParseMenuNode(subItemsNode)
+                : winrt::single_threaded_vector<winrt::mpv_winrt::MpvMenuItem>().GetView();
 
             items.Append(winrt::make<implementation::MpvMenuItem>(
-                title, command, type, isChecked, isDisabled, subItems));
+                title, command, type, isChecked, isDisabled, isHidden, subItems));
         }
 
         return items.GetView();
@@ -1738,15 +1749,15 @@ namespace winrt::mpv_winrt::implementation
         const char* cs;
         switch (colorKind)
         {
-        case winrt::mpv_winrt::DisplayColorKind::HDR:
-            cs = "HDR";
-            break;
-        case winrt::mpv_winrt::DisplayColorKind::WCG:
-            cs = "WCG";
-            break;
-        default:
-            cs = "SDR";
-            break;
+            case winrt::mpv_winrt::DisplayColorKind::HDR:
+                cs = "HDR";
+                break;
+            case winrt::mpv_winrt::DisplayColorKind::WCG:
+                cs = "WCG";
+                break;
+            default:
+                cs = "SDR";
+                break;
         }
         SetStringProperty("user-data/mpvw/color-kind", cs);
     }

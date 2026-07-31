@@ -60,6 +60,7 @@ namespace mpv_winrt
         Boolean IsPaused();
 
         void Command(Windows.Foundation.Collections.IVector<String> args);
+        void CommandString(String cmd);
 
         Double Volume();
         void Volume(Double value);

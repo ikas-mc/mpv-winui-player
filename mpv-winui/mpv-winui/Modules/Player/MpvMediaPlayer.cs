@@ -1,10 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using mpv_winrt;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.Player
@@ -392,6 +389,14 @@ namespace mpv_winui.Modules.Player
             if (args?.Count > 0)
             {
                 await Task.Run(() => _mpvPlayer.Command(args));
+            }
+        }
+
+        public async ValueTask RunCommandAsync(string cmd)
+        {
+            if (!string.IsNullOrEmpty(cmd))
+            {
+                await Task.Run(() => _mpvPlayer.CommandString(cmd));
             }
         }
 
