@@ -3,9 +3,8 @@
         <Platform Name="ARM64" />
         <Platform Name="x64" />
     </Configurations>
-    <Project Path="mpv-winrt-test/mpv-winrt-test.vcxproj" Id="4567618d-9071-4801-95ad-cea7d3b32cff">
-        <Deploy />
-    </Project>
+    <Project Path="mpv-winrt-projection/mpv-winrt-projection.csproj" />
+    <Project Path="mpv-winrt-test/mpv-winrt-test.csproj" Id="8bf7ac27-c948-4ebe-9195-7e44ea047997" />
     <Project Path="mpv-winrt/mpv-winrt.vcxproj" Id="bc8615e9-1004-4cf4-8686-d35ec59dc200" />
     <Project Path="mpv-winui/mpv-winui.csproj">
         <Platform Solution="*|ARM64" Project="ARM64" />
