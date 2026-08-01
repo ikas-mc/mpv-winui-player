@@ -9,31 +9,43 @@ namespace mpv_winui
 {
     public sealed partial class MainWindow : Window
     {
-        private int _x, _y, _w, _h;
+        public const int MIN_LOGICAL_WIDTH = 250;
+        public const int MIN_LOGICAL_HEIGHT = 250;
+
+        private int _x;
+        private int _y;
+        private int _w;
+        private int _h;
+
         private void SetupWindowSize()
         {
+            var lastRect = string.Empty;
             try
             {
-                string saved = AppContext.AppSetting.WindowPositionAndSize;
-                if (!string.IsNullOrEmpty(saved))
+                lastRect = AppContext.AppSetting.WindowPositionAndSize;
+                if (!string.IsNullOrEmpty(lastRect))
                 {
-                    int[] v = Array.ConvertAll(saved.Split(','), int.Parse);
+                    int[] v = Array.ConvertAll(lastRect.Split(','), int.Parse);
                     if (v.Length == 4)
                     {
-                        if (v[0] > 0 && v[1] > 0 && v[2] > 0 && v[3] > 0)
+                        _x = v[0];
+                        _y = v[1];
+                        _w = v[2];
+                        _h = v[3];
+                        if (_x > 0 && _y > 0 && _w > 0 && _h > 0)
                         {
-                            AppWindow.MoveAndResize(new RectInt32(v[0], v[1], Math.Max(100, v[2]), Math.Max(100, v[3])));
+                            AppWindow.MoveAndResize(new RectInt32(_x, _y, Math.Max(100, _w), Math.Max(100, _h)));
                         }
-                        else if (v[2] > 0 && v[3] > 0)
+                        else if (_w > 0 && _h > 0)
                         {
-                            AppWindow.Resize(new SizeInt32(Math.Max(100, v[2]), Math.Max(100, v[3])));
+                            AppWindow.Resize(new SizeInt32(Math.Max(100, _w), Math.Max(100, _h)));
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppContext.AppLogger.Error(ex, "restore window position and size failed");
+                AppContext.AppLogger.Error(ex, "restore window position and size failed, saved={}", lastRect);
             }
 
             this.Body.Loaded += Body_Loaded;
@@ -90,6 +102,10 @@ namespace mpv_winui
             try
             {
                 AppContext.AppSetting.WindowPositionAndSize = $"{_x},{_y},{_w},{_h}";
+                if (AppContext.AppLogger.IsTraceEnabled)
+                {
+                    AppContext.AppLogger.Debug("save window position and size: x={},y={},w={},h={}.", _x, _y, _w, _h);
+                }
             }
             catch (Exception ex)
             {
@@ -102,7 +118,7 @@ namespace mpv_winui
             if (sender is FrameworkElement body)
             {
                 body.XamlRoot?.Changed += RootGridXamlRoot_Changed;
-                this.SetWindowMinSize(250, 250);
+                this.SetWindowMinSize(MIN_LOGICAL_WIDTH, MIN_LOGICAL_HEIGHT);
             }
         }
 
@@ -116,7 +132,7 @@ namespace mpv_winui
 
         private void RootGridXamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
         {
-            this.SetWindowMinSize(250, 250);
+            this.SetWindowMinSize(MIN_LOGICAL_WIDTH, MIN_LOGICAL_HEIGHT);
         }
     }
 }
