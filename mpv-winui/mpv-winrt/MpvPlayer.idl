@@ -62,6 +62,10 @@ namespace mpv_winrt
         void Command(Windows.Foundation.Collections.IVector<String> args);
         void CommandString(String cmd);
 
+        String GetWatchHistoryPath();
+        String GetWatchLaterFolderPath();
+        Boolean SaveWatchHistory();
+
         Double Volume();
         void Volume(Double value);
         Boolean IsMuted();

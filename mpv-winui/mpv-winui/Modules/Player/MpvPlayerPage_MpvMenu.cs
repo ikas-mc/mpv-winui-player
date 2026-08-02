@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace mpv_winui.Modules.Player
@@ -32,6 +33,7 @@ namespace mpv_winui.Modules.Player
         private void AddOpenHeaderItems(IList<MenuFlyoutItemBase> target)
         {
             var openSub = new MenuFlyoutSubItem { Text = "File" };
+            target.Add(openSub);
 
             var item = new MenuFlyoutItem { Text = "Open File", Tag = "open" };
             item.Click += Item_Click;
@@ -50,7 +52,14 @@ namespace mpv_winui.Modules.Player
             openSub.Items.Add(item);
 
             openSub.Items.Add(new MenuFlyoutSeparator());
-            target.Add(openSub);
+
+            item = new MenuFlyoutItem { Text = "Open Watch History", Tag = "open-watch-history" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
+
+            item = new MenuFlyoutItem { Text = "Open Watch Later", Tag = "open-watch-later" };
+            item.Click += Item_Click;
+            openSub.Items.Add(item);
 
             item = new MenuFlyoutItem { Text = "Playlist", Tag = "playlist" };
             item.Click += Item_Click;
@@ -101,7 +110,7 @@ namespace mpv_winui.Modules.Player
 
         private void AddMenuDataItems(IList<MenuFlyoutItemBase> target, IReadOnlyList<MpvMenuItem> items)
         {
-
+            bool isSeparatorPre = false;
             foreach (var entry in items)
             {
                 //TODO
@@ -117,9 +126,14 @@ namespace mpv_winui.Modules.Player
 
                 if (entry.Type == "separator")
                 {
-                    target.Add(new MenuFlyoutSeparator());
+                    if (!isSeparatorPre)
+                    {
+                        target.Add(new MenuFlyoutSeparator());
+                    }
+                    isSeparatorPre = true;
                     continue;
                 }
+                isSeparatorPre = false;
 
                 if (entry.Type == "submenu" && entry.Items.Count > 0)
                 {
@@ -149,45 +163,84 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        private void Item_Click(object sender, RoutedEventArgs e)
+        private async void Item_Click(object sender, RoutedEventArgs e)
         {
             if (sender is MenuFlyoutItem { Tag: string tag })
             {
-                switch (tag)
+                try
                 {
-                    case "open":
-                        _ = OpenFileAsync();
-                        break;
-                    case "open-folder":
-                        _ = OpenFolderAsync();
-                        break;
-                    case "open-url":
-                        _ = OpenUrlAsync();
-                        break;
-                    case "open-clipboard":
-                        _ = OpenClipboardAsync();
-                        break;
-                    case "open-dvd":
-                        _ = OpenDvdAsync();
-                        break;
-                    case "open-bd":
-                        _ = OpenBdAsync();
-                        break;
-                    case "load-subtitle":
-                        _ = LoadSubtitleAsync();
-                        break;
-                    case "quit":
-                        AppQuit();
-                        break;
-                    case "fullscreen":
-                        PlayerControl.ToggleFullScreen();
-                        break;
-                    case "fullwindow":
-                        PlayerControl.ToggleFullWindow();
-                        break;
-                    case "playlist":
-                        TogglePlaylist(true);
-                        break;
+                    switch (tag)
+                    {
+                        case "open":
+                        {
+                            await OpenFileAsync();
+                            break;
+                        }
+                        case "open-folder":
+                        {
+                            await OpenFolderAsync();
+                            break;
+                        }
+                        case "open-url":
+                        {
+                            await OpenUrlAsync();
+                            break;
+                        }
+                        case "open-clipboard":
+                        {
+                            await OpenClipboardAsync();
+                            break;
+                        }
+                        case "open-dvd":
+                        {
+                            await OpenDvdAsync();
+                            break;
+                        }
+                        case "open-bd":
+                        {
+                            await OpenBdAsync();
+                            break;
+                        }
+                        case "load-subtitle":
+                        {
+                            await LoadSubtitleAsync();
+                            break;
+                        }
+                        case "quit":
+                        {
+                            AppQuit();
+                            break;
+                        }
+                        case "fullscreen":
+                        {
+                            PlayerControl.ToggleFullScreen();
+                            break;
+                        }
+                        case "fullwindow":
+                        {
+                            PlayerControl.ToggleFullWindow();
+                            break;
+                        }
+                        case "playlist":
+                        {
+                            TogglePlaylist(true);
+                            break;
+                        }
+                        case "open-watch-history":
+                        {
+                            await ShowWatchHistoryDialogAsync();
+                            break;
+                        }
+                        case "open-watch-later":
+                        {
+                            await ShowWatchLaterDialogAsync();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    OnException(ex);
                 }
             }
         }
@@ -195,7 +248,7 @@ namespace mpv_winui.Modules.Player
         private bool CheckMpvMenu(MpvMenuItem mpvMenuItem)
         {
             //TODO remove&  check cmd ??
-            if (mpvMenuItem.Title == "&Stop" || mpvMenuItem.Title == "&Quit" || mpvMenuItem.Title == "Quit an&d save position")
+            if (mpvMenuItem.Title == "Ope&n" || mpvMenuItem.Title == "&Stop" || mpvMenuItem.Title == "&Quit" || mpvMenuItem.Title == "Quit an&d save position")
             {
                 return false;
             }
