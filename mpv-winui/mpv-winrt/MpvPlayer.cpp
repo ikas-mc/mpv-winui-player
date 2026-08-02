@@ -716,6 +716,44 @@ namespace winrt::mpv_winrt::implementation
         mpv_command_string(m_mpv, args.c_str());
     }
 
+    winrt::hstring MpvPlayer::GetWatchHistoryPath()
+    {
+        if (!m_mpv)
+        {
+            return L"";
+        }
+
+        char* raw = nullptr;
+        if (mpv_get_property(m_mpv, "watch-history-path", MPV_FORMAT_STRING, &raw) < 0 || !raw)
+        {
+            return L"";
+        }
+
+        const char* args[] = {"expand-path", raw, nullptr};
+        mpv_node result{};
+        if (mpv_command_ret(m_mpv, args, &result) < 0 || result.format != MPV_FORMAT_STRING || !result.u.string)
+        {
+            mpv_free(raw);
+            mpv_free_node_contents(&result);
+            return L"";
+        }
+
+        auto expanded = winrt::to_hstring(result.u.string);
+        mpv_free(raw);
+        mpv_free_node_contents(&result);
+        return expanded;
+    }
+
+    winrt::hstring MpvPlayer::GetWatchLaterFolderPath()
+    {
+        return GetHStringProperty("current-watch-later-dir");
+    }
+
+    bool MpvPlayer::SaveWatchHistory()
+    {
+        return GetFlagProperty("save-watch-history");
+    }
+
     bool MpvPlayer::IsPaused()
     {
         if (!m_mpv)
@@ -1128,6 +1166,17 @@ namespace winrt::mpv_winrt::implementation
             return hstring;
         }
         return L"";
+    }
+
+    bool MpvPlayer::GetFlagProperty(const char* name)
+    {
+        if (!m_mpv)
+        {
+            return false;
+        }
+
+        int flag = 0;
+        return mpv_get_property(m_mpv, name, MPV_FORMAT_FLAG, &flag) >= 0 && flag != 0;
     }
 
     bool MpvPlayer::IsStringPropertyEqual(const char* name, std::string_view expected)

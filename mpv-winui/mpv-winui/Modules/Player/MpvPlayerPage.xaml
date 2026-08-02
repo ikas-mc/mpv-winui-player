@@ -141,6 +141,15 @@
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
+                    Tag="open-watch-history"
+                    Text="Open Watch History" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="open-watch-later"
+                    Text="Open Watch Later" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
                     Tag="load-subtitle"
                     Text="Add Subtitle" />
                 <MenuFlyoutSeparator />

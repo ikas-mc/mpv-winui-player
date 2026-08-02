@@ -63,6 +63,16 @@ namespace mpv_winui.Modules.Player
                             TogglePlaylist(true);
                             break;
                         }
+                        case "open-watch-history":
+                        {
+                            await ShowWatchHistoryDialogAsync();
+                            break;
+                        }
+                        case "open-watch-later":
+                        {
+                            await ShowWatchLaterDialogAsync();
+                            break;
+                        }
                         case "restart":
                         {
                             if (App.Window is MainWindow mainWindow)

@@ -69,6 +69,10 @@ namespace winrt::mpv_winrt::implementation
         void Command(winrt::Windows::Foundation::Collections::IVector<hstring> const& args);
         void CommandString(hstring const& cmd);
 
+        winrt::hstring GetWatchHistoryPath();
+        winrt::hstring GetWatchLaterFolderPath();
+        bool SaveWatchHistory();
+
         double Volume();
         void Volume(double value);
         bool IsMuted();
@@ -172,6 +176,7 @@ namespace winrt::mpv_winrt::implementation
         double GetDoubleProperty(const char* name);
         int64_t GetInt64Property(const char* name);
         winrt::hstring GetHStringProperty(const char* name);
+        bool GetFlagProperty(const char* name);
         bool IsStringPropertyEqual(const char* name, std::string_view expected);
         void SetDoubleProperty(const char* name, double value);
         void SetInt64Property(const char* name, int64_t value);
