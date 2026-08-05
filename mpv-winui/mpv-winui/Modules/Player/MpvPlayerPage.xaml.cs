@@ -57,7 +57,7 @@ namespace mpv_winui.Modules.Player
 
                 PlayerControl.MediaPlayer = _mediaPlayer;
 
-                _mediaPlayer.MediaOpened += MediaOpened;
+                _mediaPlayer.PlaylistChanged += MpvPlayerPage_PlaylistChanged;
                 _mediaPlayer.VolumeChangedChanged += VolumeChangedChanged;
                 _mediaPlayer.WindowChanged += MpvPlayerPage_WindowChanged;
                 _mediaPlayer.MediaInfoChanged += MpvPlayerPage_MediaInfoChanged;
@@ -78,7 +78,7 @@ namespace mpv_winui.Modules.Player
         {
             CleanupDisplayInfo();
 
-            _mediaPlayer.MediaOpened -= MediaOpened;
+            _mediaPlayer.PlaylistChanged -= MpvPlayerPage_PlaylistChanged;
             _mediaPlayer.VolumeChangedChanged -= VolumeChangedChanged;
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
             _mediaPlayer.MediaInfoChanged -= MpvPlayerPage_MediaInfoChanged;
@@ -108,17 +108,6 @@ namespace mpv_winui.Modules.Player
         private void VolumeChangedChanged(MpvMediaPlayer player, int volume)
         {
             AppContext.AppSetting.LastVideoVolume = volume;
-        }
-
-        private void MediaOpened(MpvMediaPlayer player, object? arg2)
-        {
-            DispatcherQueue.RunAsync(() =>
-            {
-                if (NeedUpdatePlaylist())
-                {
-                    RefreshPlaylistAsync();
-                }
-            });
         }
 
         private void PlayerView_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)

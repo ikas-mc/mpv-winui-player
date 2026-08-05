@@ -110,6 +110,7 @@ namespace winrt::mpv_winrt::implementation
         mpv_observe_property(m_mpv, MpvObserveId::LoopFile, "loop-file", MPV_FORMAT_STRING);
         mpv_observe_property(m_mpv, MpvObserveId::LoopPlaylist, "loop-playlist", MPV_FORMAT_STRING);
         mpv_observe_property(m_mpv, MpvObserveId::Shuffle, "shuffle", MPV_FORMAT_STRING);
+        mpv_observe_property(m_mpv, MpvObserveId::Playlist, "playlist", MPV_FORMAT_NODE);
 
         // mpv_observe_property(m_mpv, MpvObserveId::CacheSpeed, "cache-speed", MPV_FORMAT_INT64);
         mpv_observe_property(m_mpv, MpvObserveId::Speed, "speed", MPV_FORMAT_DOUBLE);
@@ -334,6 +335,12 @@ namespace winrt::mpv_winrt::implementation
                         case MpvObserveId::Shuffle:
                             {
                                 m_shuffleChangedEvent();
+                                break;
+                            }
+
+                        case MpvObserveId::Playlist:
+                            {
+                                m_playlistChangedEvent();
                                 break;
                             }
 
@@ -592,6 +599,16 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::ShuffleChanged(winrt::event_token const& token) noexcept
     {
         m_shuffleChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::PlaylistChanged(winrt::mpv_winrt::PlaylistChangedEventHandler const& handler)
+    {
+        return m_playlistChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::PlaylistChanged(winrt::event_token const& token) noexcept
+    {
+        m_playlistChangedEvent.remove(token);
     }
 
     void MpvPlayer::UpdateSize(uint32_t width, uint32_t height)
