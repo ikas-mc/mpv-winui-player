@@ -81,6 +81,17 @@ namespace mpv_winui.Modules.Player
             return PlaylistContainer.Visibility == Visibility.Visible;
         }
 
+        private void MpvPlayerPage_PlaylistChanged(MpvMediaPlayer player, object? arg2)
+        {
+            DispatcherQueue.RunAsync(() =>
+            {
+                if (NeedUpdatePlaylist())
+                {
+                    RefreshPlaylistAsync();
+                }
+            });
+        }
+
         private void TogglePlaylist(bool refresh = false)
         {
             if (PlaylistContainer.Visibility == Visibility.Collapsed)

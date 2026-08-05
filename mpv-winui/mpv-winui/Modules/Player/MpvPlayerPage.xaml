@@ -364,6 +364,7 @@
                         <Setter Target="MenuRow.Height" Value="0" />
                         <Setter Target="PlayerControl.(Grid.Row)" Value="1" />
                         <Setter Target="PlaylistToolBar.HorizontalAlignment" Value="Left" />
+                        <Setter Target="PlaylistToolBar.Margin" Value="4,-6,8,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
