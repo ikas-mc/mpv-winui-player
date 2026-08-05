@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:Microsoft.UI.Xaml.Media"
     mc:Ignorable="d">
 
     <ResourceDictionary.ThemeDictionaries>
@@ -11,11 +10,17 @@
             <SolidColorBrush
                 x:Key="MpvPlayControlBackground"
                 Color="#60FFFFFF" />
+            <SolidColorBrush
+                x:Key="MpvControlBackground"
+                Color="#D0FFFFFF" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush
                 x:Key="MpvPlayControlBackground"
                 Color="#80000000" />
+            <SolidColorBrush
+                x:Key="MpvControlBackground"
+                Color="#B0000000" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

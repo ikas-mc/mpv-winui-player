@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
     <UserControl.Resources>
         <Style
@@ -17,157 +16,183 @@
             <Setter Property="IsTabStop" Value="False" />
         </Style>
     </UserControl.Resources>
-    <Grid
-        Padding="8"
-        ColumnSpacing="8"
-        RowSpacing="8">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition
-                Height="*"
-                MinHeight="100" />
-            <RowDefinition />
-            <RowDefinition
-                Height="*"
-                MinHeight="100" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="200" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="4,4,0,0"
-            FontSize="14"
-            FontWeight="Bold"
-            Opacity="0.8"
-            Text="{x:Bind r:AppContext.AppLang.VideoTracks}" />
-        <ListView
-            x:Name="VideoListView"
-            Grid.Row="1"
-            Grid.Column="0"
-            IsItemClickEnabled="True"
-            IsTabStop="False"
-            ItemClick="VideoListView_ItemClick"
-            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
-            ItemsSource="{x:Bind VideoItems, Mode=OneWay}"
-            SelectionMode="Single"
-            SingleSelectionFollowsFocus="False">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:TrackItem">
-                    <TextBlock
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap"
-                        ToolTipService.ToolTip="{x:Bind Label}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="4,4,0,0"
-            FontSize="14"
-            FontWeight="Bold"
-            Opacity="0.8"
-            Text="{x:Bind r:AppContext.AppLang.AudioTracks}" />
-        <ListView
-            x:Name="AudioListView"
-            Grid.Row="3"
-            Grid.Column="0"
-            IsItemClickEnabled="True"
-            IsTabStop="False"
-            ItemClick="AudioListView_ItemClick"
-            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
-            ItemsSource="{x:Bind AudioItems, Mode=OneWay}"
-            SelectionMode="Single"
-            SingleSelectionFollowsFocus="False">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:TrackItem">
-                    <TextBlock
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap"
-                        ToolTipService.ToolTip="{x:Bind Label}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="4,4,0,0"
-            FontSize="14"
-            FontWeight="Bold"
-            Opacity="0.8"
-            Text="{x:Bind r:AppContext.AppLang.Subtitles}" />
-        <ListView
-            x:Name="SubtitleListView"
-            Grid.Row="1"
-            Grid.Column="1"
-            IsItemClickEnabled="True"
-            IsTabStop="False"
-            ItemClick="SubtitleListView_ItemClick"
-            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
-            ItemsSource="{x:Bind SubtitleItems, Mode=OneWay}"
-            SelectionMode="Single"
-            SingleSelectionFollowsFocus="False">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:TrackItem">
-                    <TextBlock
-                        MaxLines="2"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Label}"
-                        TextWrapping="NoWrap"
-                        ToolTipService.ToolTip="{x:Bind Label}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <TextBlock
-            x:Name="SecondSubTitle"
-            Grid.Row="2"
-            Grid.Column="1"
-            Margin="4,4,0,0"
-            FontSize="14"
-            FontWeight="Bold"
-            Opacity="0.8"
-            Text="{x:Bind r:AppContext.AppLang.SecondSubtitle}" />
-        <ListView
-            x:Name="SecondSubListView"
-            Grid.Row="3"
-            Grid.Column="1"
-            IsItemClickEnabled="True"
-            IsTabStop="False"
-            ItemClick="SecondSubListView_ItemClick"
-            ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
-            ItemsSource="{x:Bind SecondSubItems, Mode=OneWay}"
-            SelectionMode="Single"
-            SingleSelectionFollowsFocus="False">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:TrackItem">
-                    <TextBlock
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Label}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap"
-                        ToolTipService.ToolTip="{x:Bind Label}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+    <Grid>
+        <Pivot
+            MinHeight="400"
+            Padding="0"
+            IsHeaderItemsCarouselEnabled="False"
+            IsTabStop="False">
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <FontIcon
+                            FontSize="16"
+                            Glyph="&#xED1E;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12">
+                            Subtile
+                        </TextBlock>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{x:Bind SubtitleListView.SelectedIndex}" />
+                    </StackPanel>
+                </PivotItem.Header>
+                <ListView
+                    x:Name="SubtitleListView"
+                    Margin="0,8,0,0"
+                    IsItemClickEnabled="True"
+                    IsTabStop="False"
+                    ItemClick="SubtitleListView_ItemClick"
+                    ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
+                    ItemsSource="{x:Bind SubtitleItems, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SingleSelectionFollowsFocus="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:TrackItem">
+                            <TextBlock
+                                MaxLines="2"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Label}"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{x:Bind Label}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem x:Name="SecondSubPivotItem">
+                <PivotItem.Header>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <FontIcon
+                            FontSize="16"
+                            Glyph="&#xED1E;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12">
+                            Subtile Sec
+                        </TextBlock>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{x:Bind SecondSubListView.SelectedIndex}" />
+                    </StackPanel>
+                </PivotItem.Header>
+                <ListView
+                    x:Name="SecondSubListView"
+                    Margin="0,8,0,0"
+                    IsItemClickEnabled="True"
+                    IsTabStop="False"
+                    ItemClick="SecondSubListView_ItemClick"
+                    ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
+                    ItemsSource="{x:Bind SecondSubItems, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SingleSelectionFollowsFocus="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:TrackItem">
+                            <TextBlock
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Label}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{x:Bind Label}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <FontIcon
+                            FontSize="16"
+                            Glyph="&#xE8B2;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12">
+                            Video
+                        </TextBlock>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{x:Bind VideoListView.SelectedIndex}" />
+                    </StackPanel>
+                </PivotItem.Header>
+                <ListView
+                    x:Name="VideoListView"
+                    Margin="0,8,0,0"
+                    IsItemClickEnabled="True"
+                    IsTabStop="False"
+                    ItemClick="VideoListView_ItemClick"
+                    ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
+                    ItemsSource="{x:Bind VideoItems, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SingleSelectionFollowsFocus="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:TrackItem">
+                            <TextBlock
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Label}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{x:Bind Label}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <FontIcon
+                            FontSize="16"
+                            Glyph="&#xE8D6;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12">
+                            Audio
+                        </TextBlock>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{x:Bind AudioListView.SelectedIndex}" />
+                    </StackPanel>
+                </PivotItem.Header>
+                <ListView
+                    x:Name="AudioListView"
+                    Margin="0,8,0,0"
+                    IsItemClickEnabled="True"
+                    IsTabStop="False"
+                    ItemClick="AudioListView_ItemClick"
+                    ItemContainerStyle="{StaticResource TrackListViewItemStyle}"
+                    ItemsSource="{x:Bind AudioItems, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SingleSelectionFollowsFocus="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:TrackItem">
+                            <TextBlock
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Label}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{x:Bind Label}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+        </Pivot>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="SecondSubGroupStates">
                 <VisualState x:Name="NormalState" />
                 <VisualState x:Name="SecondSubState">
                     <VisualState.Setters>
-                        <Setter Target="SecondSubTitle.Visibility" Value="Collapsed" />
-                        <Setter Target="SecondSubListView.Visibility" Value="Collapsed" />
-                        <Setter Target="SubtitleListView.(Grid.RowSpan)" Value="3" />
+                        <Setter Target="SecondSubPivotItem.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

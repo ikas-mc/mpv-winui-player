@@ -379,9 +379,15 @@
                                         BasedOn="{StaticResource DefaultFlyoutPresenterStyle}"
                                         TargetType="FlyoutPresenter">
                                         <Setter Property="IsTabStop" Value="True" />
+                                        <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+                                        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
                                         <Setter Property="TabNavigation" Value="Cycle" />
                                         <Setter Property="Padding" Value="0" />
+                                        <Setter Property="MaxWidth" Value="480" />
+                                        <Setter Property="MaxHeight" Value="480" />
                                         <Setter Property="IsDefaultShadowEnabled" Value="True" />
+                                        <Setter Property="BorderBrush" Value="{ThemeResource SystemAccentColor}" />
+                                        <Setter Property="Background" Value="{ThemeResource MpvControlBackground}" />
                                     </Style>
                                 </Flyout.FlyoutPresenterStyle>
                                 <local:PlayerTrackSelectorControl x:Name="TrackSelectorControl" />
