@@ -31,6 +31,7 @@ namespace mpv_winui.Modules.Language
         public string Upload { get; set; } = "Upload";
         public string EnableMica { get; set; } = "Mica background";
         public string EnableUISound { get; set; } = "Enable UI Sound";
+        public string Play { get; set; } = "Play";
         public string Stop { get; set; } = "Stop";
         public string Version { get; set; } = "Version";
         public string ClearTempFolder { get; set; } = "Delete temp files";
