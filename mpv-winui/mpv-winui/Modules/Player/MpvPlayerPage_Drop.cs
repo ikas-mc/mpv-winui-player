@@ -1,9 +1,12 @@
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using mpv_winui.Modules.Common.Utils;
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.System;
+using Windows.UI.Core;
 
 namespace mpv_winui.Modules.Player
 {
@@ -32,9 +35,10 @@ namespace mpv_winui.Modules.Player
 
         private void OnDragOver(object sender, DragEventArgs e)
         {
-            e.DragUIOverride.IsCaptionVisible = false;
+            e.DragUIOverride.IsCaptionVisible = true;
             e.DragUIOverride.IsContentVisible = true;
             e.DragUIOverride.IsGlyphVisible = true;
+            e.DragUIOverride.Caption = AppContext.AppLang.Play;
             e.Handled = true;
         }
 
@@ -66,7 +70,8 @@ namespace mpv_winui.Modules.Player
 
             if (items.Count > 0)
             {
-                await PlayStorageItems(items, OpenMode.Replace);
+                var openMode = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift).HasFlag(CoreVirtualKeyStates.Down) ? OpenMode.Append : OpenMode.Replace;
+                PlayStorageItems(items, openMode).FireAndForget();
             }
         }
 

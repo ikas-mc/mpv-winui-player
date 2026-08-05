@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -72,7 +71,7 @@ namespace mpv_winui.Modules.Player
                     {
                         for (int i = 0; i < files.Count; i++)
                         {
-                            _mpvPlayer.Command(["osd-auto", "loadfile", "append"]);
+                            _mpvPlayer.Command(["osd-auto", "loadfile", files[i].Path, "append"]);
                         }
                         break;
                     }
