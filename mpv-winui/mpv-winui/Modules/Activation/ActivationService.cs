@@ -39,7 +39,7 @@ namespace mpv_winui.Modules.Activation
                 {
                     if (activatedArgs.Data is Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs protocolArgs)
                     {
-                        if (protocolArgs.Uri.Scheme == "mpv-winui")
+                        if (protocolArgs.Uri.Scheme == "mpvw")
                         {
                             var query = protocolArgs.Uri.Query;
                             if (query.StartsWith("?file="))
@@ -87,7 +87,7 @@ namespace mpv_winui.Modules.Activation
                 {
                     if (activatedArgs.Data is Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs protocolArgs)
                     {
-                        if (protocolArgs.Uri.Scheme == "mpv-winui")
+                        if (protocolArgs.Uri.Scheme == "mpvw")
                         {
                             var query = protocolArgs.Uri.Query;
                             if (query.StartsWith("?file="))

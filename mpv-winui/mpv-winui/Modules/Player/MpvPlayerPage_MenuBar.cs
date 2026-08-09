@@ -146,13 +146,13 @@ namespace mpv_winui.Modules.Player
 
             stack.Children.Add(new TextBlock
             {
-                Text = "mpv-winui",
+                Text = "mpv-winui-player (mpvw)",
                 TextWrapping = TextWrapping.Wrap
             });
             var projectLink = new HyperlinkButton
             {
-                Content = "github.com/ikas-mc/mpv-winui",
-                NavigateUri = new Uri("https://github.com/ikas-mc/mpv-winui"),
+                Content = "github.com/ikas-mc/mpv-winui-player",
+                NavigateUri = new Uri("https://github.com/ikas-mc/mpv-winui-player"),
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             stack.Children.Add(projectLink);
