@@ -9,8 +9,8 @@ namespace mpv_winui.Modules.Settings
 
         public UnpackageAppDataSetting(string typeName)
         {
-            //HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\mpv-winui\mpv-winui\app
-            var application = ApplicationData.GetForUnpackaged(AppData.AppDataId, AppData.AppDataId);
+            //HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\ikas-mc\mpvw\app
+            var application = ApplicationData.GetForUnpackaged(AppData.AppDataPublisher, AppData.AppDataId);
             _container = application.LocalSettings.CreateContainer(typeName, ApplicationDataCreateDisposition.Always);
         }
 

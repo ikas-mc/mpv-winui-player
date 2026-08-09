@@ -12,10 +12,12 @@ namespace mpv_winui.Modules.FileSystem
 
         public static AppData Current => _lazy.Value;
 
-        public const string AppDataId = "mpv-winui";
+        public const string AppDataId = "mpvw";
+
+        public const string AppDataPublisher = "ikas-mc";
 
         //https://learn.microsoft.com/zh-cn/windows/windows-app-sdk/api/winrt/microsoft.windows.storage.applicationdata.getforunpackaged
-        private readonly bool _useUnpackagedAppData = false;
+        private readonly bool _useUnpackagedAppData = true;
 
         public string ResolveLocalData(string path)
         {
@@ -26,7 +28,7 @@ namespace mpv_winui.Modules.FileSystem
             }
             else if (_useUnpackagedAppData)
             {
-                var application = ApplicationData.GetForUnpackaged(AppDataId, AppDataId);
+                var application = ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId);
                 return Path.Combine(application.LocalPath, path);
             }
             else
@@ -43,7 +45,7 @@ namespace mpv_winui.Modules.FileSystem
             }
             else if (_useUnpackagedAppData)
             {
-                return await ApplicationData.GetForUnpackaged(AppDataId, AppDataId).LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
+                return await ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId).LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
             }
             else
             {
@@ -64,7 +66,7 @@ namespace mpv_winui.Modules.FileSystem
             }
             else if (_useUnpackagedAppData)
             {
-                return ApplicationData.GetForUnpackaged(AppDataId, AppDataId).LocalFolder;
+                return ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId).LocalFolder;
             }
             else
             {

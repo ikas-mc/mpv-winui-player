@@ -46,8 +46,8 @@
             </uap:VisualElements>
             <Extensions>
                 <uap:Extension Category="windows.protocol">
-                    <uap:Protocol Name="mpv-winui">
-                        <uap:DisplayName>mpv winui</uap:DisplayName>
+                    <uap:Protocol Name="mpvw">
+                        <uap:DisplayName>mpv winui player</uap:DisplayName>
                     </uap:Protocol>
                 </uap:Extension>
                 <uap:Extension Category="windows.fileTypeAssociation">
