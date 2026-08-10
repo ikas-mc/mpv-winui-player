@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.Windows.WinmdGenerator/0.71.14-preview">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <RollForward>Major</RollForward>
+    <OutputWinmd>$(MSBuildProjectDirectory)\bin\mpv.winmd</OutputWinmd>
+    <WinmdVersion>0.41.0.0</WinmdVersion>
+    <UseWinSDKAssets>false</UseWinSDKAssets>
+    <AdditionalIncludes>$(MSBuildProjectDirectory)\include</AdditionalIncludes>
+    <SkipScraping>false</SkipScraping>
+    <ExcludeFromCrossarch>Mpv</ExcludeFromCrossarch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ResponseFile Remove="*.rsp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ScraperRsp Include="scraper.settings.rsp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Partition Include="include\mpv\client.h">
+      <Name>Mpv</Name>
+      <Namespace>Mpv</Namespace>
+    </Partition>
+  </ItemGroup>
+
+</Project>
