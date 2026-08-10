@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using mpv_winui.Modules.Common.View;
 using NLog;
 
 namespace mpv_winui
@@ -38,6 +39,8 @@ namespace mpv_winui
             {
                 mainWindow?.Refresh(args);
             }
+
+            Window?.ShowWindow();
         }
     }
 }

@@ -62,7 +62,7 @@ namespace mpv_winui
                         if (ShellFrame?.Content is IParameterRefreshSupportView view)
                         {
                             view.OnRefresh(fileItems);
-                            this.ShowWindow();
+                            //this.ShowWindow();
                         }
                     });
                 }
