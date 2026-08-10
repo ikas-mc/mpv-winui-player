@@ -108,6 +108,7 @@
                 MaxWidth="300" />
         </Grid.ColumnDefinitions>
         <MenuBar
+            x:Name="MainMenuBar"
             Grid.Row="0"
             Grid.ColumnSpan="1">
             <MenuBarItem

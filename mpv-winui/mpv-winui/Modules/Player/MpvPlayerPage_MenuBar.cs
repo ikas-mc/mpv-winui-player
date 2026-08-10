@@ -2,7 +2,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.FileSystem;
+using mpv_winui.Modules.Player.Menu;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.System;
 using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
@@ -11,6 +13,95 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
+        private async void SetupCustomMenuBarItems()
+        {
+            List<CustomMenuItem>? menuItems = null;
+            try
+            {
+                menuItems = await MenuService.Instance.TryLoadAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Custom menu bar load error");
+            }
+
+            if (menuItems is null || menuItems.Count == 0 || MainMenuBar.Items.Count < 3)
+            {
+                return;
+            }
+
+            var insertIndex = MainMenuBar.Items.Count - 1;
+            foreach (var menuItem in menuItems)
+            {
+                if (menuItem.Children?.Count > 0)
+                {
+                    var menuBarItem = new MenuBarItem
+                    {
+                        Title = menuItem.Name ?? string.Empty,
+                        IsTabStop = false
+                    };
+                    AddCustomMenuDataItems(menuBarItem.Items, menuItem.Children);
+                    MainMenuBar.Items.Insert(insertIndex++, menuBarItem);
+                }
+            }
+        }
+
+        private void AddCustomMenuDataItems(IList<MenuFlyoutItemBase> target, IReadOnlyList<CustomMenuItem>? items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (var entry in items)
+            {
+                if (entry.Children?.Count > 0)
+                {
+                    var subItem = new MenuFlyoutSubItem
+                    {
+                        Text = entry.Name ?? string.Empty
+                    };
+                    AddCustomMenuDataItems(subItem.Items, entry.Children);
+                    if (subItem.Items.Count > 0)
+                    {
+                        target.Add(subItem);
+                    }
+                    continue;
+                }
+
+                var item = new MenuFlyoutItem
+                {
+                    Text = entry.Name ?? string.Empty,
+                    Tag = entry
+                };
+
+                item.Click += CustomMenuItem_Click;
+                target.Add(item);
+            }
+        }
+
+        private async void CustomMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem { Tag: CustomMenuItem data })
+            {
+                try
+                {
+                    if (data.Command?.Count > 0)
+                    {
+                        await _mediaPlayer.RunCommandAsync(data.Command);
+                    }
+                    else if (!string.IsNullOrEmpty(data.CommandString))
+                    {
+                        await _mediaPlayer.RunCommandAsync(data.CommandString);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    OnException(ex);
+                }
+            }
+        }
+
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             try
