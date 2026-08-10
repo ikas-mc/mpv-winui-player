@@ -66,6 +66,8 @@ namespace mpv_winui.Modules.Player
                 SetupKeyboardInput();
                 SetupPreview();
 
+                SetupCustomMenuBarItems();
+
                 OpenPendingPath().FireAndForget(OnException);
             }
             else

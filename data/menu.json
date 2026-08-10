@@ -1,0 +1,436 @@
+[
+  {
+    "name": "Playback",
+    "children": [
+      {
+        "name": "Display duration",
+        "children": [
+          {
+            "name": "1 second",
+            "commandString": "set image-display-duration 1"
+          },
+          {
+            "name": "2 seconds",
+            "commandString": "set image-display-duration 2"
+          },
+          {
+            "name": "5 seconds",
+            "commandString": "set image-display-duration 5"
+          },
+          {
+            "name": "10 seconds",
+            "commandString": "set image-display-duration 10"
+          },
+          {
+            "name": "Infinite",
+            "commandString": "set image-display-duration inf"
+          }
+        ]
+      },
+      {
+        "name": "Speed",
+        "children": [
+          {
+            "name": "25%",
+            "commandString": "set speed 0.25"
+          },
+          {
+            "name": "50%",
+            "commandString": "set speed 0.50"
+          },
+          {
+            "name": "75%",
+            "commandString": "set speed 0.75"
+          },
+          {
+            "name": "100%",
+            "commandString": "set speed 1"
+          },
+          {
+            "name": "125%",
+            "commandString": "set speed 1.25"
+          },
+          {
+            "name": "150%",
+            "commandString": "set speed 1.50"
+          },
+          {
+            "name": "175%",
+            "commandString": "set speed 1.75"
+          },
+          {
+            "name": "200%",
+            "commandString": "set speed 2"
+          },
+          {
+            "name": "400%",
+            "commandString": "set speed 4"
+          },
+          {
+            "name": "800%",
+            "commandString": "set speed 8"
+          }
+        ]
+      },
+      {
+        "name": "Set/clear A-B loop points",
+        "commandString": "ab-loop"
+      },
+      {
+        "name": "Loop file",
+        "commandString": "cycle-values loop-file inf no"
+      },
+      {
+        "name": "Loop playlist",
+        "commandString": "cycle-values loop-playlist inf no"
+      },
+      {
+        "name": "Next chapter",
+        "command": ["add", "chapter", "1"]
+      },
+      {
+        "name": "Previous chapter",
+        "command": ["add", "chapter", "-1"]
+      },
+      {
+        "name": "Next Frame",
+        "command": ["frame-step"]
+      },
+      {
+        "name": "Previous Frame",
+        "command": ["frame-back-step"]
+      },
+      {
+        "name": "Reload",
+        "commandString": "set file-local-options/start ${=time-pos}; playlist-play-index current yes; show-text \"Reloading current file...\""
+      },
+      {
+        "name": "Next file",
+        "commandString": "playlist-next"
+      },
+      {
+        "name": "Previous file",
+        "commandString": "playlist-prev"
+      },
+      {
+        "name": "Next sub-playlist",
+        "commandString": "playlist-next-playlist"
+      },
+      {
+        "name": "Previous sub-playlist",
+        "commandString": "playlist-prev-playlist"
+      },
+      {
+        "name": "Shuffle",
+        "commandString": "playlist-shuffle"
+      },
+      {
+        "name": "Unshuffle",
+        "commandString": "playlist-unshuffle"
+      },
+      {
+        "name": "Toggle fps60",
+        "command": ["vf", "toggle", "lavfi=\"fps=fps=60/1.001\""]
+      }
+    ]
+  },
+  {
+    "name": "Video",
+    "children": [
+      {
+        "name": "Fill",
+        "commandString": "no-osd cycle-values panscan 0 1; no-osd set video-unscaled no; no-osd set video-zoom 0"
+      },
+      {
+        "name": "Stretch",
+        "commandString": "no-osd cycle keepaspect"
+      },
+      {
+        "name": "Unscaled",
+        "commandString": "no-osd cycle-values video-unscaled yes no; no-osd set video-zoom 0; no-osd set panscan 0"
+      },
+      {
+        "name": "Zoom",
+        "children": [
+          {
+            "name": "50%",
+            "commandString": "set video-zoom -1"
+          },
+          {
+            "name": "100%",
+            "commandString": "set video-zoom  0"
+          },
+          {
+            "name": "200%",
+            "commandString": "set video-zoom  1"
+          }
+        ]
+      },
+      {
+        "name": "Aspect ratio",
+        "children": [
+          {
+            "name": "16:9",
+            "commandString": "set video-aspect-override 16:9"
+          },
+          {
+            "name": "4:3",
+            "commandString": "set video-aspect-override 4:3"
+          },
+          {
+            "name": "2.35:1",
+            "commandString": "set video-aspect-override 2.35:1"
+          },
+          {
+            "name": "Default",
+            "commandString": "set video-aspect-override no"
+          }
+        ]
+      },
+      {
+        "name": "Center",
+        "commandString": "no-osd set video-pan-x 0; no-osd set video-pan-y 0; no-osd set video-align-x 0; no-osd set video-align-y 0"
+      },
+      {
+        "name": "Rotate clockwise",
+        "commandString": "cycle-values video-rotate 90 180 270 0"
+      },
+      {
+        "name": "Rotate counterclockwise",
+        "commandString": "cycle-values video-rotate 270 180 90 0"
+      },
+      {
+        "name": "Deband",
+        "commandString": "cycle deband"
+      },
+      {
+        "name": "Deinterlace",
+        "commandString": "cycle deinterlace"
+      },
+      {
+        "name": "Screenshot",
+        "commandString": "screenshot"
+      },
+      {
+        "name": "Screenshot without subtitles",
+        "commandString": "screenshot video"
+      }
+    ]
+  },
+  {
+    "name": "Audio",
+    "children": [
+      {
+        "name": "Channels",
+        "children": [
+          {
+            "name": "Auto",
+            "commandString": "set audio-channels auto-safe"
+          },
+          {
+            "name": "Stereo",
+            "commandString": "set audio-channels stereo"
+          },
+          {
+            "name": "Mono",
+            "commandString": "set audio-channels mono"
+          }
+        ]
+      },
+      {
+        "name": "Increase volume",
+        "commandString": "add volume  2"
+      },
+      {
+        "name": "Decrease volume",
+        "commandString": "add volume -2"
+      },
+      {
+        "name": "Mute",
+        "commandString": "cycle mute"
+      },
+      {
+        "name": "Increase delay",
+        "commandString": "add audio-delay  0.1"
+      },
+      {
+        "name": "Decrease delay",
+        "commandString": "add audio-delay -0.1"
+      }
+    ]
+  },
+  {
+    "name": "Subtitle",
+    "children": [
+      {
+        "name": "Visible",
+        "commandString": "cycle sub-visibility"
+      },
+      {
+        "name": "Increase delay",
+        "commandString": "add sub-delay  0.1"
+      },
+      {
+        "name": "Decrease delay",
+        "commandString": "add sub-delay -0.1"
+      },
+      {
+        "name": "Scale up",
+        "commandString": "add sub-scale  0.1"
+      },
+      {
+        "name": "Scale down",
+        "commandString": "add sub-scale -0.1"
+      },
+      {
+        "name": "Lines",
+        "commandString": "script-binding select/select-subtitle-line"
+      },
+      {
+        "name": "Secondary subtitle",
+        "children": [
+          {
+            "name": "Visible",
+            "commandString": "cycle secondary-sub-visibility"
+          },
+          {
+            "name": "Increase delay",
+            "commandString": "add secondary-sub-delay  0.1"
+          },
+          {
+            "name": "Decrease delay",
+            "commandString": "add secondary-sub-delay -0.1"
+          },
+          {
+            "name": "Lines",
+            "commandString": "script-binding select/select-secondary-subtitle-line"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Tools",
+    "children": [
+      {
+        "name": "Playback statistics",
+        "commandString": "script-binding stats/display-page-1-toggle"
+      },
+      {
+        "name": "File information",
+        "commandString": "script-binding stats/display-page-5-toggle"
+      },
+      {
+        "name": "View Key bindings",
+        "commandString": "script-binding stats/display-page-4-toggle"
+      },
+      {
+        "name": "Time OSD",
+        "commandString": "no-osd cycle-values osd-level 3 1"
+      },
+      {
+        "name": "Copy path",
+        "commandString": "osd-auto set clipboard/text ${path}"
+      },
+      {
+        "name": "Copy subtitle",
+        "commandString": "set clipboard/text ${sub-text}"
+      },
+      {
+        "name": "Copy title",
+        "commandString": "set clipboard/text ${media-title}"
+      },
+      {
+        "name": "Key bindings",
+        "commandString": "script-binding select/select-binding"
+      },
+      {
+        "name": "Properties",
+        "commandString": "script-binding select/show-properties"
+      },
+      {
+        "name": "Console",
+        "commandString": "script-binding commands/open"
+      },
+      {
+        "name": "Edit config file",
+        "commandString": "script-binding select/edit-config-file"
+      },
+      {
+        "name": "Edit key bindings",
+        "commandString": "script-binding select/edit-input-conf"
+      },
+      {
+        "name": "Debug",
+        "commandString": "script-message-to debug show"
+      },
+      {
+        "name": "Draw",
+        "commandString": "script-binding click-preview"
+      },
+      {
+        "name": "Toggle gpu/gpu-next",
+        "command": ["cycle-values", "vo", "gpu", "gpu-next"]
+      },
+
+      {
+        "name": "Hwdec",
+        "children": [
+          {
+            "name": "auto",
+            "command": ["set", "hwdec", "auto"]
+          },
+          {
+            "name": "d3d11va",
+            "command": ["set", "hwdec", "d3d11va"]
+          },
+          {
+            "name": "d3d11va-copy",
+            "command": ["set", "hwdec", "d3d11va-copy"]
+          },
+          {
+            "name": "d3d12va-copy",
+            "command": ["set", "hwdec", "d3d12va-copy"]
+          },
+          {
+            "name": "no",
+            "command": ["set", "hwdec", "no"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Shaders",
+    "children": [
+      {
+        "name": "Clear",
+        "commandString": "osd-auto change-list glsl-shaders clr \"\""
+      },
+      {
+        "name": "Anime4K: Mode A (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
+      },
+      {
+        "name": "Anime4K: Mode B (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+      },
+      {
+        "name": "Anime4K: Mode C (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+      },
+      {
+        "name": "Anime4K: Mode A+A (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+      },
+      {
+        "name": "Anime4K: Mode B+B (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+      },
+      {
+        "name": "Anime4K: Mode C+A (HQ)",
+        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+      }
+    ]
+  }
+]
