@@ -1,0 +1,10 @@
+--libraryPath
+mpv-2
+--with-callconv
+*=CDecl
+--namespace
+Mpv
+--config
+exclude-funcs-with-body
+dont-use-using-statics-for-enums
+exclude-anonymous-field-helpers
