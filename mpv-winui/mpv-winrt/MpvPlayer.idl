@@ -45,6 +45,7 @@ namespace mpv_winrt
     {
         MpvPlayer();
         void Initialize(String configPath, UInt32 width, UInt32 height, Int32 volume, DisplayColorKind colorKind, Int32 refreshRate);
+        void InitializeForPreview(UInt32 width, UInt32 height);
         void Destroy();
         void UpdateSize(UInt32 width, UInt32 height);
         void LoadFile(String url, Double position);
@@ -66,6 +67,7 @@ namespace mpv_winrt
         String GetWatchHistoryPath();
         String GetWatchLaterFolderPath();
         Boolean SaveWatchHistory();
+        String GetCurrentPath();
 
         Double Volume();
         void Volume(Double value);

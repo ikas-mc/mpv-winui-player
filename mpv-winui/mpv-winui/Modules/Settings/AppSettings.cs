@@ -75,5 +75,23 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(EnableVideoPreview), false);
             set => _dataSetting.SetValue(nameof(EnableVideoPreview), value);
         }
+
+        public bool EnableVideoBuiltInPreview
+        {
+            get => _dataSetting.GetValue(nameof(EnableVideoBuiltInPreview), false);
+            set => _dataSetting.SetValue(nameof(EnableVideoBuiltInPreview), value);
+        }
+
+        public bool KeepVideoBuiltInPreviewAlive
+        {
+            get => _dataSetting.GetValue(nameof(KeepVideoBuiltInPreviewAlive), false);
+            set => _dataSetting.SetValue(nameof(KeepVideoBuiltInPreviewAlive), value);
+        }
+
+        public int BuiltInPreviewAliveTimeout
+        {
+            get => _dataSetting.GetValue(nameof(BuiltInPreviewAliveTimeout), 20);
+            set => _dataSetting.SetValue(nameof(BuiltInPreviewAliveTimeout), value);
+        }
     }
 }

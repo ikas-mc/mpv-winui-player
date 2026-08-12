@@ -37,7 +37,7 @@ public sealed partial class OptionIntegerControl : OptionControlBase
 
             if (newValue.Getter is Func<object?> func)
             {
-                if (func() is double value)
+                if (func() is int value)
                 {
                     NumberBox.Value = value;
                 }

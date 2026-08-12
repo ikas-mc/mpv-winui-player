@@ -141,6 +141,46 @@ namespace winrt::mpv_winrt::implementation
         StartEventThread();
     }
 
+    void MpvPlayer::InitializeForPreview(uint32_t width, uint32_t height)
+    {
+        CreateContext();
+
+        SetOption("config", "no");
+        SetOption("msg-level", "all=no");
+        SetOption("profile", "fast");
+        SetOption("osc", "no");
+        SetOption("load-scripts", "no");
+        SetOption("idle", "yes");
+        SetOption("keep-open", "yes");
+        SetOption("pause", "yes");
+        SetOption("really-quiet", "yes");
+        SetOption("load-stats-overlay", "no");
+        SetOption("load-stats-console", "no");
+        SetOption("load-auto-profiles", "no");
+        SetOption("sub", "no");
+        SetOption("hr-seek", "no");
+        SetOption("audio", "no");
+        SetOption("input-default-bindings", "no");
+        SetOption("input-media-keys", "no");
+        SetOption("media-controls", "no");
+        SetOption("terminal", "no");
+        SetOption("cache", "no");
+
+        SetOption("force-window", "yes");
+        SetOption("gpu-api", "d3d11");
+        SetOption("d3d11-output-mode", "composition");
+        SetOption("auto-window-resize", "no");
+        SetOption("d3d11-composition-size", std::to_string(width) + "x" + std::to_string(height));
+
+
+        if (mpv_initialize(m_mpv) < 0)
+        {
+            throw hresult_error(E_FAIL, L"Failed to initialize mpv for preview");
+        }
+
+        StartEventThread();
+    }
+
     void MpvPlayer::StartEventThread()
     {
         if (m_eventThreadRunning.load())
@@ -769,6 +809,11 @@ namespace winrt::mpv_winrt::implementation
     bool MpvPlayer::SaveWatchHistory()
     {
         return GetFlagProperty("save-watch-history");
+    }
+
+    winrt::hstring MpvPlayer::GetCurrentPath()
+    {
+        return GetHStringProperty("path");
     }
 
     bool MpvPlayer::IsPaused()

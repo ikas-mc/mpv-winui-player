@@ -21,7 +21,7 @@ namespace mpv_winui.Modules.Player
         public event OnPanelVisibleChangedHandler? OnPanelVisibleChanged;
         public event OnPositionChangedHandler? OnPositionChanged;
 
-        public event EventHandler<(double HoverSec, double RelativeX, double RelativeY)>? PreviewUpdateRequested;
+        public event EventHandler<(double HoverSec, double X, double Y)>? PreviewUpdateRequested;
         public event EventHandler? PreviewClearRequested;
 
         private bool _controlPanelIsVisible = true;
@@ -186,8 +186,9 @@ namespace mpv_winui.Modules.Player
 
             TimeElapsedElement.Text = "00:00";
             TimeRemainingElement.Text = "00:00";
+
             ProgressSlider.ValueChanged += OnPositionSliderValueChanged;
-            if (AppContext.AppSetting.EnableVideoPreview)
+            if (AppContext.AppSetting.EnableVideoPreview || AppContext.AppSetting.EnableVideoBuiltInPreview)
             {
                 ProgressSlider.PointerEntered += ProgressSlider_PointerEntered;
                 ProgressSlider.PointerMoved += ProgressSlider_PointerMoved;
@@ -980,9 +981,12 @@ namespace mpv_winui.Modules.Player
             var fraction = point.Position.X / ProgressSlider.ActualWidth;
             var hoverSec = Math.Max(0, fraction * MediaPlayer.Duration);
 
-            var controlPoint = ProgressSlider.TransformToVisual(this).TransformPoint(new Point(point.Position.X, 0));
+            PreviewUpdateRequested?.Invoke(this, (hoverSec, point.Position.X, 0D));
+        }
 
-            PreviewUpdateRequested?.Invoke(this, (hoverSec, controlPoint.X, controlPoint.Y));
+        public Point TransformSliderPoint(UIElement element, double x, double y)
+        {
+            return ProgressSlider.TransformToVisual(element).TransformPoint(new Point(x, y));
         }
 
         private void ClearPreview()
