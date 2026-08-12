@@ -64,7 +64,15 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.StartListen();
 
                 SetupKeyboardInput();
-                SetupPreview();
+
+                if (AppContext.AppSetting.EnableVideoPreview)
+                {
+                    SetupPreview();
+                }
+                if (AppContext.AppSetting.EnableVideoBuiltInPreview)
+                {
+                    SetupBuiltInPreview();
+                }
 
                 SetupCustomMenuBarItems();
 
@@ -88,6 +96,7 @@ namespace mpv_winui.Modules.Player
             TeardownPlayerView();
             CleanupKeyboardInput();
             CleanupPreview();
+            CleanupBuiltInPreview();
             _mediaPlayer.Close();
         }
 

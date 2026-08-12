@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:preview="using:mpv_winui.Modules.Player.BuiltInPreview"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -318,6 +319,7 @@
         </Grid>
 
         <Grid
+            x:Name="VideoContainer"
             Grid.Row="1"
             Grid.Column="0"
             AllowDrop="True"
@@ -331,6 +333,20 @@
                 Tapped="PlayerView_Tapped">
                 <Border Background="Transparent" />
             </SwapChainPanel>
+            <preview:MpvSoftwarePreviewControl
+                x:Name="MpvPreview"
+                Width="192"
+                Height="108"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                x:Load="{x:Bind _enableBuiltInPreview}"
+                Canvas.ZIndex="2"
+                IsHitTestVisible="False"
+                Visibility="Collapsed">
+                <preview:MpvSoftwarePreviewControl.RenderTransform>
+                    <TranslateTransform x:Name="PreviewControlTranslation" />
+                </preview:MpvSoftwarePreviewControl.RenderTransform>
+            </preview:MpvSoftwarePreviewControl>
         </Grid>
 
         <local:PlayerControl

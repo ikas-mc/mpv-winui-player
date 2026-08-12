@@ -34,6 +34,10 @@ profile-restore=copy
 d3d11-output-csp=srgb
 d3d11-output-format=rgb10_a2
 ```
+## Thumbnail Preview
+
+* Built-in preview
+* Supports plugins using [osc-preview-api](https://mpv.io/manual/master/#osc-preview-api)
 
 
 ## Msix or Unpackaged

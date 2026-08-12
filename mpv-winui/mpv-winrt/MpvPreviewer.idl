@@ -1,0 +1,14 @@
+namespace mpv_winrt
+{
+    runtimeclass MpvPreviewer
+    {
+        MpvPreviewer();
+
+        Windows.Foundation.IAsyncAction Initialize(Microsoft.UI.Xaml.Controls.Image image, UInt32 width, UInt32 height);
+        void Destroy();
+
+        void LoadFile(String url);
+        void SetPosition(Double position);
+        void Pause();
+    };
+}

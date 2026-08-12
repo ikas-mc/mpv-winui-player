@@ -52,6 +52,7 @@ namespace winrt::mpv_winrt::implementation
         ~MpvPlayer();
 
         void Initialize(hstring const& configPath, uint32_t width, uint32_t height, int32_t volume, winrt::mpv_winrt::DisplayColorKind colorKind, int32_t refreshRate);
+        void InitializeForPreview(uint32_t width, uint32_t height);
         void Destroy();
         void AttachSwapChain(winrt::Microsoft::UI::Xaml::Controls::SwapChainPanel const& panel);
         void UpdateSwapChainScale(float scaleX, float scaleY);
@@ -73,6 +74,7 @@ namespace winrt::mpv_winrt::implementation
         winrt::hstring GetWatchHistoryPath();
         winrt::hstring GetWatchLaterFolderPath();
         bool SaveWatchHistory();
+        winrt::hstring GetCurrentPath();
 
         double Volume();
         void Volume(double value);

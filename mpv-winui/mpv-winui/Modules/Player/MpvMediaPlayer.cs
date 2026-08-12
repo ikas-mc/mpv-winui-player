@@ -240,6 +240,14 @@ namespace mpv_winui.Modules.Player
             await Task.Run(() => { _mpvPlayer.Initialize(configFolder, 1, 1, volume, colorKind, refreshRate); });
         }
 
+        public Task InitializeForPreviewAsync()
+        {
+            _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
+            return Task.Run(() => { _mpvPlayer.InitializeForPreview(1, 1); });
+        }
+
+        public string CurrentPath => _mpvPlayer.GetCurrentPath();
+
         public void UpdatePanel(object panel)
         {
             if (panel is SwapChainPanel scp)
@@ -414,6 +422,11 @@ namespace mpv_winui.Modules.Player
         public void UpdateSize(uint width, uint height)
         {
             _mpvPlayer?.UpdateSize(width, height);
+        }
+
+        public void LoadFile(string path, double position)
+        {
+            _mpvPlayer.LoadFile(path, position);
         }
 
         public IList<IPlayerTrackItem> SubtitleTracks()

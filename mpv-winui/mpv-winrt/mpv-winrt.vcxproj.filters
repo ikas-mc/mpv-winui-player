@@ -12,11 +12,13 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="MpvPlayer.cpp" />
+    <ClCompile Include="MpvPreviewer.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="MpvPlayer.h" />
+    <ClInclude Include="MpvPreviewer.h" />
     <ClInclude Include="MpvPlaylistItem.h" />
     <ClInclude Include="MpvChapter.h" />
     <ClInclude Include="MpvEdition.h" />
@@ -37,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="MpvPlayer.idl" />
+    <Midl Include="MpvPreviewer.idl" />
     <Midl Include="TrackType.idl" />
     <Midl Include="MpvPlaylistItem.idl" />
     <Midl Include="MpvChapter.idl" />
