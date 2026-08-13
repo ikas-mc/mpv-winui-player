@@ -101,6 +101,14 @@ namespace mpv_winui.Modules.Player
 
             item = new MenuFlyoutItem
             {
+                Text = "Always On Top",
+                Tag = "ontop"
+            };
+            item.Click += Item_Click;
+            subItem.Items.Add(item);
+
+            item = new MenuFlyoutItem
+            {
                 Text = "Quit",
                 Tag = "quit"
             };
@@ -219,6 +227,11 @@ namespace mpv_winui.Modules.Player
                         case "fullwindow":
                         {
                             PlayerControl.ToggleFullWindow();
+                            break;
+                        }
+                        case "ontop":
+                        {
+                            ToggleAlwaysOnTop();
                             break;
                         }
                         case "playlist":
