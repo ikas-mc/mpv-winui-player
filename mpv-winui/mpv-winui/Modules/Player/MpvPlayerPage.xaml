@@ -190,6 +190,10 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="fullscreen"
                     Text="Full Screen" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="ontop"
+                    Text="Always On Top" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"

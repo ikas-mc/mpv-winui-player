@@ -185,6 +185,9 @@ namespace mpv_winui.Modules.Player
                         case "fullscreen":
                             PlayerControl.ToggleFullScreen();
                             break;
+                        case "ontop":
+                            ToggleAlwaysOnTop();
+                            break;
                         case "options":
                             ShowSettingsWindow();
                             break;
