@@ -1,0 +1,63 @@
+<UserControl
+    x:Class="mpv_winui.Modules.ActivationRegistration.ProtocolAssociationControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Border
+        Padding="16,16"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="8">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontWeight="Bold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Protocol" />
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="8">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="mpvw://?file=" />
+                <FontIcon
+                    x:Name="RegisteredIcon"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                    Glyph="&#xE73E;"
+                    Visibility="Collapsed" />
+            </StackPanel>
+
+            <CommandBar
+                Background="Transparent"
+                DefaultLabelPosition="Right">
+                <AppBarButton
+                    x:Name="RegisterButton"
+                    Click="OnRegister"
+                    Label="Register">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE73E;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="UnregisterButton"
+                    Click="OnUnregisterAll"
+                    Label="Unregister">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE74D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+
+            <TextBlock
+                x:Name="StatusText"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </Border>
+</UserControl>
