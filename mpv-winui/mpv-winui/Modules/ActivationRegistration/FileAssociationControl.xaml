@@ -1,0 +1,179 @@
+<UserControl
+    x:Class="mpv_winui.Modules.ActivationRegistration.FileAssociationControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:mpv_winui.Modules.ActivationRegistration"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate
+            x:Key="FileAssociationItemTemplate"
+            x:DataType="local:FileAssociationItem">
+            <CheckBox IsChecked="{x:Bind IsChecked, Mode=TwoWay}">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="4">
+                    <TextBlock Text="{x:Bind Extension, Mode=OneWay}" />
+                    <FontIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                        Glyph="&#xE73E;"
+                        Visibility="{x:Bind IsRegistered, Mode=OneWay}" />
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Border
+        Padding="16,16"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="8">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontWeight="Bold"
+                Text="File Associations" />
+            <TextBlock
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="Unregister all file types before moving or deleting the app folder."
+                TextWrapping="Wrap" />
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Video" />
+            <ItemsControl x:Name="VideoList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid
+                            ItemWidth="120"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="FileAssociationItemTemplate" />
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Audio" />
+            <ItemsControl x:Name="AudioList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid
+                            ItemWidth="120"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="FileAssociationItemTemplate" />
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Image" />
+            <ItemsControl x:Name="ImageList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid
+                            ItemWidth="120"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="FileAssociationItemTemplate" />
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Archive" />
+            <ItemsControl x:Name="ArchiveList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid
+                            ItemWidth="120"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="FileAssociationItemTemplate" />
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Playlist" />
+            <ItemsControl x:Name="PlaylistList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid
+                            ItemWidth="120"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="FileAssociationItemTemplate" />
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <CommandBar
+                Background="Transparent"
+                DefaultLabelPosition="Right">
+                <AppBarButton
+                    Click="OnSelectAll"
+                    Label="Select All">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8B3;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    Click="OnDeselectAll"
+                    Label="Select None">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE711;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    Click="OnInvert"
+                    Label="Invert">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8AB;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarSeparator />
+                <AppBarButton
+                    x:Name="RegisterButton"
+                    Click="OnRegister"
+                    Label="Register">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE73E;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="UnregisterButton"
+                    Click="OnUnregisterAll"
+                    Label="Unregister All">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE74D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+
+            <TextBlock
+                x:Name="StatusText"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </Border>
+</UserControl>

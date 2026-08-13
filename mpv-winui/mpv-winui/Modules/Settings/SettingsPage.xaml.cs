@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
+using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Settings.Controls;
 using System.Collections.Generic;
@@ -9,8 +10,11 @@ public sealed partial class SettingsPage : Page
 {
     public List<Option> Settings { get; } = [];
 
+    private readonly bool _isUnpackaged;
+
     public SettingsPage()
     {
+        _isUnpackaged = !PackageHelper.IsPackaged;
         InitializeComponent();
         Settings.AddRange(BuildSettings());
     }
@@ -80,7 +84,7 @@ public sealed partial class SettingsPage : Page
 
             new Option
             {
-                Key =  nameof(AppContext.AppSetting.BuiltInPreviewAliveTimeout),
+                Key = nameof(AppContext.AppSetting.BuiltInPreviewAliveTimeout),
                 Label = "Built-in Preview Alive Timeout(s) (Restart Required)",
                 Type = OptionType.Integer,
                 Min = 0,

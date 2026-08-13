@@ -2,6 +2,7 @@
     x:Class="mpv_winui.Modules.Settings.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ar="using:mpv_winui.Modules.ActivationRegistration"
     xmlns:ctl="using:mpv_winui.Modules.Settings.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,6 +11,19 @@
     <Grid>
         <ctl:OptionListControl
             Padding="8,0,8,0"
-            OptionList="{x:Bind Settings}" />
+            OptionList="{x:Bind Settings}">
+            <ctl:OptionListControl.Footer>
+                <StackPanel
+                    Spacing="16"
+                    Visibility="{x:Bind _isUnpackaged}">
+                    <ar:FileAssociationControl
+                        x:Name="FileAssociationView"
+                        x:Load="{x:Bind _isUnpackaged}" />
+                    <ar:ProtocolAssociationControl
+                        x:Name="ProtocolAssociationView"
+                        x:Load="{x:Bind _isUnpackaged}" />
+                </StackPanel>
+            </ctl:OptionListControl.Footer>
+        </ctl:OptionListControl>
     </Grid>
 </Page>

@@ -50,4 +50,17 @@ public sealed partial class OptionListControl : UserControl
             self.OptionListView.ItemsSource = e.NewValue as List<Option> ?? [];
         }
     }
+
+    public object? Footer
+    {
+        get => GetValue(FooterProperty);
+        set => SetValue(FooterProperty, value);
+    }
+
+    public static readonly DependencyProperty FooterProperty = DependencyProperty.Register(
+            nameof(Footer),
+            typeof(object),
+            typeof(OptionListControl),
+            new PropertyMetadata(null)
+            );
 }

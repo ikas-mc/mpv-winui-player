@@ -57,6 +57,10 @@
             IsItemClickEnabled="False"
             ItemContainerStyle="{StaticResource OptionListViewItemStyle}"
             ItemTemplateSelector="{StaticResource TemplateSelector}"
-            SelectionMode="None" />
+            SelectionMode="None">
+            <ListView.Footer>
+                <ContentControl Content="{x:Bind Footer, Mode=OneWay}" />
+            </ListView.Footer>
+        </ListView>
     </Grid>
 </UserControl>
