@@ -8,20 +8,43 @@
     mc:Ignorable="d">
 
     <Grid ColumnSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="24" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <FontIcon
+            x:Name="TypeIcon"
+            Grid.RowSpan="2"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Glyph="&#xE713;" />
         <TextBlock
             x:Name="LabelText"
-            VerticalAlignment="Center"
+            Grid.Column="1"
             Style="{StaticResource BodyTextBlockStyle}"
             TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="DescriptionText"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,2,0,0"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Style="{StaticResource CaptionTextBlockStyle}"
+            TextWrapping="Wrap"
+            Visibility="Collapsed" />
         <ToggleSwitch
             x:Name="ToggleSwitch"
-            Grid.Column="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
             HorizontalAlignment="Right"
-            FlowDirection="RightToLeft"
+            VerticalAlignment="Center"
+            Style="{StaticResource LeftContentToggleSwitchStyle}"
             Toggled="OnToggled" />
     </Grid>
 </local:OptionControlBase>

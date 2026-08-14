@@ -28,4 +28,32 @@ public abstract class OptionControlBase : UserControl
     }
 
     public virtual (bool IsValid, string? ErrorMessage) Validate() => (true, null);
+
+    protected static void ApplyText(TextBlock label, TextBlock description, Option option)
+    {
+        label.Text = option.Label;
+
+        if (string.IsNullOrEmpty(option.Description))
+        {
+            description.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            description.Text = option.Description;
+            description.Visibility = Visibility.Visible;
+        }
+    }
+
+    protected static void ApplyIcon(FontIcon icon, Option option)
+    {
+        if (!string.IsNullOrEmpty(option.Icon))
+        {
+            icon.Glyph = option.Icon;
+            icon.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            icon.Visibility = Visibility.Collapsed;
+        }
+    }
 }
