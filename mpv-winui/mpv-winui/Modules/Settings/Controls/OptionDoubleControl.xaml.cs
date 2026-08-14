@@ -15,7 +15,8 @@ public sealed partial class OptionDoubleControl : OptionControlBase
     {
         if (newValue is not null)
         {
-            LabelText.Text = newValue.Label;
+            ApplyText(LabelText, DescriptionText, newValue);
+            ApplyIcon(TypeIcon, newValue);
 
             if (newValue.Min.HasValue)
             {

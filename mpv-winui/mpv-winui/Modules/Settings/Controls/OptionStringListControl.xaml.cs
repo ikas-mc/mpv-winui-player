@@ -14,7 +14,8 @@ public sealed partial class OptionStringListControl : OptionControlBase
     {
         if (newValue is not null)
         {
-            LabelText.Text = newValue.Label;
+            ApplyText(LabelText, DescriptionText, newValue);
+            ApplyIcon(TypeIcon, newValue);
 
             Combo.Items.Clear();
             if (newValue.Options is not null)

@@ -5,12 +5,38 @@ namespace mpv_winui.Modules.Settings.Controls;
 
 public sealed class Option
 {
-    public string Key { get; set; } = string.Empty;
-    public string Label { get; set; } = string.Empty;
+    public const string GroupOtherKey = "other";
+
+    public string Key
+    {
+        get; set;
+    } = string.Empty;
+
+    public string Label
+    {
+        get; set;
+    } = string.Empty;
+
+    public string GroupKey
+    {
+        get; set;
+    } = GroupOtherKey;
+
+    public string GroupLabel
+    {
+        get; set;
+    } = string.Empty;
+
     public string? Description
     {
         get; set;
     }
+
+    public string? Icon
+    {
+        get; set;
+    }
+
     public OptionType Type
     {
         get; set;

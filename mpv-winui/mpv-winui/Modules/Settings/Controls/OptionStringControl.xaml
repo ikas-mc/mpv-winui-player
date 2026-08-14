@@ -7,34 +7,52 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid ColumnSpacing="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid
-            Grid.Row="0"
-            ColumnSpacing="12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                x:Name="LabelText"
-                VerticalAlignment="Center"
-                Style="{StaticResource BodyTextBlockStyle}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="InputBox"
-                Grid.Column="1"
-                MinWidth="160"
-                HorizontalAlignment="Right"
-                LostFocus="OnLostFocus"
-                TextChanged="InputBox_TextChanged" />
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <FontIcon
+            x:Name="TypeIcon"
+            Grid.RowSpan="2"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Glyph="&#xE713;" />
+        <TextBlock
+            x:Name="LabelText"
+            Grid.Column="1"
+            Style="{StaticResource BodyTextBlockStyle}"
+            TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="DescriptionText"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,2,0,0"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Style="{StaticResource CaptionTextBlockStyle}"
+            TextWrapping="Wrap"
+            Visibility="Collapsed" />
+        <TextBox
+            x:Name="InputBox"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            MinWidth="160"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            LostFocus="OnLostFocus"
+            TextChanged="InputBox_TextChanged" />
         <TextBlock
             x:Name="ErrorText"
-            Grid.Row="1"
+            Grid.Row="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
             Margin="0,2,0,0"
             Foreground="{ThemeResource SystemErrorTextColor}"
             Style="{StaticResource CaptionTextBlockStyle}"

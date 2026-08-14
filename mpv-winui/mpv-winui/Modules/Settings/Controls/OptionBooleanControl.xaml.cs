@@ -15,7 +15,8 @@ public sealed partial class OptionBooleanControl : OptionControlBase
     {
         if (newValue is not null)
         {
-            LabelText.Text = newValue.Label;
+            ApplyText(LabelText, DescriptionText, newValue);
+            ApplyIcon(TypeIcon, newValue);
 
             if (newValue.Getter is Func<object?> func)
             {

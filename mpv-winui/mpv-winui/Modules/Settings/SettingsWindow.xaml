@@ -9,7 +9,7 @@
         </Grid.RowDefinitions>
         <Border
             Grid.Row="0"
-            Padding="16,8">
+            Padding="12,8">
             <TextBlock
                 FontSize="16"
                 FontWeight="SemiBold"

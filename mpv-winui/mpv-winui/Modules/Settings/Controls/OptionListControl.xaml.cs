@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace mpv_winui.Modules.Settings.Controls;
 
@@ -47,8 +48,23 @@ public sealed partial class OptionListControl : UserControl
     {
         if (d is OptionListControl self)
         {
-            self.OptionListView.ItemsSource = e.NewValue as List<Option> ?? [];
+            if (e.NewValue is List<Option> list)
+            {
+                self.OptionListSource.Source = BuildGroups(list);
+            }
+            else
+            {
+                self.OptionListSource.Source = (List<Option>)[];
+            }
         }
+    }
+
+    private static IReadOnlyList<OptionGroup> BuildGroups(List<Option> options)
+    {
+        return options.GroupBy(
+                o => string.IsNullOrEmpty(o.GroupKey) ? Option.GroupOtherKey : o.GroupKey,
+                (k, r) => new OptionGroup(k, r.First()?.GroupLabel, r.ToArray())
+               ).ToArray();
     }
 
     public object? Footer
