@@ -1,0 +1,23 @@
+<Window
+    x:Class="mpv_winui.Modules.MpvConf.MpvConfEditorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border
+            Grid.Row="0"
+            Padding="12,8">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="mpv Config" />
+        </Border>
+        <Frame
+            x:Name="PageFrame"
+            Grid.Row="1"
+            Loaded="PageFrame_Loaded" />
+    </Grid>
+</Window>
