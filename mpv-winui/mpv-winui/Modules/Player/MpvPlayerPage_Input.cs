@@ -12,6 +12,7 @@ namespace mpv_winui.Modules.Player
     {
         private HHOOK? _hHook;
         private static bool _suppressKeyboard = false;
+        private static bool _windowActivated = false;
 
         private unsafe void SetupKeyboardInput()
         {
@@ -19,13 +20,19 @@ namespace mpv_winui.Modules.Player
 
             //TODO
             App.Window?.Activated += Window_Activated;
+            _windowActivated = true;
         }
 
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
             if (args.WindowActivationState == WindowActivationState.Deactivated)
             {
+                _windowActivated = false;
                 SendAllKeyUp();
+            }
+            else
+            {
+                _windowActivated = true;
             }
         }
 
@@ -76,7 +83,7 @@ namespace mpv_winui.Modules.Player
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
         private static LRESULT MessageHookProc(int nCode, WPARAM wParam, LPARAM lParam)
         {
-            if (!_suppressKeyboard && nCode == 0)
+            if (!_suppressKeyboard && _windowActivated && nCode == 0)
             {
                 uint flags = (uint)lParam.Value;
                 uint vkey = (uint)wParam.Value;
