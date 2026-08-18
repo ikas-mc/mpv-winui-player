@@ -1,0 +1,211 @@
+<Page
+    x:Class="mpv_winui.Modules.MpvConf.MpvConfEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:option="using:mpv_winui.Modules.MpvConf.Option"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style
+            x:Key="MpvOptionListViewItemStyle"
+            BasedOn="{StaticResource DefaultListViewItemStyle}"
+            TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="MinHeight" Value="60" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="IsTabStop" Value="False" />
+        </Style>
+
+        <Style
+            x:Key="MpvCompactRadioStyle"
+            TargetType="RadioButton">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="4,6" />
+        </Style>
+
+        <DataTemplate x:Key="MpvEditorTemplate">
+            <option:MpvConfOptionControl
+                Margin="0,0,0,2"
+                ApplyRequested="OnOptionApplyRequested" />
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid
+        HorizontalAlignment="Stretch"
+        RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Padding="8,0"
+            ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="SearchBox"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                PlaceholderText="Search options"
+                TextChanged="SearchBox_TextChanged" />
+
+            <CommandBar
+                Grid.Column="1"
+                DefaultLabelPosition="Right">
+                <AppBarElementContainer
+                    Margin="4,0"
+                    VerticalContentAlignment="Center">
+                    <ComboBox
+                        x:Name="SourceFilter"
+                        MinWidth="100"
+                        Padding="8"
+                        SelectionChanged="SourceFilter_SelectionChanged">
+                        <ComboBoxItem
+                            Content="All"
+                            IsSelected="True"
+                            Tag="All" />
+                        <ComboBoxItem
+                            Content="Conf"
+                            Tag="FromConfig" />
+                        <ComboBoxItem
+                            Content="Enabled"
+                            Tag="Enabled" />
+                        <ComboBoxItem
+                            Content="Modified"
+                            Tag="Modified" />
+                    </ComboBox>
+                </AppBarElementContainer>
+                <AppBarButton
+                    x:Name="AddButton"
+                    Grid.Column="4"
+                    Click="AddButton_Click"
+                    Label="Add">
+                    <AppBarButton.Icon>
+                        <FontIcon
+                            FontSize="14"
+                            Glyph="&#xE710;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="SaveButton"
+                    Grid.Column="5"
+                    Click="SaveButton_Click"
+                    Label="Save">
+                    <AppBarButton.Icon>
+                        <FontIcon
+                            FontSize="14"
+                            Glyph="&#xE74E;" />
+                    </AppBarButton.Icon>
+
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="ReloadButton"
+                    Grid.Column="6"
+                    Click="ReloadButton_Click"
+                    Label="Reload">
+                    <AppBarButton.Icon>
+                        <FontIcon
+                            FontSize="14"
+                            Glyph="&#xE72C;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Margin="8,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Margin="4,0,0,4"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="Profile" />
+                <ListView
+                    x:Name="ProfileList"
+                    Grid.Row="1"
+                    Padding="0,0,12,0"
+                    ItemsSource="{x:Bind Profiles}"
+                    SelectionChanged="ProfileList_SelectionChanged"
+                    SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <TextBlock
+                                FontFamily="Consolas"
+                                Text="{x:Bind}"
+                                TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Margin="4,0,0,4"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="Group" />
+                <ListView
+                    x:Name="GroupList"
+                    Grid.Row="1"
+                    Padding="0,0,12,0"
+                    ItemsSource="{x:Bind Groups}"
+                    SelectionChanged="GroupList_SelectionChanged"
+                    SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <TextBlock
+                                FontFamily="Consolas"
+                                Text="{x:Bind}"
+                                TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <ListView
+                x:Name="OptionListView"
+                Grid.Row="0"
+                Grid.Column="2"
+                Padding="0,0,12,0"
+                HorizontalAlignment="Stretch"
+                ContainerContentChanging="OnContainerContentChanging"
+                IsItemClickEnabled="False"
+                ItemContainerStyle="{StaticResource MpvOptionListViewItemStyle}"
+                ItemTemplate="{StaticResource MpvEditorTemplate}"
+                ItemsSource="{x:Bind Items}"
+                SelectionMode="None" />
+        </Grid>
+
+        <TextBlock
+            x:Name="MessageBar"
+            Grid.Row="2"
+            Margin="8,0,0,4"
+            VerticalAlignment="Bottom" />
+    </Grid>
+</Page>

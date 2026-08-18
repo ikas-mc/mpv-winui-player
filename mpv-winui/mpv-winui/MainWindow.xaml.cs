@@ -5,6 +5,7 @@ using mpv_winui.Modules.Activation;
 using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
+using mpv_winui.Modules.MpvConf;
 using mpv_winui.Modules.Player;
 using mpv_winui.Modules.Settings;
 using System;
@@ -73,6 +74,20 @@ namespace mpv_winui
             }
         }
 
+        public void ApplyMpvOption(string key, string value)
+        {
+            DispatcherQueue.RunAsync(() =>
+            {
+                if (ShellFrame?.Content is IMpvOptionApplySupport view)
+                {
+                    view.ApplyMpvOptionAsync(key, value).FireAndForget(ex =>
+                    {
+                        AppContext.AppLogger.Error(ex);
+                    });
+                }
+            });
+        }
+
         public void ChangeFullWindow(bool full)
         {
             if (full)
@@ -118,6 +133,34 @@ namespace mpv_winui
             _settingsWindow = null;
         }
 
+        private MpvConfEditorWindow? _mpvConfEditorWindow;
+        public void OpenMpvConfigWindow()
+        {
+            if (null == _mpvConfEditorWindow)
+            {
+                _mpvConfEditorWindow = new();
+                _mpvConfEditorWindow?.Activate();
+                _mpvConfEditorWindow?.Closed += MpvConfEditorWindowClosed;
+            }
+
+            var position = AppWindow.Position;
+            var size = AppWindow.Size;
+            var rect = new RectInt32(
+                (int)(position.X + (size.Width * 0.1)),
+                (int)(position.Y + (size.Height * 0.1)),
+                (int)(size.Width * 0.8),
+                (int)(size.Height * 0.8)
+                );
+            _mpvConfEditorWindow?.MoveAndResize(rect);
+
+            _mpvConfEditorWindow?.ShowWindow();
+        }
+
+        private void MpvConfEditorWindowClosed(object sender, WindowEventArgs args)
+        {
+            _mpvConfEditorWindow = null;
+        }
+
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
         }
@@ -126,6 +169,7 @@ namespace mpv_winui
         {
             Activated -= Window_Activated;
             _settingsWindow?.Close();
+            _mpvConfEditorWindow?.Close();
             CleanupStyle();
         }
     }

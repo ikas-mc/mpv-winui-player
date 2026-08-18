@@ -199,15 +199,19 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="options"
                     Text="Options" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="conf-edit"
+                    Text="Mpv Conf Editor" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-folder"
-                    Text="Open Conf Folder" />
+                    Text="Open App Data Folder" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="mpv-folder"
-                    Text="Open mpv Folder" />
+                    Text="Open Mpv Config Folder" />
             </MenuBarItem>
 
             <MenuBarItem

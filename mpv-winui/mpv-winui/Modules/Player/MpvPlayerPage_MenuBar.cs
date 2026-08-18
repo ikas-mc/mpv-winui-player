@@ -191,6 +191,9 @@ namespace mpv_winui.Modules.Player
                         case "options":
                             ShowSettingsWindow();
                             break;
+                        case "conf-edit":
+                            ShowMpvConfigWindow();
+                            break;
                     }
                 }
             }
@@ -205,6 +208,14 @@ namespace mpv_winui.Modules.Player
             if (App.Window is MainWindow window)
             {
                 window.OpenSettingWindow();
+            }
+        }
+
+        private void ShowMpvConfigWindow()
+        {
+            if (App.Window is MainWindow window)
+            {
+                window.OpenMpvConfigWindow();
             }
         }
 

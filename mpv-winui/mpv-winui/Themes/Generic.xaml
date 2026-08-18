@@ -7,6 +7,9 @@
             <Style
                 BasedOn="{StaticResource DefaultSliderStyle}"
                 TargetType="ycc:SliderExt" />
+            <Style
+                BasedOn="{StaticResource DefaultCheckBoxStyle}"
+                TargetType="ycc:CheckBoxExt" />
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

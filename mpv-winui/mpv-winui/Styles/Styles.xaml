@@ -23,7 +23,8 @@
                 Color="#B0000000" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-
+    <x:Double x:Key="ToggleSwitchPreContentMargin">4</x:Double>
+    <x:Double x:Key="ToggleSwitchPostContentMargin">4</x:Double>
     <Style
         x:Key="LeftContentToggleSwitchStyle"
         BasedOn="{StaticResource DefaultToggleSwitchStyle}"

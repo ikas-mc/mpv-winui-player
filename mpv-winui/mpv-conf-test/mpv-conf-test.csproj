@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>mpv_conf_test</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+        <PackageReference Include="NUnit" Version="4.3.2" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="NUnit.Framework" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\mpv-winui\Modules\MpvConf\Conf\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />
+        <Compile Include="..\mpv-winui\Modules\MpvConf\Option\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />
+        <Compile Include="..\mpv-winui\Modules\MpvConf\Schema\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\mpv-winui\Data\MpvConfEditor\*.json" Link="Data\MpvConfEditor\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="..\mpv-winui\Modules\MpvConf\Option\MpvConfOptionControl.xaml.cs" />
+      <Compile Remove="..\mpv-winui\Modules\MpvConf\Option\MpvConfOptionControlBase.cs" />
+    </ItemGroup>
+</Project>
