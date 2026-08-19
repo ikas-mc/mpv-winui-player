@@ -78,6 +78,14 @@
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <ycc:TickBar
+                    x:Name="ProgressTickBar"
+                    Grid.Row="0"
+                    Height="8"
+                    Margin="7,0,7,0"
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    TickBrush="{ThemeResource SystemAccentColor2Brush}" />
                 <Slider
                     x:Name="ProgressSlider"
                     MinWidth="80"
