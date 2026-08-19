@@ -13,6 +13,9 @@
             <SolidColorBrush
                 x:Key="MpvControlBackground"
                 Color="#D0FFFFFF" />
+            <SolidColorBrush
+                x:Key="SystemAccentColor2Brush"
+                Color="{StaticResource SystemAccentColorDark2}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush
@@ -21,6 +24,9 @@
             <SolidColorBrush
                 x:Key="MpvControlBackground"
                 Color="#B0000000" />
+            <SolidColorBrush
+                x:Key="SystemAccentColor2Brush"
+                Color="{StaticResource SystemAccentColorLight2}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <x:Double x:Key="ToggleSwitchPreContentMargin">4</x:Double>

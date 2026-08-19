@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using mpv_winui.Modules.Common.Utils;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Windows.Foundation;
 
 namespace mpv_winui.Modules.Player
@@ -508,6 +509,7 @@ namespace mpv_winui.Modules.Player
                 UpdatePlaybackStatusUI(false);
                 //UpdatePlayPauseUI(false);
                 UpdateVolumeUI(false);
+                UpdateChapters(false);
             });
         }
 
@@ -547,6 +549,27 @@ namespace mpv_winui.Modules.Player
             ProgressSlider.StepFrequency = 1;
         }
 
+        private void UpdateChapters(bool hide)
+        {
+            if (!hide && _mediaPlayer is { } player)
+            {
+                double duration = player.Duration;
+                var ticks = player.Chapters()
+                    .Select(c => c.Time)
+                    .Where(t => t > 0 && (duration <= 0 || t < duration))
+                    .ToList();
+                ProgressTickBar.Values = ticks;
+                ProgressTickBar.Maximum = duration;
+                ProgressTickBar.Visibility = ticks.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                ProgressTickBar.Values = null;
+                ProgressTickBar.Maximum = 0;
+                ProgressTickBar.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private async void MediaPlayer_MediaFailed(MpvMediaPlayer sender, string? args)
         {
             _hasError = true;
@@ -556,6 +579,7 @@ namespace mpv_winui.Modules.Player
             {
                 ErrorTextBlock.Text = args;
                 UpdatePlaybackStatusUI(true);
+                UpdateChapters(true);
             });
         }
 
