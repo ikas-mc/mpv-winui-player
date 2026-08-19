@@ -1832,6 +1832,11 @@ namespace winrt::mpv_winrt::implementation
         return GetHStringProperty("sub-auto-exts");
     }
 
+    winrt::hstring MpvPlayer::GetVersion()
+    {
+        return GetHStringProperty("mpv-version");
+    }
+
     winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> MpvPlayer::GetMenu()
     {
         if (!m_mpv)

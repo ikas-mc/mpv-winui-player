@@ -212,6 +212,34 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="mpv-folder"
                     Text="Open Mpv Config Folder" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutSubItem Text="Open">
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-mpv-conf"
+                        Text="mpv.conf" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-mpvw-conf"
+                        Text="mpvw.conf" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-input-conf"
+                        Text="input.conf" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-menu-conf"
+                        Text="menu.conf" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-mpv-log"
+                        Text="mpv.log" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-menu-json"
+                        Text="menu.json" />
+                </MenuFlyoutSubItem>
             </MenuBarItem>
 
             <MenuBarItem
@@ -221,6 +249,24 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="about"
                     Text="About" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="link-mpv-wiki"
+                    Text="Mpv Wiki" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="link-mpv-manual"
+                    Text="Mpv Manual" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="link-mpv-manual-stable"
+                    Text="Mpv Manual(Stable)" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="link-mpvw-wiki"
+                    Text="Mpvw Wiki" />
             </MenuBarItem>
         </MenuBar>
 

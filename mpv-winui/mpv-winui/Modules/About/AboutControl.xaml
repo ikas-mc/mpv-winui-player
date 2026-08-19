@@ -1,0 +1,36 @@
+<UserControl
+    x:Class="mpv_winui.Modules.About.AboutControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <StackPanel
+        MinWidth="400"
+        Spacing="12">
+        <TextBlock
+            x:Name="AppNameTextBlock"
+            FontSize="20"
+            FontWeight="SemiBold" />
+        <TextBlock
+            x:Name="AppVersionTextBlock"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Text="mpvw (mpv-winui-player)"
+            TextWrapping="Wrap" />
+        <HyperlinkButton
+            HorizontalAlignment="Left"
+            Content="github.com/ikas-mc/mpv-winui-player"
+            NavigateUri="https://github.com/ikas-mc/mpv-winui-player" />
+
+        <TextBlock
+            x:Name="MpvVersionTextBlock"
+            TextWrapping="Wrap" />
+        <HyperlinkButton
+            HorizontalAlignment="Left"
+            Content="github.com/mpv-player/mpv"
+            NavigateUri="https://github.com/mpv-player/mpv" />
+
+    </StackPanel>
+</UserControl>

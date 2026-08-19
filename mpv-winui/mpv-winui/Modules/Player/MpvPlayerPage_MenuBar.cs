@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using mpv_winui.Modules.AppModel;
+using mpv_winui.Modules.About;
 using mpv_winui.Modules.FileSystem;
 using mpv_winui.Modules.Player.Menu;
 using System;
@@ -149,6 +149,36 @@ namespace mpv_winui.Modules.Player
                             await Launcher.LaunchFolderAsync(storageFolder);
                             break;
                         }
+                        case "open-mpv-conf":
+                            await OpenConfigFileAsync("mpv.conf", true);
+                            break;
+                        case "open-mpvw-conf":
+                            await OpenConfigFileAsync("mpvw.conf", true);
+                            break;
+                        case "open-input-conf":
+                            await OpenConfigFileAsync("input.conf", true);
+                            break;
+                        case "open-menu-conf":
+                            await OpenConfigFileAsync("menu.conf", true);
+                            break;
+                        case "open-mpv-log":
+                            await OpenConfigFileAsync("mpv.log", true);
+                            break;
+                        case "open-menu-json":
+                            await OpenConfigFileAsync("menu.json", false);
+                            break;
+                        case "link-mpv-wiki":
+                            await Launcher.LaunchUriAsync(new Uri("https://github.com/mpv-player/mpv/wiki"));
+                            break;
+                        case "link-mpv-manual-stable":
+                            await Launcher.LaunchUriAsync(new Uri("https://mpv.io/manual/stable/"));
+                            break;
+                        case "link-mpv-manual":
+                            await Launcher.LaunchUriAsync(new Uri("https://mpv.io/manual/master/"));
+                            break;
+                        case "link-mpvw-wiki":
+                            await Launcher.LaunchUriAsync(new Uri("https://github.com/ikas-mc/mpv-winui-player/wiki"));
+                            break;
                         case "playlist":
                         {
                             TogglePlaylist(true);
@@ -219,54 +249,22 @@ namespace mpv_winui.Modules.Player
             }
         }
 
+        private async Task OpenConfigFileAsync(string fileName, bool inMpvFolder)
+        {
+            var folder = inMpvFolder
+                ? await AppData.Current.OpenOrCreateLocalDataFolderAsync(MpvConfigFolderName)
+                : await AppData.Current.OpenLocalDataFolderAsync();
+            var file = await folder.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.OpenIfExists);
+            await Launcher.LaunchFileAsync(file);
+        }
+
         private async Task ShowAboutDialogAsync()
         {
-            var stack = new StackPanel { Spacing = 12, MinWidth = 400 };
-
-            stack.Children.Add(new TextBlock
-            {
-                Text = PackageHelper.AppName,
-                FontSize = 20,
-                FontWeight = new Windows.UI.Text.FontWeight(600)
-            });
-
-            stack.Children.Add(new TextBlock
-            {
-                Text = PackageHelper.AppVersion,
-                TextWrapping = TextWrapping.Wrap
-            });
-
-            stack.Children.Add(new TextBlock
-            {
-                Text = "mpv",
-                TextWrapping = TextWrapping.Wrap
-            });
-            var mpvLink = new HyperlinkButton
-            {
-                Content = "github.com/mpv-player/mpv",
-                NavigateUri = new Uri("https://github.com/mpv-player/mpv"),
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-            stack.Children.Add(mpvLink);
-
-            stack.Children.Add(new TextBlock
-            {
-                Text = "mpv-winui-player (mpvw)",
-                TextWrapping = TextWrapping.Wrap
-            });
-            var projectLink = new HyperlinkButton
-            {
-                Content = "github.com/ikas-mc/mpv-winui-player",
-                NavigateUri = new Uri("https://github.com/ikas-mc/mpv-winui-player"),
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-            stack.Children.Add(projectLink);
-
             var dialog = new ContentDialog
             {
-                Title = "About",
-                Content = stack,
-                CloseButtonText = "Close",
+                Title = AppContext.AppLang.About,
+                Content = AboutControl.Create(_mediaPlayer?.MpvVersion),
+                CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = XamlRoot
             };
             await dialog.ShowAsync();

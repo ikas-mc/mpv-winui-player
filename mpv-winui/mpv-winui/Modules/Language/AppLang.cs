@@ -2,11 +2,12 @@ namespace mpv_winui.Modules.Language
 {
     public partial class AppLang
     {
-        public string AppName { get; } = "mpv winui";
+        public string AppName { get; } = "mpvw";
         public string AppVersion { get; } = "1.0";
         public string About { get; set; } = "About";
         public string Add { get; set; } = "Add";
         public string Cancel { get; set; } = "Cancel";
+        public string Close { get; set; } = "Close";
         public string Help { get; set; } = "Help";
         public string Off { get; set; } = "Off";
         public string Ok { get; set; } = "OK";

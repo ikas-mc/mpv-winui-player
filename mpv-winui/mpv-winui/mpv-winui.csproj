@@ -71,11 +71,6 @@
     <ItemGroup>
         <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj" />
     </ItemGroup>
-    <ItemGroup>
-        <Page Update="Modules\Player\MpvPlayerPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
 
     <ItemGroup>
         <Content Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Include="..\libs\bin\mpv-2.dll">
