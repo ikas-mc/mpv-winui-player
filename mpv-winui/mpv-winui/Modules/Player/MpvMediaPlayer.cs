@@ -248,6 +248,8 @@ namespace mpv_winui.Modules.Player
 
         public string CurrentPath => _mpvPlayer.GetCurrentPath();
 
+        public string MpvVersion => _mpvPlayer.GetVersion();
+
         public void UpdatePanel(object panel)
         {
             if (panel is SwapChainPanel scp)
