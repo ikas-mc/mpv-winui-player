@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using WinRT;
 
 namespace mpv_winui.Modules.MpvConf;
 
@@ -373,7 +374,9 @@ public sealed partial class MpvConfEditorPage : Page
 
     private void SourceFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems.FirstOrDefault() is ComboBoxItem item && item.Tag is string tag)
+        //TODO fix aot, use index??
+        var seletedItem = e.AddedItems.FirstOrDefault().As<ComboBoxItem>();
+        if (seletedItem?.Tag is string tag)
         {
             var mode = tag switch
             {
