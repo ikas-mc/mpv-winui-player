@@ -70,7 +70,7 @@ jobs:
     - name: Upload Deps
       uses: actions/upload-artifact@v7
       with:
-        name: mpv-winui-Deps-${{ matrix.platform }}
+        name: mpvw-deps-${{ matrix.platform }}
         archive: true
         path: |
           ${{env.Appx_Package_Dir}}\*\Dependencies\${{ matrix.platform }}\*
@@ -78,7 +78,7 @@ jobs:
     - name: Upload Package
       uses: actions/upload-artifact@v7
       with:
-        name: mpv-winui-${{ matrix.platform }}-${{ matrix.configuration }}
+        name: mpvw-msix-${{ matrix.platform }}-${{ matrix.configuration }}
         archive: true
         path: |
           ${{env.Appx_Package_Dir}}\*\*.msix
@@ -87,5 +87,13 @@ jobs:
     - name: Upload Unpackaged
       uses: actions/upload-artifact@v7
       with:
-        name: mpv-winui-unpackaged-${{ matrix.platform }}-${{ matrix.configuration }}
+        name: mpvw-unpackaged-${{ matrix.platform }}-${{ matrix.configuration }}
+        archive: true
         path: ${{github.workspace}}\mpv-winui\mpv-winui\bin\win-${{ matrix.platform }}\publish
+
+    - name: Upload App Data Sample
+      uses: actions/upload-artifact@v7
+      with:
+        name: mpvw-app-data-sample
+        archive: true
+        path: ${{github.workspace}}\data
