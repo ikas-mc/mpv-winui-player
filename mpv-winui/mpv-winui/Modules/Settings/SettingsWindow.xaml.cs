@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using mpv_winui.Modules.Common.View;
+using mpv_winui.Modules.MpvConf;
 using Windows.Graphics;
 
 namespace mpv_winui.Modules.Settings;
@@ -41,6 +42,19 @@ public sealed partial class SettingsWindow : Window
 
     public void UpdateCurrentTheme()
     {
-        _styleManager?.UpdateTheme(_styleManager.GetThemeType());
+        var theme = _styleManager?.GetThemeType();
+        if (theme is not null)
+        {
+            _styleManager?.UpdateTheme(theme.Value);
+        }
+    }
+
+    public void UpdateCurrentBackdrop()
+    {
+        var backdropType = _styleManager?.GetBackdropType();
+        if (!string.IsNullOrEmpty(backdropType))
+        {
+            _styleManager?.UpdateBackdrop(backdropType);
+        }
     }
 }

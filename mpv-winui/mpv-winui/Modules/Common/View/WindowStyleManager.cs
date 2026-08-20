@@ -20,6 +20,7 @@ public sealed partial class WindowStyleManager : IDisposable
     private DesktopAcrylicController? _acrylicController;
     private MicaController? _micaController;
     private ElementTheme _theme;
+    private string? _backdropType;
 
     public WindowStyleManager(Window window)
     {
@@ -30,40 +31,14 @@ public sealed partial class WindowStyleManager : IDisposable
     public void Setup()
     {
         _theme = GetThemeType();
-        UpdateTitleBarColors(_theme);
-        UpdateContentTheme(_theme);
+        SetTitleBarColors(_theme);
+        SetContentTheme(_theme);
 
+        _backdropType = GetBackdropType();
         _window.DispatcherQueue.EnsureSystemDispatcherQueue();
-        _configurationSource = new SystemBackdropConfiguration
-        {
-            IsInputActive = true
-        };
-
-        switch (AppContext.AppSetting.BackdropType)
-        {
-            case AppSettings.BackdropType_Mica:
-            {
-                if (MicaController.IsSupported())
-                {
-                    _micaController = new MicaController();
-                    _micaController?.AddSystemBackdropTarget(_window.As<ICompositionSupportsSystemBackdrop>());
-                    _micaController?.SetSystemBackdropConfiguration(_configurationSource);
-                }
-                break;
-            }
-            default:
-            {
-                if (DesktopAcrylicController.IsSupported())
-                {
-                    _acrylicController = new DesktopAcrylicController();
-                    _acrylicController?.AddSystemBackdropTarget(_window.As<ICompositionSupportsSystemBackdrop>());
-                    _acrylicController?.SetSystemBackdropConfiguration(_configurationSource);
-                }
-                break;
-            }
-        }
-
-        UpdateBackdropTheme(_theme);
+        _configurationSource = new SystemBackdropConfiguration { IsInputActive = true };
+        SetBackdrop(_backdropType);
+        SetBackdropTheme(_theme);
 
         _uiSettings.ColorValuesChanged += OnColorValuesChanged;
     }
@@ -78,6 +53,11 @@ public sealed partial class WindowStyleManager : IDisposable
         };
     }
 
+    public string GetBackdropType()
+    {
+        return AppContext.AppSetting.BackdropType;
+    }
+
     public void UpdateTheme(ElementTheme theme)
     {
         if (_theme == theme)
@@ -86,9 +66,21 @@ public sealed partial class WindowStyleManager : IDisposable
         }
 
         _theme = theme;
-        UpdateContentTheme(theme);
-        UpdateBackdropTheme(theme);
-        UpdateTitleBarColors(theme);
+        SetContentTheme(theme);
+        SetBackdropTheme(theme);
+        SetTitleBarColors(theme);
+    }
+
+    public void UpdateBackdrop(string backdropType)
+    {
+        if (_backdropType == backdropType)
+        {
+            return;
+        }
+
+        _backdropType = backdropType;
+        SetBackdrop(backdropType);
+        SetBackdropTheme(_theme);
     }
 
     public void Cleanup()
@@ -117,12 +109,49 @@ public sealed partial class WindowStyleManager : IDisposable
         });
     }
 
-    private void UpdateContentTheme(ElementTheme theme)
+    private void SetBackdrop(string backdropType)
+    {
+        _micaController?.RemoveAllSystemBackdropTargets();
+        _acrylicController?.RemoveAllSystemBackdropTargets();
+
+        switch (backdropType)
+        {
+            case AppSettings.BackdropType_Mica:
+            {
+                if (MicaController.IsSupported())
+                {
+                    if (null == _micaController)
+                    {
+                        _micaController = new MicaController();
+                        _micaController?.SetSystemBackdropConfiguration(_configurationSource);
+                    }
+                    _micaController?.AddSystemBackdropTarget(_window.As<ICompositionSupportsSystemBackdrop>());
+                }
+
+                break;
+            }
+            default:
+            {
+                if (DesktopAcrylicController.IsSupported())
+                {
+                    if (null == _acrylicController)
+                    {
+                        _acrylicController = new DesktopAcrylicController();
+                        _acrylicController?.SetSystemBackdropConfiguration(_configurationSource);
+                    }
+                    _acrylicController?.AddSystemBackdropTarget(_window.As<ICompositionSupportsSystemBackdrop>());
+                }
+                break;
+            }
+        }
+    }
+
+    private void SetContentTheme(ElementTheme theme)
     {
         _contentRoot.RequestedTheme = theme;
     }
 
-    private void UpdateBackdropTheme(ElementTheme theme)
+    private void SetBackdropTheme(ElementTheme theme)
     {
         _configurationSource?.Theme = theme switch
         {
@@ -133,20 +162,20 @@ public sealed partial class WindowStyleManager : IDisposable
         if (theme == ElementTheme.Dark)
         {
             _acrylicController?.Kind = DesktopAcrylicKind.Thin;
-            _acrylicController?.TintOpacity = 0.2F;
-            _acrylicController?.TintColor = _uiSettings.GetColorValue(UIColorType.AccentLight1);
-            _acrylicController?.LuminosityOpacity = 0.1F;
+            _acrylicController?.TintOpacity = 0.1F;
+            _acrylicController?.TintColor = _uiSettings.GetColorValue(UIColorType.Accent);
+            _acrylicController?.LuminosityOpacity = 0.6F;
         }
         else
         {
             _acrylicController?.Kind = DesktopAcrylicKind.Thin;
             _acrylicController?.TintOpacity = 0.2F;
-            _acrylicController?.TintColor = Colors.White;
+            _acrylicController?.TintColor = _uiSettings.GetColorValue(UIColorType.AccentLight3);
             _acrylicController?.LuminosityOpacity = 0.8F;
         }
     }
 
-    private void UpdateTitleBarColors(ElementTheme theme)
+    private void SetTitleBarColors(ElementTheme theme)
     {
         if (!AppWindowTitleBar.IsCustomizationSupported())
         {

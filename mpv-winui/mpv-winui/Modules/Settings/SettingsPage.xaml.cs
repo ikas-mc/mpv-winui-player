@@ -35,8 +35,11 @@ public sealed partial class SettingsPage : Page
                 Options = [AppSettings.ThemeType_Auto, AppSettings.ThemeType_Light, AppSettings.ThemeType_Dark],
                 Getter = () => AppContext.AppSetting.ThemeType,
                 Setter = v =>{
-                    AppContext.AppSetting.ThemeType = (string)v;
-                    UpdateTheme((string)v);
+                    if ((string)v != AppContext.AppSetting.ThemeType)
+                    {
+                        AppContext.AppSetting.ThemeType = (string)v;
+                        UpdateTheme();
+                    }
                 }
             },
 
@@ -50,7 +53,13 @@ public sealed partial class SettingsPage : Page
                 Type = OptionType.StringList,
                 Options = [AppSettings.BackdropType_Acrylic, AppSettings.BackdropType_Mica],
                 Getter = () => AppContext.AppSetting.BackdropType,
-                Setter = v => AppContext.AppSetting.BackdropType = (string)v
+                Setter = v =>{
+                    if ((string)v != AppContext.AppSetting.BackdropType)
+                    {
+                        AppContext.AppSetting.BackdropType = (string)v;
+                        UpdateBackdrop();
+                    }
+                }
             },
 
             new Option
@@ -123,13 +132,24 @@ public sealed partial class SettingsPage : Page
         ];
     }
 
-    private void UpdateTheme(string theme)
+    private void UpdateTheme()
     {
         DispatcherQueue.RunAsync(() =>
         {
             if (App.Window is MainWindow mainWindow)
             {
                 mainWindow.UpdateCurrentTheme();
+            }
+        });
+    }
+
+    private void UpdateBackdrop()
+    {
+        DispatcherQueue.RunAsync(() =>
+        {
+            if (App.Window is MainWindow mainWindow)
+            {
+                mainWindow.UpdateCurrentBackdrop();
             }
         });
     }
