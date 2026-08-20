@@ -28,6 +28,19 @@ namespace mpv_winui
             }
 
             _settingsWindow?.UpdateCurrentTheme();
+            _mpvConfEditorWindow?.UpdateCurrentTheme();
+        }
+
+        public void UpdateCurrentBackdrop()
+        {
+            var backdropType = _styleManager?.GetBackdropType();
+            if (!string.IsNullOrEmpty(backdropType))
+            {
+                _styleManager?.UpdateBackdrop(backdropType);
+            }
+
+            _settingsWindow?.UpdateCurrentBackdrop();
+            _mpvConfEditorWindow?.UpdateCurrentBackdrop();
         }
     }
 }

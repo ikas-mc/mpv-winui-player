@@ -42,4 +42,22 @@ public sealed partial class MpvConfEditorWindow : Window
     {
         AppWindow?.MoveAndResize(rect);
     }
+
+    public void UpdateCurrentTheme()
+    {
+        var theme = _styleManager?.GetThemeType();
+        if (theme is not null)
+        {
+            _styleManager?.UpdateTheme(theme.Value);
+        }
+    }
+
+    public void UpdateCurrentBackdrop()
+    {
+        var backdropType = _styleManager?.GetBackdropType();
+        if (!string.IsNullOrEmpty(backdropType))
+        {
+            _styleManager?.UpdateBackdrop(backdropType);
+        }
+    }
 }
