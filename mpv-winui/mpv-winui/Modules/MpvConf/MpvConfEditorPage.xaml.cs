@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using WinRT;
 
 namespace mpv_winui.Modules.MpvConf;
@@ -24,6 +25,7 @@ public sealed partial class MpvConfEditorPage : Page
 
     private MpvConfManager _manager = null!;
     private MpvConfSchema _schema = null!;
+    private MpvConfOptionService _editor = null!;
     private readonly List<MpvConfOptionItem> _all = [];
 
     private string _profile = string.Empty;
@@ -36,7 +38,7 @@ public sealed partial class MpvConfEditorPage : Page
         InitializeComponent();
     }
 
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
 
@@ -45,14 +47,14 @@ public sealed partial class MpvConfEditorPage : Page
             return;
         }
 
+        _manager = new MpvConfManager(configPath);
         try
         {
             if (_logger.IsDebugEnabled)
             {
                 _logger.Debug("load conf file, conf={}", configPath);
             }
-            _manager = new MpvConfManager(configPath);
-            _manager.Load();
+            await Task.Run(_manager.Load);
         }
         catch (Exception ex)
         {
@@ -62,8 +64,11 @@ public sealed partial class MpvConfEditorPage : Page
 
         try
         {
-            string definitionDirectory = AppData.Current.ResolveLocalData(MpvConfSchemaService.DefinitionDirectoryName);
-            _schema = MpvConfSchemaService.LoadFromDirectory(definitionDirectory);
+            _schema = await Task.Run(() =>
+            {
+                var definitionDirectory = AppData.Current.ResolveLocalData(MpvConfSchemaService.DefinitionDirectoryName);
+                return MpvConfSchemaService.LoadFromDirectory(definitionDirectory);
+            });
         }
         catch (Exception ex)
         {
@@ -71,6 +76,11 @@ public sealed partial class MpvConfEditorPage : Page
             ShowMessage($"failed to load data : {ex.Message}");
             _logger.Error(ex, "failed to load data");
         }
+
+        _editor = new MpvConfOptionService(_manager, _schema);
+
+        SaveButton.IsEnabled = true;
+        ReloadButton.IsEnabled = true;
 
         BuildProfiles();
         BuildGroups();
@@ -116,7 +126,7 @@ public sealed partial class MpvConfEditorPage : Page
 
         Groups.Clear();
         Groups.Add(AllGroupsLabel);
-        foreach (string group in MpvConfOptionService.GetGroups(_manager, _schema, _profile, _mode))
+        foreach (string group in _editor.GetGroups(_profile, _mode))
         {
             Groups.Add(GroupLabel(group));
         }
@@ -146,7 +156,7 @@ public sealed partial class MpvConfEditorPage : Page
     private void RebuildItems()
     {
         _all.Clear();
-        _all.AddRange(MpvConfOptionService.GetOptions(_manager, _schema, _profile, _group, _mode));
+        _all.AddRange(_editor.GetOptions(_profile, _group, _mode));
         ApplySearch();
     }
 
@@ -183,12 +193,19 @@ public sealed partial class MpvConfEditorPage : Page
         args.Handled = true;
     }
 
-    private void OnOptionApplyRequested(object? sender, EventArgs e)
+    private void OnOptionApplyRequested(object? sender, MpvConfOptionItemEventArgs e)
     {
-        if (sender is MpvConfOptionControl { Item: MpvConfOptionItem item })
-        {
-            ApplyToPlayer(item);
-        }
+        ApplyToPlayer(e.Item);
+    }
+
+    private void OnOptionStateChangeRequested(object? sender, MpvConfOptionStateChangeEventArgs e)
+    {
+        _editor.SetState(e.Item, e.State);
+    }
+
+    private void OnOptionValueChangeRequested(object? sender, MpvConfOptionValueChangeEventArgs e)
+    {
+        _editor.SetValue(e.Item, e.Value);
     }
 
     private void ApplyToPlayer(MpvConfOptionItem item)
@@ -328,43 +345,60 @@ public sealed partial class MpvConfEditorPage : Page
         }
     }
 
-    private void SaveButton_Click(object sender, RoutedEventArgs e)
+    private async void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            _manager.Save();
-            RebuildItems();
-            ShowMessage($"Saved to {_manager.FilePath}");
-
-            if (_logger.IsDebugEnabled)
+            SaveButton.IsEnabled = false;
+            try
             {
-                _logger.Debug("config saved, path={}", _manager.FilePath);
+                await Task.Run(_manager.Save);
+                RebuildItems();
+                ShowMessage($"Saved to {_manager.FilePath}");
+
+                if (_logger.IsDebugEnabled)
+                {
+                    _logger.Debug("config saved, path={}", _manager.FilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "config save failed, path={}", _manager.FilePath);
+                ShowMessage($"Save failed: {ex.Message}");
             }
         }
-        catch (Exception ex)
+        finally
         {
-            _logger.Error(ex, "config save failed, path={}", _manager.FilePath);
-            ShowMessage($"Save failed: {ex.Message}");
+            SaveButton.IsEnabled = true;
         }
     }
 
-    private void ReloadButton_Click(object sender, RoutedEventArgs e)
+    private async void ReloadButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            _manager.Load();
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "config reload failed, path={}", _manager.FilePath);
-            ShowMessage("Reload failed: " + ex.Message);
-            return;
-        }
+            ReloadButton.IsEnabled = false;
 
-        BuildProfiles();
-        BuildGroups();
-        RebuildItems();
-        ShowMessage("Reloaded from disk");
+            try
+            {
+                await Task.Run(_manager.Load);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "config reload failed, path={}", _manager.FilePath);
+                ShowMessage("Reload failed: " + ex.Message);
+                return;
+            }
+
+            BuildProfiles();
+            BuildGroups();
+            RebuildItems();
+            ShowMessage("Reloaded from disk");
+        }
+        finally
+        {
+            ReloadButton.IsEnabled = true;
+        }
     }
 
     private void ShowMessage(string message)
@@ -380,8 +414,8 @@ public sealed partial class MpvConfEditorPage : Page
         {
             var mode = tag switch
             {
-                "FromConfig" => MpvConfOptionIncludeType.FromConfig,
-                "Enabled" => MpvConfOptionIncludeType.Effective,
+                "FromConfFile" => MpvConfOptionIncludeType.FromConfFile,
+                "Enabled" => MpvConfOptionIncludeType.Enabled,
                 "Modified" => MpvConfOptionIncludeType.Modified,
                 _ => MpvConfOptionIncludeType.All,
             };

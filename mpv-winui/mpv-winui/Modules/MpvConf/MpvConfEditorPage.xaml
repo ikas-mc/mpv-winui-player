@@ -10,12 +10,12 @@
     <Page.Resources>
         <Style
             x:Key="MpvOptionListViewItemStyle"
-            BasedOn="{StaticResource DefaultListViewItemStyle}"
-            TargetType="ListViewItem">
-            <Setter Property="Margin" Value="0,0,0,8" />
+            BasedOn="{StaticResource DefaultGridViewItemStyle}"
+            TargetType="GridViewItem">
+            <Setter Property="Margin" Value="0,4,4,4" />
             <Setter Property="MinHeight" Value="60" />
-            <Setter Property="Padding" Value="8" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
             <Setter Property="IsTabStop" Value="False" />
         </Style>
@@ -31,7 +31,9 @@
         <DataTemplate x:Key="MpvEditorTemplate">
             <option:MpvConfOptionControl
                 Margin="0,0,0,2"
-                ApplyRequested="OnOptionApplyRequested" />
+                ApplyRequested="OnOptionApplyRequested"
+                StateChangeRequested="OnOptionStateChangeRequested"
+                ValueChangeRequested="OnOptionValueChangeRequested" />
         </DataTemplate>
     </Page.Resources>
 
@@ -77,7 +79,7 @@
                             Tag="All" />
                         <ComboBoxItem
                             Content="Conf"
-                            Tag="FromConfig" />
+                            Tag="FromConfFile" />
                         <ComboBoxItem
                             Content="Enabled"
                             Tag="Enabled" />
@@ -101,6 +103,7 @@
                     x:Name="SaveButton"
                     Grid.Column="5"
                     Click="SaveButton_Click"
+                    IsEnabled="False"
                     Label="Save">
                     <AppBarButton.Icon>
                         <FontIcon
@@ -113,6 +116,7 @@
                     x:Name="ReloadButton"
                     Grid.Column="6"
                     Click="ReloadButton_Click"
+                    IsEnabled="False"
                     Label="Reload">
                     <AppBarButton.Icon>
                         <FontIcon
@@ -125,7 +129,8 @@
 
         <Grid
             Grid.Row="1"
-            Margin="8,0,0,8">
+            Margin="8,0,0,8"
+            ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
                 <ColumnDefinition Width="160" />
@@ -188,7 +193,7 @@
                 </ListView>
             </Grid>
 
-            <ListView
+            <GridView
                 x:Name="OptionListView"
                 Grid.Row="0"
                 Grid.Column="2"
@@ -199,7 +204,13 @@
                 ItemContainerStyle="{StaticResource MpvOptionListViewItemStyle}"
                 ItemTemplate="{StaticResource MpvEditorTemplate}"
                 ItemsSource="{x:Bind Items}"
-                SelectionMode="None" />
+                SelectionMode="Single">
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel />
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
         </Grid>
 
         <TextBlock

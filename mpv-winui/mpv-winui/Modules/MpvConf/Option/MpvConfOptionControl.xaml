@@ -9,7 +9,9 @@
     xmlns:schema="using:mpv_winui.Modules.MpvConf.Schema"
     mc:Ignorable="d">
 
-    <Grid RowSpacing="8">
+    <Grid
+        Padding="8"
+        RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -23,11 +25,10 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
             <ctrl:CheckBoxExt
                 x:Name="EnableCheck"
                 Grid.Column="0"
@@ -37,30 +38,15 @@
                 VerticalAlignment="Center"
                 CheckChanged="OnEnableCheckChanged"
                 ToolTipService.ToolTip="Enable / Remove" />
-
             <TextBlock
                 x:Name="KeyText"
                 Grid.Column="1"
                 VerticalAlignment="Center"
-                FontWeight="Bold" />
-
-            <Border
-                x:Name="GroupBadge"
-                Grid.Column="2"
-                Margin="0,4,0,0"
-                Padding="4,0"
-                VerticalAlignment="Center"
-                Background="{ThemeResource AccentFillColorDefaultBrush}"
-                CornerRadius="4">
-                <TextBlock
-                    x:Name="GroupText"
-                    FontSize="11"
-                    Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
-            </Border>
-
+                FontWeight="Bold"
+                IsTextSelectionEnabled="True" />
             <FontIcon
                 x:Name="ModifiedIcon"
-                Grid.Column="3"
+                Grid.Column="2"
                 Width="12"
                 Height="12"
                 Margin="0,4,0,0"
@@ -70,23 +56,40 @@
                 Glyph="&#xE91F;"
                 ToolTipService.ToolTip="Modified, not saved"
                 Visibility="Collapsed" />
-
-            <ctrl:CheckBoxExt
-                x:Name="DisableCheck"
-                Grid.Column="4"
+            <Border
+                x:Name="GroupBadge"
+                Grid.Column="3"
+                Margin="0,0,0,0"
+                Padding="4,2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                CheckChanged="OnDisableCheckChanged"
-                Content="#"
-                FlowDirection="RightToLeft"
-                ToolTipService.ToolTip="Comment out (disable)" />
-
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                CornerRadius="4">
+                <TextBlock
+                    x:Name="GroupText"
+                    FontSize="11" />
+            </Border>
+            <Button
+                x:Name="CopyButton"
+                Grid.Column="4"
+                Width="28"
+                Height="24"
+                Padding="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Click="OnCopyClicked"
+                ToolTipService.ToolTip="Copy">
+                <FontIcon
+                    FontSize="14"
+                    Glyph="&#xE8C8;" />
+            </Button>
             <Button
                 x:Name="ApplyButton"
                 Grid.Column="5"
                 Width="28"
                 Height="24"
                 Padding="0"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="OnApplyClicked"
                 ToolTipService.ToolTip="Apply to player">
@@ -110,14 +113,28 @@
             Grid.Row="2"
             ColumnSpacing="8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <ctrl:CheckBoxExt
+                x:Name="DisableCheck"
+                Grid.Row="0"
+                Grid.Column="0"
+                MinWidth="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                CheckChanged="OnDisableCheckChanged"
+                Content="#"
+                FlowDirection="RightToLeft"
+                ToolTipService.ToolTip="Comment out (disable)" />
             <ComboBox
                 x:Name="TypeBox"
-                Grid.Column="0"
+                Grid.Row="0"
+                Grid.Column="1"
                 Width="120"
                 Height="32"
+                HorizontalAlignment="Left"
                 SelectionChanged="OnTypeSelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="schema:MpvConfSchemaItemValue">
@@ -127,7 +144,8 @@
             </ComboBox>
             <ToggleSwitch
                 x:Name="BoolSwitch"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="2"
                 Height="32"
                 MinWidth="0"
                 HorizontalAlignment="Left"
@@ -138,7 +156,8 @@
                 Visibility="Collapsed" />
             <ComboBox
                 x:Name="EnumBox"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="2"
                 Height="32"
                 MinWidth="160"
                 HorizontalAlignment="Left"
@@ -146,7 +165,8 @@
                 Visibility="Collapsed" />
             <NumberBox
                 x:Name="IntInput"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="2"
                 Height="32"
                 MinWidth="160"
                 HorizontalAlignment="Left"
@@ -155,7 +175,8 @@
                 Visibility="Collapsed" />
             <NumberBox
                 x:Name="FloatInput"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="2"
                 Height="32"
                 MinWidth="160"
                 HorizontalAlignment="Left"
@@ -164,7 +185,8 @@
                 Visibility="Collapsed" />
             <TextBox
                 x:Name="TextInput"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="2"
                 Height="32"
                 MinWidth="200"
                 HorizontalAlignment="Left"

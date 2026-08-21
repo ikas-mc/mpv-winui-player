@@ -42,8 +42,10 @@ public class MpvConfOptionServiceTests
         ]
         """);
 
+    private static MpvConfOptionService Service(MpvConfManager m) => new(m, Schema());
+
     private static List<MpvConfOptionItem> Build(MpvConfManager m, string profile, string? group, MpvConfOptionIncludeType mode) =>
-        MpvConfOptionService.GetOptions(m, Schema(), profile, group, mode).ToList();
+        Service(m).GetOptions(profile, group, mode).ToList();
 
     [Test]
     public void Sections_ReturnsOrderedDistinctSections()
@@ -78,7 +80,7 @@ public class MpvConfOptionServiceTests
     public void Build_FromConfig_ExcludesNotInFile()
     {
         var m = Manager("alpha=auto\nx=1\n");
-        var result = Build(m, "", null, MpvConfOptionIncludeType.FromConfig);
+        var result = Build(m, "", null, MpvConfOptionIncludeType.FromConfFile);
 
         Assert.That(result.Select(r => r.Key), Is.EquivalentTo(new[] { "alpha", "x" }));
     }
@@ -87,7 +89,7 @@ public class MpvConfOptionServiceTests
     public void Build_Effective_OnlyEnabled()
     {
         var m = Manager("alpha=auto\n# beta=2\ngamma=yes\n");
-        var result = Build(m, "", null, MpvConfOptionIncludeType.Effective);
+        var result = Build(m, "", null, MpvConfOptionIncludeType.Enabled);
 
         Assert.That(result.Select(r => r.Key), Is.EquivalentTo(new[] { "alpha", "gamma" }));
     }
@@ -127,7 +129,7 @@ public class MpvConfOptionServiceTests
     public void Build_FromConfig_DuplicateKeyLines_AllPresent()
     {
         var m = Manager("alpha=a\n# alpha=b\nbeta=2\n");
-        var result = Build(m, "", null, MpvConfOptionIncludeType.FromConfig);
+        var result = Build(m, "", null, MpvConfOptionIncludeType.FromConfFile);
 
         var alphas = result.Where(r => r.Key == "alpha").ToList();
         Assert.That(alphas, Has.Count.EqualTo(2));
@@ -138,7 +140,7 @@ public class MpvConfOptionServiceTests
     public void Build_Effective_DisabledDuplicateExcluded()
     {
         var m = Manager("alpha=a\n# alpha=b\n");
-        var result = Build(m, "", null, MpvConfOptionIncludeType.Effective);
+        var result = Build(m, "", null, MpvConfOptionIncludeType.Enabled);
 
         Assert.That(result.Where(r => r.Key == "alpha").ToList(), Has.Count.EqualTo(1));
     }
@@ -148,10 +150,10 @@ public class MpvConfOptionServiceTests
     {
         var m = Manager("alpha=auto\n[s1]\nalpha=manual\nbeta=5\n");
 
-        var defaultResult = Build(m, "", null, MpvConfOptionIncludeType.FromConfig);
+        var defaultResult = Build(m, "", null, MpvConfOptionIncludeType.FromConfFile);
         Assert.That(defaultResult.Select(r => r.Key), Does.Not.Contain("beta"));
 
-        var s1Result = Build(m, "s1", null, MpvConfOptionIncludeType.FromConfig);
+        var s1Result = Build(m, "s1", null, MpvConfOptionIncludeType.FromConfFile);
         Assert.That(s1Result.Single(r => r.Key == "beta").Present, Is.True);
         Assert.That(s1Result.Single(r => r.Key == "alpha").Line!.Value, Is.EqualTo("manual"));
     }
@@ -160,15 +162,15 @@ public class MpvConfOptionServiceTests
     public void HasUnknownOptions_IsProfileSpecific()
     {
         var m = Manager("x=1\n[s1]\nalpha=auto\n");
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "", MpvConfOptionIncludeType.All), Is.True);
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "s1", MpvConfOptionIncludeType.All), Is.False);
+        Assert.That(Service(m).ContainsUnknownOptions("", MpvConfOptionIncludeType.All), Is.True);
+        Assert.That(Service(m).ContainsUnknownOptions("s1", MpvConfOptionIncludeType.All), Is.False);
     }
 
     [Test]
     public void AvailableGroups_AllMode_ReturnsSchemaGroupsInAppearanceOrder()
     {
         var m = Manager("alpha=auto\n");
-        Assert.That(MpvConfOptionService.GetGroups(m, Schema(), "", MpvConfOptionIncludeType.All),
+        Assert.That(Service(m).GetGroups("", MpvConfOptionIncludeType.All),
             Is.EqualTo(new[] { "video", "audio" }));
     }
 
@@ -176,7 +178,7 @@ public class MpvConfOptionServiceTests
     public void AvailableGroups_FromConfig_OnlyGroupsWithPresentOptions()
     {
         var m = Manager("alpha=auto\nx=1\n");
-        var groups = MpvConfOptionService.GetGroups(m, Schema(), "", MpvConfOptionIncludeType.FromConfig);
+        var groups = Service(m).GetGroups("", MpvConfOptionIncludeType.FromConfFile);
 
         Assert.That(groups, Is.EqualTo(new[] { "video", MpvConfOptionService.UnknownGroup }));
     }
@@ -185,7 +187,7 @@ public class MpvConfOptionServiceTests
     public void AvailableGroups_Effective_OnlyGroupsWithEnabledOptions()
     {
         var m = Manager("alpha=auto\n# beta=2\ngamma=yes\n");
-        var groups = MpvConfOptionService.GetGroups(m, Schema(), "", MpvConfOptionIncludeType.Effective);
+        var groups = Service(m).GetGroups("", MpvConfOptionIncludeType.Enabled);
 
         Assert.That(groups, Is.EqualTo(new[] { "video" }));
     }
@@ -194,8 +196,8 @@ public class MpvConfOptionServiceTests
     public void HasUnknownOptions_EffectiveMode_ExcludesDisabledUnknown()
     {
         var m = Manager("# x=1\n");
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "", MpvConfOptionIncludeType.FromConfig), Is.True);
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "", MpvConfOptionIncludeType.Effective), Is.False);
+        Assert.That(Service(m).ContainsUnknownOptions("", MpvConfOptionIncludeType.FromConfFile), Is.True);
+        Assert.That(Service(m).ContainsUnknownOptions("", MpvConfOptionIncludeType.Enabled), Is.False);
     }
 
     [Test]
@@ -232,8 +234,8 @@ public class MpvConfOptionServiceTests
         var m = Manager("alpha=auto\n");
         m.Remove(m.Get("alpha")!);
 
-        Assert.That(Build(m, "", null, MpvConfOptionIncludeType.FromConfig).Select(r => r.Key), Does.Not.Contain("alpha"));
-        Assert.That(Build(m, "", null, MpvConfOptionIncludeType.Effective).Select(r => r.Key), Does.Not.Contain("alpha"));
+        Assert.That(Build(m, "", null, MpvConfOptionIncludeType.FromConfFile).Select(r => r.Key), Does.Not.Contain("alpha"));
+        Assert.That(Build(m, "", null, MpvConfOptionIncludeType.Enabled).Select(r => r.Key), Does.Not.Contain("alpha"));
 
         var all = Build(m, "", null, MpvConfOptionIncludeType.All).Single(r => r.Key == "alpha");
         Assert.That(all.Present, Is.False);
@@ -246,7 +248,7 @@ public class MpvConfOptionServiceTests
         var m = Manager("alpha=auto\n");
         m.Remove(m.Get("alpha")!);
 
-        var groups = MpvConfOptionService.GetGroups(m, Schema(), "", MpvConfOptionIncludeType.Modified);
+        var groups = Service(m).GetGroups("", MpvConfOptionIncludeType.Modified);
         Assert.That(groups, Does.Contain("video"));
     }
 
@@ -256,7 +258,7 @@ public class MpvConfOptionServiceTests
         var m = Manager("x=1\n");
         m.Remove(m.Get("x")!);
 
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "", MpvConfOptionIncludeType.Modified), Is.True);
-        Assert.That(MpvConfOptionService.ContainsUnknownOptions(m, Schema(), "", MpvConfOptionIncludeType.All), Is.False);
+        Assert.That(Service(m).ContainsUnknownOptions("", MpvConfOptionIncludeType.Modified), Is.True);
+        Assert.That(Service(m).ContainsUnknownOptions("", MpvConfOptionIncludeType.All), Is.False);
     }
 }

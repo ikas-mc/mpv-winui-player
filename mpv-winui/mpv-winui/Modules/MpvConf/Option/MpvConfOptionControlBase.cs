@@ -1,16 +1,31 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using mpv_winui.Modules.Common.Utils;
 using System;
 
 namespace mpv_winui.Modules.MpvConf.Option;
 
 public abstract class MpvConfOptionControlBase : UserControl
 {
-    public event EventHandler? ApplyRequested;
+    public event EventHandler<MpvConfOptionItemEventArgs>? ApplyRequested;
 
-    protected void RaiseApplyRequested()
+    public event EventHandler<MpvConfOptionStateChangeEventArgs>? StateChangeRequested;
+
+    public event EventHandler<MpvConfOptionValueChangeEventArgs>? ValueChangeRequested;
+
+    protected void RaiseApplyRequested(MpvConfOptionItem item)
     {
-        ApplyRequested?.Invoke(this, EventArgs.Empty);
+        ApplyRequested?.Invoke(this, new MpvConfOptionItemEventArgs(item));
+    }
+
+    protected void RaiseStateChangeRequested(MpvConfOptionItem item, MpvOptionState state)
+    {
+        StateChangeRequested?.Invoke(this, new MpvConfOptionStateChangeEventArgs(item, state));
+    }
+
+    protected void RaiseValueChangeRequested(MpvConfOptionItem item, string value)
+    {
+        ValueChangeRequested?.Invoke(this, new MpvConfOptionValueChangeEventArgs(item, value));
     }
 
     public MpvConfOptionItem? Item
@@ -63,4 +78,60 @@ public abstract class MpvConfOptionControlBase : UserControl
     protected abstract void UpdateOptionValue();
 
     protected abstract void UpdateEnabledState();
+
+    protected void SetLineToClipboard(MpvConfOptionItem item)
+    {
+        ClipboardHelper.SetCopyText($"{item.Key}={item.Value}");
+    }
+}
+
+public sealed class MpvConfOptionItemEventArgs : EventArgs
+{
+    public MpvConfOptionItemEventArgs(MpvConfOptionItem item)
+    {
+        Item = item;
+    }
+
+    public MpvConfOptionItem Item
+    {
+        get;
+    }
+}
+
+public sealed class MpvConfOptionStateChangeEventArgs : EventArgs
+{
+    public MpvConfOptionStateChangeEventArgs(MpvConfOptionItem item, MpvOptionState state)
+    {
+        Item = item;
+        State = state;
+    }
+
+    public MpvConfOptionItem Item
+    {
+        get;
+    }
+
+    public MpvOptionState State
+    {
+        get;
+    }
+}
+
+public sealed class MpvConfOptionValueChangeEventArgs : EventArgs
+{
+    public MpvConfOptionValueChangeEventArgs(MpvConfOptionItem item, string value)
+    {
+        Item = item;
+        Value = value;
+    }
+
+    public MpvConfOptionItem Item
+    {
+        get;
+    }
+
+    public string Value
+    {
+        get;
+    }
 }
