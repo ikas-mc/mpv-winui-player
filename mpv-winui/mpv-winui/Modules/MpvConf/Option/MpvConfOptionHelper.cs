@@ -65,12 +65,35 @@ public static class MpvConfOptionHelper
 
     public static string FormatBool(bool value) => value ? "yes" : "no";
 
-    public static double ParseNumber(string? value)
+    public static double ParseInt(string? value)
     {
-        return double.TryParse(value?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double v)
-            ? v
-            : double.NaN;
+        if (string.IsNullOrEmpty(value))
+        {
+            return double.NaN;
+        }
+
+        if (long.TryParse(value.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long v))
+        {
+            return v;
+        }
+
+        return double.NaN;
     }
-    public static string FormatNumber(double value) =>
-        value.ToString(CultureInfo.InvariantCulture);
+
+    public static double ParseFloat(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return double.NaN;
+        }
+
+        if (double.TryParse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double v))
+        {
+            return v;
+        }
+
+        return double.NaN;
+    }
+
+    public static string FormatNumber(double value) => value.ToString(CultureInfo.InvariantCulture);
 }

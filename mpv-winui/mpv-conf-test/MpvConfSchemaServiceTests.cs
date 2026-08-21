@@ -2,14 +2,14 @@ using mpv_winui.Modules.MpvConf.Schema;
 namespace mpv_conf_test;
 
 [TestFixture]
-public class MpvConfPredefTests
+public class MpvConfSchemaServiceTests
 {
     private string _dir = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _dir = Path.Combine(Path.GetTempPath(), "mpv-predef-test-" + Guid.NewGuid().ToString("N"));
+        _dir = Path.Combine(Path.GetTempPath(), "mpv-schema-service-test-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_dir);
     }
 

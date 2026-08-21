@@ -71,21 +71,50 @@ public class MpvConfOptionHelperTests
     }
 
     [TestCase("1", 1.0)]
-    [TestCase("-2.5", -2.5)]
-    [TestCase(" 3.0 ", 3.0)]
-    [TestCase("1e3", 1000.0)]
-    public void ParseNumber_Valid(string input, double expected)
+    [TestCase("-2", -2.0)]
+    [TestCase("+3", 3.0)]
+    [TestCase("0", 0.0)]
+    [TestCase(" 42 ", 42.0)]
+    [TestCase("9223372036854775807", 9.223372036854776E18)]
+    public void ParseInt_Valid(string input, double expected)
     {
-        Assert.That(MpvConfOptionHelper.ParseNumber(input), Is.EqualTo(expected));
+        Assert.That(MpvConfOptionHelper.ParseInt(input), Is.EqualTo(expected));
     }
 
     [TestCase(null)]
     [TestCase("")]
+    [TestCase("   ")]
     [TestCase("abc")]
+    [TestCase("1.5")]
+    [TestCase("1e3")]
+    [TestCase("1,000")]
     [TestCase("1.2.3")]
-    public void ParseNumber_Invalid_IsNaN(string? input)
+    [TestCase("--2")]
+    public void ParseInt_Invalid_IsNaN(string? input)
     {
-        Assert.That(double.IsNaN(MpvConfOptionHelper.ParseNumber(input)), Is.True);
+        Assert.That(double.IsNaN(MpvConfOptionHelper.ParseInt(input)), Is.True);
+    }
+
+    [TestCase("1", 1.0)]
+    [TestCase("-2.5", -2.5)]
+    [TestCase("+0.5", 0.5)]
+    [TestCase(" 3.0 ", 3.0)]
+    [TestCase("1e3", 1000.0)]
+    [TestCase("-1.5e-2", -0.015)]
+    public void ParseFloat_Valid(string input, double expected)
+    {
+        Assert.That(MpvConfOptionHelper.ParseFloat(input), Is.EqualTo(expected));
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    [TestCase("abc")]
+    [TestCase("1,000")]
+    [TestCase("1.2.3")]
+    public void ParseFloat_Invalid_IsNaN(string? input)
+    {
+        Assert.That(double.IsNaN(MpvConfOptionHelper.ParseFloat(input)), Is.True);
     }
 
     [TestCase(1.0, "1")]

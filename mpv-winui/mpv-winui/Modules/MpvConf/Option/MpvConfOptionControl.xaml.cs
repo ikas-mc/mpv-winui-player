@@ -20,11 +20,11 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         {
             FractionDigits = 0,
             IsGrouped = false,
-        };
-        formatter.NumberRounder = new IncrementNumberRounder
-        {
-            Increment = 1,
-            RoundingAlgorithm = RoundingAlgorithm.RoundHalfUp,
+            NumberRounder = new IncrementNumberRounder
+            {
+                Increment = 1,
+                RoundingAlgorithm = RoundingAlgorithm.RoundHalfUp,
+            }
         };
         IntInput.NumberFormatter = formatter;
     }
@@ -118,16 +118,16 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
 
             case MpvOptionEditorKind.Int:
                 ShowEditor(IntInput);
-                IntInput.Minimum = type.Minimum ?? double.NaN;
-                IntInput.Maximum = type.Maximum ?? double.NaN;
-                UsingSuppressEdit(() => IntInput.Value = raw is null ? double.NaN : MpvConfOptionHelper.ParseNumber(raw));
+                IntInput.Minimum = type.Minimum ?? long.MinValue;
+                IntInput.Maximum = type.Maximum ?? long.MaxValue;
+                UsingSuppressEdit(() => IntInput.Value = raw is null ? double.NaN : MpvConfOptionHelper.ParseInt(raw));
                 break;
 
             case MpvOptionEditorKind.Float:
                 ShowEditor(FloatInput);
-                FloatInput.Minimum = type.Minimum ?? double.NaN;
-                FloatInput.Maximum = type.Maximum ?? double.NaN;
-                UsingSuppressEdit(() => FloatInput.Value = raw is null ? double.NaN : MpvConfOptionHelper.ParseNumber(raw));
+                FloatInput.Minimum = type.Minimum ?? double.MinValue;
+                FloatInput.Maximum = type.Maximum ?? double.MaxValue;
+                UsingSuppressEdit(() => FloatInput.Value = raw is null ? double.NaN : MpvConfOptionHelper.ParseFloat(raw));
                 break;
 
             default:
@@ -171,11 +171,6 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         });
     }
 
-    private static string TypeLabel(MpvConfSchemaItemValue type)
-    {
-        return type.Type;
-    }
-
     private static int GuessTypeIndex(IReadOnlyList<MpvConfSchemaItemValue> types, MpvConfOptionItem? item)
     {
         if (item is null || types.Count == 0)
@@ -197,7 +192,12 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
                 return i;
             }
 
-            if ((type.Type == MpvConfSchemaItemValue.Int || type.Type == MpvConfSchemaItemValue.Float) && !double.IsNaN(MpvConfOptionHelper.ParseNumber(raw)))
+            if (type.Type == MpvConfSchemaItemValue.Int && !double.IsNaN(MpvConfOptionHelper.ParseInt(raw)))
+            {
+                return i;
+            }
+
+            if (type.Type == MpvConfSchemaItemValue.Float && !double.IsNaN(MpvConfOptionHelper.ParseFloat(raw)))
             {
                 return i;
             }
@@ -226,11 +226,11 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         if (!isChecked)
         {
             DisableCheck.IsChecked = false;
-            Item.State = MpvOptionState.NotInFile;
+            RaiseStateChangeRequested(Item, MpvOptionState.NotInFile);
         }
         else
         {
-            Item.State = DisableCheck.IsChecked == true ? MpvOptionState.Disabled : MpvOptionState.Enabled;
+            RaiseStateChangeRequested(Item, DisableCheck.IsChecked == true ? MpvOptionState.Disabled : MpvOptionState.Enabled);
         }
 
         UpdateModifiedState();
@@ -250,11 +250,11 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
                 EnableCheck.IsChecked = true;
             }
 
-            Item.State = MpvOptionState.Disabled;
+            RaiseStateChangeRequested(Item, MpvOptionState.Disabled);
         }
         else
         {
-            Item.State = EnableCheck.IsChecked == true ? MpvOptionState.Enabled : MpvOptionState.NotInFile;
+            RaiseStateChangeRequested(Item, EnableCheck.IsChecked == true ? MpvOptionState.Enabled : MpvOptionState.NotInFile);
         }
 
         UpdateModifiedState();
@@ -264,7 +264,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
     {
         if (!SuppressEdit && Item is not null)
         {
-            Item?.Value = MpvConfOptionHelper.FormatBool(BoolSwitch.IsOn);
+            RaiseValueChangeRequested(Item, MpvConfOptionHelper.FormatBool(BoolSwitch.IsOn));
             UpdateModifiedState();
         }
     }
@@ -273,7 +273,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
     {
         if (!SuppressEdit && Item is not null && EnumBox.SelectedItem is MpvConfEnumItem choice)
         {
-            Item?.Value = choice.Value;
+            RaiseValueChangeRequested(Item, choice.Value);
             UpdateModifiedState();
         }
     }
@@ -282,7 +282,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
     {
         if (!SuppressEdit && Item is not null && !double.IsNaN(args.NewValue))
         {
-            Item?.Value = MpvConfOptionHelper.FormatNumber(args.NewValue);
+            RaiseValueChangeRequested(Item, MpvConfOptionHelper.FormatNumber(args.NewValue));
             UpdateModifiedState();
         }
     }
@@ -291,7 +291,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
     {
         if (!SuppressEdit && Item is not null && !double.IsNaN(args.NewValue))
         {
-            Item?.Value = MpvConfOptionHelper.FormatNumber(args.NewValue);
+            RaiseValueChangeRequested(Item, MpvConfOptionHelper.FormatNumber(args.NewValue));
             UpdateModifiedState();
         }
     }
@@ -301,13 +301,24 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         //TODO TextBox SuppressEdit
         if (!SuppressEdit && Item is not null && TextInput.Text != Item.Value)
         {
-            Item?.Value = TextInput.Text;
+            RaiseValueChangeRequested(Item, TextInput.Text);
             UpdateModifiedState();
         }
     }
 
     private void OnApplyClicked(object sender, RoutedEventArgs e)
     {
-        RaiseApplyRequested();
+        if (Item is not null)
+        {
+            RaiseApplyRequested(Item);
+        }
+    }
+
+    private void OnCopyClicked(object sender, RoutedEventArgs e)
+    {
+        if (Item is not null)
+        {
+            SetLineToClipboard(Item);
+        }
     }
 }
