@@ -6,7 +6,7 @@ namespace mpv_conf_test;
 [TestFixture]
 public class MpvConfOptionHelperTests
 {
-    private static MpvConfSchemaItemValue Type(string type, string[]? enumValues = null) =>
+    private static MpvConfSchemaItemValue Type(string type, MpvConfSchemaEnumValue[]? enumValues = null) =>
         new()
         {
             Type = type,
@@ -33,7 +33,7 @@ public class MpvConfOptionHelperTests
     [Test]
     public void ResolveEditorKind_WithEnum_IsEnum()
     {
-        Assert.That(MpvConfOptionHelper.ResolveEditorKind(Type("string", ["auto", "yes"])), Is.EqualTo(MpvOptionEditorKind.Enum));
+        Assert.That(MpvConfOptionHelper.ResolveEditorKind(Type("string", [new() { Value = "auto" }, new() { Value = "yes" }])), Is.EqualTo(MpvOptionEditorKind.Enum));
     }
 
     [TestCase("yes", true)]

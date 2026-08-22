@@ -7,6 +7,8 @@ namespace mpv_winui.Modules.MpvConf.Conf;
 
 public sealed class MpvConfManager
 {
+    public const string DefaultSectionName = "default";
+
     private readonly string _filePath;
     private readonly List<MpvConfLine> _lines = [];
 
@@ -46,7 +48,11 @@ public sealed class MpvConfManager
     public void Save()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(_filePath) ?? string.Empty);
-        var present = _lines.Where(l => l.Status != MpvConfLineStatus.Deleted).ToList();
+        var removedSections = _lines
+            .Where(l => l.Type == MpvConfLineType.Section && l.SectionDeleted)
+            .Select(l => l.Section)
+            .ToHashSet(StringComparer.Ordinal);
+        var present = _lines.Where(l => l.Status != MpvConfLineStatus.Deleted && !removedSections.Contains(l.Section)).ToList();
         File.WriteAllText(_filePath, string.Join("\n", present.Select(l => l.Raw)) + "\n");
 
         _lines.Clear();
@@ -151,6 +157,65 @@ public sealed class MpvConfManager
             _lines.Add(MpvConfLine.SectionLine($"[{target}]", target));
             Reindex();
         }
+    }
+
+    public bool IsSectionDeleted(string section)
+    {
+        var headers = _lines.Where(l => l.Type == MpvConfLineType.Section && string.Equals(l.Section, section, StringComparison.Ordinal)).ToList();
+        return headers.Count > 0 && headers.All(l => l.SectionDeleted);
+    }
+
+    public bool RemoveSection(string section)
+    {
+        bool changed = false;
+        foreach (MpvConfLine line in _lines)
+        {
+            if (line.Type == MpvConfLineType.Section && string.Equals(line.Section, section, StringComparison.Ordinal) && !line.SectionDeleted)
+            {
+                line.SectionDeleted = true;
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    public bool RestoreSection(string section)
+    {
+        bool changed = false;
+        foreach (MpvConfLine line in _lines)
+        {
+            if (line.Type == MpvConfLineType.Section && string.Equals(line.Section, section, StringComparison.Ordinal) && line.SectionDeleted)
+            {
+                line.SectionDeleted = false;
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    public bool RenameSection(string oldName, string newName)
+    {
+        string target = newName?.Trim() ?? string.Empty;
+        if (target.Length == 0
+            || target == oldName
+            || target == DefaultSectionName
+            || !ContainsSection(oldName)
+            || ContainsSection(target))
+        {
+            return false;
+        }
+
+        foreach (MpvConfLine line in _lines)
+        {
+            if (string.Equals(line.Section, oldName, StringComparison.Ordinal))
+            {
+                line.RetargetSection(target);
+            }
+        }
+
+        return true;
     }
 
     private int FindInsertIndex(string section)

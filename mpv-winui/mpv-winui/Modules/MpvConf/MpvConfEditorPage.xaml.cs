@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 using mpv_winui.Modules.FileSystem;
 using mpv_winui.Modules.MpvConf.Conf;
@@ -89,7 +90,7 @@ public sealed partial class MpvConfEditorPage : Page
 
     public string ConfigPath => _manager.FilePath;
 
-    public ObservableCollection<string> Profiles
+    public ObservableCollection<MpvConfProfileItem> Profiles
     {
         get;
     } = [];
@@ -107,15 +108,25 @@ public sealed partial class MpvConfEditorPage : Page
     private void BuildProfiles()
     {
         Profiles.Clear();
-        Profiles.Add(DefaultProfileLabel);
+        Profiles.Add(new MpvConfProfileItem(DefaultProfileLabel));
+
+        string? profile = _profile;
+        var selectedIndex = 0;
+        var index = 0;
         foreach (string section in _manager.Sections)
         {
-            Profiles.Add(section);
+            index++;
+            Profiles.Add(new MpvConfProfileItem(section, _manager.IsSectionDeleted(section)));
+            if (string.Equals(profile, section, StringComparison.OrdinalIgnoreCase))
+            {
+                selectedIndex = index;
+                profile = section;
+            }
         }
 
-        _profile = string.Empty;
+        _profile = selectedIndex > 0 ? profile : string.Empty;
         _suppressSelection = true;
-        ProfileList.SelectedIndex = 0;
+        ProfileList.SelectedIndex = selectedIndex;
         _suppressSelection = false;
     }
 
@@ -245,14 +256,152 @@ public sealed partial class MpvConfEditorPage : Page
 
     private void ProfileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_suppressSelection || ProfileList.SelectedItem is not string label)
+        if (_suppressSelection || ProfileList.SelectedItem is not MpvConfProfileItem profile)
+        {
+            return;
+        }
+        _profile = profile.Name == DefaultProfileLabel ? string.Empty : profile.Name;
+        BuildGroups();
+        RebuildItems();
+    }
+
+    private void ProfileList_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+    {
+        if (args.OriginalSource is FrameworkElement fe && fe.DataContext is MpvConfProfileItem profile)
+        {
+            ProfileList.SelectedItem = profile;
+
+            bool isDefault = profile.Name == DefaultProfileLabel;
+            bool isDeleted = profile.IsDeleted;
+
+            if (Resources["ProfileContextMenu"] is MenuFlyout flyout)
+            {
+                foreach (var flyoutItem in flyout.Items)
+                {
+                    if (flyoutItem is MenuFlyoutItem menuItem && menuItem.Tag is string tag)
+                    {
+                        menuItem.IsEnabled = tag switch
+                        {
+                            "rename" or "delete" => !isDefault && !isDeleted,
+                            "restore" => isDeleted,
+                            _ => true,
+                        };
+                    }
+                }
+
+                if (args.TryGetPosition(ProfileList, out var point))
+                {
+                    flyout.ShowAt(ProfileList, point);
+                }
+                else
+                {
+                    flyout.ShowAt(ProfileList);
+                }
+
+                args.Handled = true;
+            }
+        }
+    }
+
+    private async void ProfileMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuFlyoutItem { Tag: string action } || ProfileList.SelectedItem is not MpvConfProfileItem profile)
         {
             return;
         }
 
-        _profile = label == DefaultProfileLabel ? string.Empty : label;
-        BuildGroups();
-        RebuildItems();
+        switch (action)
+        {
+            case "rename":
+                await RenameProfileAsync(profile);
+                break;
+            case "delete":
+                await DeleteProfileAsync(profile);
+                break;
+            case "restore":
+                RestoreProfile(profile);
+                break;
+        }
+    }
+
+    private async Task RenameProfileAsync(MpvConfProfileItem profile)
+    {
+        string oldName = profile.Name;
+
+        var nameBox = new TextBox { Text = oldName, Header = "New name" };
+        var dialog = new ContentDialog
+        {
+            Title = $"Rename profile '{oldName}'",
+            Content = nameBox,
+            PrimaryButtonText = "Rename",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = XamlRoot
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        string newName = nameBox.Text.Trim();
+        if (!_manager.RenameSection(oldName, newName))
+        {
+            ShowMessage($"Cannot rename '{oldName}' to '{newName}': name is empty, reserved ('{MpvConfManager.DefaultSectionName}'), duplicated, or unchanged.");
+            return;
+        }
+
+        profile.Name = newName;
+        if (_profile == oldName)
+        {
+            _profile = newName;
+            RebuildItems();
+        }
+
+        ShowMessage($"Renamed '{oldName}' to '{newName}'. Save to persist.");
+    }
+
+    private async Task DeleteProfileAsync(MpvConfProfileItem profile)
+    {
+        string label = profile.Name;
+
+        var dialog = new ContentDialog
+        {
+            Title = $"Delete profile '{label}'",
+            Content = "All options in this profile will be removed when the file is saved.",
+            PrimaryButtonText = "Delete",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = XamlRoot
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        bool changed = _manager.RemoveSection(label);
+
+        if (_logger.IsDebugEnabled)
+        {
+            _logger.Debug("profile deleted, profile={}, changed={}", label, changed);
+        }
+
+        profile.IsDeleted = true;
+        ShowMessage($"Deleted profile '{label}'. Save to persist, Reload to undo.");
+    }
+
+    private void RestoreProfile(MpvConfProfileItem profile)
+    {
+        bool changed = _manager.RestoreSection(profile.Name);
+
+        if (_logger.IsDebugEnabled)
+        {
+            _logger.Debug("profile restored, profile={}, changed={}", profile.Name, changed);
+        }
+
+        profile.IsDeleted = false;
+        ShowMessage($"Restored profile '{profile.Name}'.");
     }
 
     private void GroupList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -301,6 +450,13 @@ public sealed partial class MpvConfEditorPage : Page
             }
 
             string key = keyBox.Text.Trim();
+
+            if (profile.Length > 0 && _manager.IsSectionDeleted(profile))
+            {
+                ShowMessage($"Profile '{profile}' was deleted but not saved yet. Save or reload before reusing the name.");
+                return;
+            }
+
             bool isNewProfile = profile.Length > 0 && !_manager.ContainsSection(profile);
 
             if (key.Length > 0 && !MpvConfParser.IsValidOptionKey(key))
@@ -325,10 +481,11 @@ public sealed partial class MpvConfEditorPage : Page
                     _logger.Debug("new profile created, profile={}, key={}", profile, key);
                 }
 
-                BuildProfiles();
+                var newItem = new MpvConfProfileItem(profile);
+                Profiles.Add(newItem);
                 _profile = profile;
                 _suppressSelection = true;
-                ProfileList.SelectedIndex = Profiles.IndexOf(profile);
+                ProfileList.SelectedItem = newItem;
                 _suppressSelection = false;
                 BuildGroups();
                 RebuildItems();
@@ -353,6 +510,9 @@ public sealed partial class MpvConfEditorPage : Page
             try
             {
                 await Task.Run(_manager.Save);
+
+                BuildProfiles();
+                BuildGroups();
                 RebuildItems();
                 ShowMessage($"Saved to {_manager.FilePath}");
 

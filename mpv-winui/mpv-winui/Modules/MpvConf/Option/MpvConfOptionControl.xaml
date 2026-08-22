@@ -63,7 +63,8 @@
                 Padding="4,2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                BorderBrush="{ThemeResource SystemAccentColorLight2}"
+                BorderThickness="1"
                 CornerRadius="4">
                 <TextBlock
                     x:Name="GroupText"
@@ -162,7 +163,17 @@
                 MinWidth="160"
                 HorizontalAlignment="Left"
                 SelectionChanged="OnEnumSelectionChanged"
-                Visibility="Collapsed" />
+                Visibility="Collapsed">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="schema:MpvConfSchemaEnumValue">
+                        <TextBlock>
+                            <Run Text="{x:Bind Value}" />
+                            <Run Text=" - " />
+                            <Run Text="{x:Bind Desc, FallbackValue=''}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <NumberBox
                 x:Name="IntInput"
                 Grid.Row="0"

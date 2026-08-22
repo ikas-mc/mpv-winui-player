@@ -39,7 +39,7 @@ public class MpvConfSchemaServiceTests
             "group": "video",
             "desc": "Hardware decoding",
             "link": "https://mpv.io/manual/master/#options-hwdec",
-            "types": [ { "type": "string", "enum": ["auto", "yes", "no"] } ]
+            "values": [ { "type": "string", "enum": [ {"value":"auto","desc":"Auto"}, {"value":"yes","desc":"Yes"}, {"value":"no","desc":"No"} ] } ]
           }
         ]
         """;
@@ -52,21 +52,27 @@ public class MpvConfSchemaServiceTests
         Assert.That(def.Group, Is.EqualTo("video"));
         Assert.That(def.Description, Is.EqualTo("Hardware decoding"));
         Assert.That(def.Link, Is.EqualTo("https://mpv.io/manual/master/#options-hwdec"));
-        Assert.That(def.Types, Has.Count.EqualTo(1));
-        Assert.That(def.Types[0].Type, Is.EqualTo("string"));
-        Assert.That(def.Types[0].EnumValues, Is.EqualTo(new[] { "auto", "yes", "no" }));
+        Assert.That(def.Values, Has.Count.EqualTo(1));
+        Assert.That(def.Values[0].Type, Is.EqualTo("string"));
+        Assert.That(def.Values[0].EnumValues, Has.Count.EqualTo(3));
+        Assert.That(def.Values[0].EnumValues![0].Value, Is.EqualTo("auto"));
+        Assert.That(def.Values[0].EnumValues![0].Desc, Is.EqualTo("Auto"));
+        Assert.That(def.Values[0].EnumValues![1].Value, Is.EqualTo("yes"));
+        Assert.That(def.Values[0].EnumValues![1].Desc, Is.EqualTo("Yes"));
+        Assert.That(def.Values[0].EnumValues![2].Value, Is.EqualTo("no"));
+        Assert.That(def.Values[0].EnumValues![2].Desc, Is.EqualTo("No"));
     }
 
     [Test]
     public void LoadFromJson_ParsesNumericBounds()
     {
         const string json = """
-        [ { "name": "volume-max", "types": [ { "type": "int", "minimum": 0, "maximum": 200 } ] } ]
+        [ { "name": "volume-max", "values": [ { "type": "int", "minimum": 0, "maximum": 200 } ] } ]
         """;
 
         var def = MpvConfSchemaService.LoadFromJson(json).Get("volume-max")!;
-        Assert.That(def.Types[0].Minimum, Is.EqualTo(0));
-        Assert.That(def.Types[0].Maximum, Is.EqualTo(200));
+        Assert.That(def.Values[0].Minimum, Is.EqualTo(0));
+        Assert.That(def.Values[0].Maximum, Is.EqualTo(200));
     }
 
     [Test]
@@ -74,23 +80,23 @@ public class MpvConfSchemaServiceTests
     {
         const string json = """[ { "name": "foo", "desc": "x" } ]""";
         var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
-        Assert.That(def.Types, Has.Count.EqualTo(1));
-        Assert.That(def.Types[0].Type, Is.EqualTo("raw"));
+        Assert.That(def.Values, Has.Count.EqualTo(1));
+        Assert.That(def.Values[0].Type, Is.EqualTo("raw"));
     }
 
     [Test]
     public void LoadFromJson_EmptyTypesDefaultsToRaw()
     {
-        const string json = """[ { "name": "foo", "types": [] } ]""";
+        const string json = """[ { "name": "foo", "values": [] } ]""";
         var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
-        Assert.That(def.Types, Has.Count.EqualTo(1));
-        Assert.That(def.Types[0].Type, Is.EqualTo("raw"));
+        Assert.That(def.Values, Has.Count.EqualTo(1));
+        Assert.That(def.Values[0].Type, Is.EqualTo("raw"));
     }
 
     [Test]
     public void LoadFromJson_MissingGroupDefaultsToGeneral()
     {
-        const string json = """[ { "name": "foo", "types": [ { "type": "bool" } ] } ]""";
+        const string json = """[ { "name": "foo", "values": [ { "type": "bool" } ] } ]""";
         var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
         Assert.That(def.Group, Is.EqualTo("General"));
     }
@@ -98,7 +104,7 @@ public class MpvConfSchemaServiceTests
     [Test]
     public void LoadFromJson_UnknownKeyReturnsNull()
     {
-        const string json = """[ { "name": "foo", "types": [ { "type": "bool" } ] } ]""";
+        const string json = """[ { "name": "foo", "values": [ { "type": "bool" } ] } ]""";
         Assert.That(MpvConfSchemaService.LoadFromJson(json).Get("missing"), Is.Null);
     }
 
@@ -160,4 +166,32 @@ public class MpvConfSchemaServiceTests
         Assert.That(schema.Count, Is.EqualTo(0));
     }
 
+    [Test]
+    public void LoadFromJson_ParsesEnumWithDescriptionOnly()
+    {
+        const string json = """
+        [
+          {
+            "name": "vo",
+            "values": [ { "type": "string", "enum": [ {"value":"gpu","desc":"GPU"}, {"value":"vulkan"} ] } ]
+          }
+        ]
+        """;
+
+        var def = MpvConfSchemaService.LoadFromJson(json).Get("vo")!;
+        Assert.That(def.Values[0].EnumValues, Has.Count.EqualTo(2));
+        Assert.That(def.Values[0].EnumValues![0].Value, Is.EqualTo("gpu"));
+        Assert.That(def.Values[0].EnumValues![0].Desc, Is.EqualTo("GPU"));
+        Assert.That(def.Values[0].EnumValues![1].Value, Is.EqualTo("vulkan"));
+        Assert.That(def.Values[0].EnumValues![1].Desc, Is.Null);
+    }
+
+    [Test]
+    public void LoadFromJson_EmptyEnumList()
+    {
+        const string json = """[ { "name": "foo", "values": [ { "type": "string", "enum": [] } ] } ]""";
+        var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
+        Assert.That(def.Values[0].HasEnum, Is.False);
+        Assert.That(def.Values[0].EnumValues, Is.Empty);
+    }
 }

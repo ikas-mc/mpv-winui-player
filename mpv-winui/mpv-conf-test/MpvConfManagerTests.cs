@@ -453,4 +453,170 @@ public class MpvConfManagerTests
         manager.Save();
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\nb=9\n"));
     }
+
+    [Test]
+    public void RemoveSection_FlagsHeaderOnly_KeepsMemberLineStates()
+    {
+        string path = WriteSample("a=1\n[sect]\nb=2\n[other]\nd=4\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        Assert.That(manager.RemoveSection("sect"), Is.True);
+
+        var b = manager.Get("b", "sect")!;
+        Assert.That(b, Is.Not.Null);
+        Assert.That(b.Status, Is.EqualTo(MpvConfLineStatus.Existing));
+        Assert.That(b.Modified, Is.False);
+        Assert.That(manager.DeletedLines, Is.Empty);
+        Assert.That(manager.Sections, Does.Contain("sect"));
+        Assert.That(manager.IsSectionDeleted("sect"), Is.True);
+        Assert.That(manager.IsSectionDeleted("other"), Is.False);
+        Assert.That(manager.Get("a")!.Status, Is.EqualTo(MpvConfLineStatus.Existing));
+        Assert.That(manager.Get("d", "other")!.Status, Is.EqualTo(MpvConfLineStatus.Existing));
+
+        Assert.That(manager.RemoveSection("sect"), Is.False);
+    }
+
+    [Test]
+    public void RemoveSection_PreservesAddedAndModifiedStates_UntilSave()
+    {
+        string path = WriteSample("[sect]\nb=2\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.Get("b", "sect")!.Value = "9";
+        manager.Get("b", "sect")!.Modified = true;
+        var added = manager.InsertOption("d", "4", "sect");
+
+        manager.RemoveSection("sect");
+
+        Assert.That(manager.Get("b", "sect")!.Modified, Is.True);
+        Assert.That(added.Status, Is.EqualTo(MpvConfLineStatus.Added));
+        Assert.That(manager.Get("d", "sect"), Is.Not.Null);
+        Assert.That(manager.DeletedLines, Is.Empty);
+    }
+
+    [Test]
+    public void RemoveSection_SaveDropsSectionFromFileAndMemory()
+    {
+        string path = WriteSample("a=1\n[sect]\nb=2\n[other]\nd=4\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.RemoveSection("sect");
+        manager.Save();
+
+        Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n[other]\nd=4\n"));
+        Assert.That(manager.Sections, Does.Not.Contain("sect"));
+        Assert.That(manager.Get("b", "sect"), Is.Null);
+        Assert.That(manager.Lines, Has.Count.EqualTo(3));
+        Assert.That(manager.DeletedLines, Is.Empty);
+    }
+
+    [Test]
+    public void RestoreSection_ClearsFlag_FileUnchangedAfterSave()
+    {
+        string original = "a=1\n[sect]\nb=2\n";
+        string path = WriteSample(original);
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.RemoveSection("sect");
+        Assert.That(manager.RestoreSection("sect"), Is.True);
+        Assert.That(manager.IsSectionDeleted("sect"), Is.False);
+
+        manager.Save();
+        Assert.That(File.ReadAllText(path), Is.EqualTo(original));
+    }
+
+    [Test]
+    public void RestoreSection_DoesNotTouchIndividuallyDeletedLines()
+    {
+        string path = WriteSample("[sect]\nb=2\nc=3\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        var c = manager.Get("c", "sect")!;
+        manager.Remove(c);
+        manager.RemoveSection("sect");
+
+        manager.RestoreSection("sect");
+
+        Assert.That(c.Status, Is.EqualTo(MpvConfLineStatus.Deleted));
+        Assert.That(manager.Get("b", "sect"), Is.Not.Null);
+        Assert.That(manager.Get("c", "sect"), Is.Null);
+
+        manager.Save();
+        Assert.That(File.ReadAllText(path), Is.EqualTo("[sect]\nb=2\n"));
+    }
+
+    [Test]
+    public void IsSectionDeleted_UnknownOrMissing_ReturnsFalse()
+    {
+        string path = WriteSample("a=1\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        Assert.That(manager.IsSectionDeleted(""), Is.False);
+        Assert.That(manager.IsSectionDeleted("nope"), Is.False);
+    }
+
+    [Test]
+    public void RenameSection_RenamesHeaderRawAndOptionSections_PreservesState()
+    {
+        string path = WriteSample("[sect]\na=1\nb=2\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.Get("a", "sect")!.Value = "9";
+        manager.Get("a", "sect")!.Modified = true;
+        manager.Remove(manager.Get("b", "sect")!);
+
+        Assert.That(manager.RenameSection("sect", "renamed"), Is.True);
+
+        var header = manager.Lines.First(l => l.Type == MpvConfLineType.Section && l.Section == "renamed");
+        Assert.That(header.Raw, Is.EqualTo("[renamed]"));
+        Assert.That(manager.Get("a", "renamed")!.Value, Is.EqualTo("9"));
+        Assert.That(manager.Get("a", "renamed")!.Modified, Is.True);
+        Assert.That(manager.Get("b", "renamed"), Is.Null);
+        Assert.That(manager.DeletedLines.All(l => l.Section == "renamed"), Is.True);
+        Assert.That(manager.ContainsSection("sect"), Is.False);
+
+        manager.Save();
+        Assert.That(File.ReadAllText(path), Is.EqualTo("[renamed]\na=9\n"));
+    }
+
+    [Test]
+    public void RenameSection_FlagFollowsHeader()
+    {
+        string path = WriteSample("[s]\nx=1\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.RemoveSection("s");
+        Assert.That(manager.RenameSection("s", "t"), Is.True);
+
+        Assert.That(manager.IsSectionDeleted("t"), Is.True);
+        Assert.That(manager.IsSectionDeleted("s"), Is.False);
+    }
+
+    [Test]
+    public void RenameSection_RejectsInvalidTargets()
+    {
+        string path = WriteSample("[s]\nx=1\n[t]\n");
+        var manager = new MpvConfManager(path);
+        manager.Load();
+
+        manager.RemoveSection("t");
+
+        Assert.That(manager.RenameSection("s", "t"), Is.False);
+        Assert.That(manager.RenameSection("s", ""), Is.False);
+        Assert.That(manager.RenameSection("s", "   "), Is.False);
+        Assert.That(manager.RenameSection("s", "s"), Is.False);
+        Assert.That(manager.RenameSection("missing", "z"), Is.False);
+        Assert.That(manager.RenameSection("s", MpvConfManager.DefaultSectionName), Is.False);
+
+        Assert.That(manager.ContainsSection("z"), Is.False);
+        Assert.That(manager.Get("x", "s"), Is.Not.Null);
+    }
 }
