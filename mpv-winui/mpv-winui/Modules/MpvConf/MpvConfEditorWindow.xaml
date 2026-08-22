@@ -7,17 +7,35 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+            x:Name="TitleText"
+            Margin="12,0,0,0"
+            VerticalAlignment="Center"
+            FontSize="16"
+            FontWeight="SemiBold"
+            Text="Mpv Conf Editor"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap" />
+
+        <TextBlock
+            x:Name="SubTitleText"
             Grid.Row="0"
-            Padding="12,8">
-            <TextBlock
-                FontSize="16"
-                FontWeight="SemiBold"
-                Text="mpv Config" />
-        </Border>
+            Grid.Column="1"
+            Margin="8,0,200,0"
+            VerticalAlignment="Center"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap" />
+
         <Frame
             x:Name="PageFrame"
             Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
             Loaded="PageFrame_Loaded" />
     </Grid>
 </Window>

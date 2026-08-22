@@ -10,27 +10,6 @@ public enum MpvOptionState
     NotInFile,
 }
 
-public sealed class MpvConfEnumItem
-{
-    public MpvConfEnumItem(string value, string label)
-    {
-        Value = value;
-        Label = label;
-    }
-
-    public string Value
-    {
-        get;
-    }
-
-    public string Label
-    {
-        get;
-    }
-
-    public override string ToString() => Label;
-}
-
 public sealed class MpvConfOptionItem
 {
     public MpvConfOptionItem(string profile, MpvConfSchemaItem? definition, MpvConfLine? line, MpvConfLine? deletedLine = null)

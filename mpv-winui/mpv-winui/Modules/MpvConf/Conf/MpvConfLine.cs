@@ -76,6 +76,13 @@ public sealed class MpvConfLine
     public string Section
     {
         get;
+        internal set;
+    }
+
+    public bool SectionDeleted
+    {
+        get;
+        internal set;
     }
 
     public string? Key
@@ -130,6 +137,20 @@ public sealed class MpvConfLine
     }
 
     public override string ToString() => _raw;
+
+    internal void RetargetSection(string newSection)
+    {
+        Section = newSection;
+        if (Type == MpvConfLineType.Section)
+        {
+            int open = _raw.IndexOf('[');
+            int close = open >= 0 ? _raw.IndexOf(']', open) : -1;
+            if (open >= 0 && close > open)
+            {
+                _raw = _raw.Substring(0, open + 1) + newSection + _raw.Substring(close);
+            }
+        }
+    }
 
     private string BuildRaw()
     {

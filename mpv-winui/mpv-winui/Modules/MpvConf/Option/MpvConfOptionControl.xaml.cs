@@ -72,7 +72,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         MpvConfOptionItem? item = Item;
 
         _types.Clear();
-        if (item?.Definition?.Types is { } declared)
+        if (item?.Definition?.Values is { } declared)
         {
             _types.AddRange(declared);
         }
@@ -148,26 +148,18 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
 
     private void PopulateEnumBox(MpvConfSchemaItemValue type, string? raw)
     {
-        var choices = new List<MpvConfEnumItem>();
-        if (type.EnumValues is { } values)
-        {
-            foreach (string value in values)
-            {
-                choices.Add(new MpvConfEnumItem(value, value));
-            }
-        }
+        var values = type.EnumValues?.ToList() ?? [];
 
-        MpvConfEnumItem? selected = raw is not null ? choices.FirstOrDefault(c => string.Equals(c.Value, raw, StringComparison.Ordinal)) : null;
-        if (selected is null && raw is { Length: > 0 })
+        int selectedIndex = -1;
+        if (raw is not null)
         {
-            selected = new MpvConfEnumItem(raw, raw);
-            choices.Insert(0, selected);
+            selectedIndex = values.FindIndex(v => string.Equals(v.Value, raw, StringComparison.Ordinal));
         }
 
         UsingSuppressEdit(() =>
         {
-            EnumBox.ItemsSource = choices;
-            EnumBox.SelectedItem = selected;
+            EnumBox.ItemsSource = values;
+            EnumBox.SelectedIndex = selectedIndex;
         });
     }
 
@@ -182,7 +174,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
         for (int i = 0; i < types.Count; i++)
         {
             MpvConfSchemaItemValue type = types[i];
-            if (type.HasEnum && type.EnumValues!.Contains(raw, StringComparer.Ordinal))
+            if (type.HasEnum && type.EnumValues!.Any(v => string.Equals(v.Value, raw, StringComparison.Ordinal)))
             {
                 return i;
             }
@@ -271,7 +263,7 @@ public sealed partial class MpvConfOptionControl : MpvConfOptionControlBase
 
     private void OnEnumSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (!SuppressEdit && Item is not null && EnumBox.SelectedItem is MpvConfEnumItem choice)
+        if (!SuppressEdit && Item is not null && EnumBox.SelectedItem is MpvConfSchemaEnumValue choice)
         {
             RaiseValueChangeRequested(Item, choice.Value);
             UpdateModifiedState();

@@ -37,7 +37,7 @@ public sealed class MpvConfSchemaItemValue
     }
 
     [JsonPropertyName("enum")]
-    public IReadOnlyList<string>? EnumValues
+    public IReadOnlyList<MpvConfSchemaEnumValue>? EnumValues
     {
         get;
         set;

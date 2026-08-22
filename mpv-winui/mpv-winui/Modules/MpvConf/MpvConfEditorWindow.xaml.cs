@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.FileSystem;
 using Windows.Graphics;
@@ -15,7 +16,7 @@ public sealed partial class MpvConfEditorWindow : Window
 
         Closed += MpvConfigWindow_Closed;
 
-        AppWindow.Title = "mpv Config";
+        AppWindow.Title = "Mpv Conf Editor";
         AppWindow.SetIcon("App.ico");
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
@@ -27,7 +28,8 @@ public sealed partial class MpvConfEditorWindow : Window
     {
         //TODO
         var configPath = AppData.Current.ResolveLocalData("mpv\\mpvw.conf");
-
+        SubTitleText.Text = configPath;
+        ToolTipService.SetToolTip(SubTitleText, configPath);
         PageFrame.Navigate(typeof(MpvConfEditorPage), configPath);
     }
 

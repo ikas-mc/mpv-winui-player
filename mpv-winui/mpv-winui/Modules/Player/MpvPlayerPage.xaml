@@ -202,7 +202,7 @@
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-edit"
-                    Text="Mpv Conf Editor" />
+                    Text="Mpv Conf Editor (Alpha)" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"

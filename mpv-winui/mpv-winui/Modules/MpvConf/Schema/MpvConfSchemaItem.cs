@@ -47,12 +47,11 @@ public sealed class MpvConfSchemaItem
         set;
     }
 
-    [JsonPropertyName("types")]
-    public IReadOnlyList<MpvConfSchemaItemValue> Types
+    [JsonPropertyName("values")]
+    public IReadOnlyList<MpvConfSchemaItemValue> Values
     {
-        get => _types;
-        set => _types = value is { Count: > 0 } ? value : new MpvConfSchemaItemValue[] { new MpvConfSchemaItemValue() };
+        get => field ?? (MpvConfSchemaItemValue[])[];
+        set;
     }
 
-    private IReadOnlyList<MpvConfSchemaItemValue> _types = new MpvConfSchemaItemValue[] { new MpvConfSchemaItemValue() };
 }
