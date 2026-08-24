@@ -1,0 +1,39 @@
+[
+  {
+    "name": "profile-desc",
+    "group": "Profile",
+    "desc": "Profile desc",
+    "link": "https://mpv.io/manual/master/#profiles",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "profile-cond",
+    "group": "Profile",
+    "desc": "Profile condtion",
+    "link": "https://mpv.io/manual/master/#conditional-auto-profiles",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "profile-restore",
+    "group": "Profile",
+    "link": "https://mpv.io/manual/master/#conditional-auto-profiles",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "copy"
+          }
+        ]
+      }
+    ]
+  }
+]

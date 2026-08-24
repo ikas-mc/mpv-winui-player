@@ -413,23 +413,63 @@
       },
       {
         "name": "Anime4K: Mode B (HQ)",
-        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
       },
       {
         "name": "Anime4K: Mode C (HQ)",
-        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
       },
       {
         "name": "Anime4K: Mode A+A (HQ)",
-        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
       },
       {
         "name": "Anime4K: Mode B+B (HQ)",
-        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
       },
       {
         "name": "Anime4K: Mode C+A (HQ)",
-        "commandString": "osd-auto change-list glsl-shaders set ~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        "commandString": "osd-auto change-list glsl-shaders set \"~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl\""
+      },
+      {
+        "name": "Anime4K: Mode A (HQ)",
+        "command": [
+          "no-osd",
+          "change-list",
+          "glsl-shaders",
+          "set",
+          "~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        ]
+      },
+      {
+        "name": "Anime4K: Mode B (HQ)",
+        "command": [
+          "no-osd",
+          "change-list",
+          "glsl-shaders",
+          "set",
+          "~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_Soft_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        ]
+      },
+      {
+        "name": "Anime4K: Mode C (HQ)",
+        "command": [
+          "no-osd",
+          "change-list",
+          "glsl-shaders",
+          "set",
+          "~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        ]
+      },
+      {
+        "name": "Anime4K: Mode A+A (HQ)",
+        "command": [
+          "no-osd",
+          "change-list",
+          "glsl-shaders",
+          "set",
+          "~~/shaders/Anime4K/Anime4K_Clamp_Highlights.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_VL.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_VL.glsl;~~/shaders/Anime4K/Anime4K_Restore_CNN_M.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x2.glsl;~~/shaders/Anime4K/Anime4K_AutoDownscalePre_x4.glsl;~~/shaders/Anime4K/Anime4K_Upscale_CNN_x2_M.glsl"
+        ]
       }
     ]
   }
