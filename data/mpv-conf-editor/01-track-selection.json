@@ -1,0 +1,82 @@
+[
+  {
+    "name": "alang",
+    "group": "Track Selection",
+    "desc": "Specify a prioritized list of audio languages to use, as IETF language tags. Equivalent ISO 639-1 two-letter and ISO 639-2 three-letter codes are treated the same. The first tag in the list that matches track's language in the file will be used. A track that matches more subtags will be preferred over one that matches fewer. See also --aid. This is a string list option. See List Options for details. Examples - mpv dvd://1 --alang=hu,en chooses the Hungarian language track on a DVD and falls back on English if Hungarian is not available. - mpv --alang=jpn example.mkv plays a Matroska file with Japanese audio.",
+    "link": "https://mpv.io/manual/master/#options-alang",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "slang",
+    "group": "Track Selection",
+    "desc": "Analogous to --alang, for subtitle tracks. This is a string list option. See List Options for details. Examples - mpv dvd://1 --slang=hu,en chooses the Hungarian subtitle track on a DVD and falls back on English if Hungarian is not available. - mpv --slang=jpn example.mkv plays a Matroska file with Japanese subtitles. - mpv --slang=pt-BR example.mkv plays a Matroska file with Brazilian Portuguese subtitles if available, and otherwise any Portuguese subtitles.",
+    "link": "https://mpv.io/manual/master/#options-slang",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "vlang",
+    "group": "Track Selection",
+    "desc": "Analogous to --alang and --slang, for video tracks. This is a string list option. See List Options for details.",
+    "link": "https://mpv.io/manual/master/#options-vlang",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "track-auto-selection",
+    "group": "Track Selection",
+    "desc": "Enable the default track auto-selection (default: yes). Enabling this will make the player select streams according to --aid, --alang, and others. If it is disabled, no tracks are selected. In addition, the player will not exit if no tracks are selected, and wait instead (this wait mode is similar to pausing, but the pause option is not set). This is useful with --lavfi-complex: you can start playback in this mode, and then set select tracks at runtime by setting the filter graph. Note that if --lavfi-complex is set before playback is started, the referenced tracks are always selected.",
+    "link": "https://mpv.io/manual/master/#options-track-auto-selection",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "subs-match-os-language",
+    "group": "Track Selection",
+    "desc": "When autoselecting a subtitle track, select the track that matches the language of your OS if the audio stream is in a different language if suitable (default track or a forced track under the right conditions). Note that if --slang is set, this will be completely ignored (default: yes).",
+    "link": "https://mpv.io/manual/master/#options-subs-match-os-language",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "subs-fallback",
+    "group": "Track Selection",
+    "desc": "When autoselecting a subtitle track, if no tracks match your preferred languages, select a full track even if it doesn't match your preferred subtitle language (default: default). Setting this to default means that only streams flagged as default will be selected.",
+    "link": "https://mpv.io/manual/master/#options-subs-fallback",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Don't select any fallback subtitle track"
+          },
+          {
+            "value": "default",
+            "desc": "Select only streams flagged as default (default)"
+          },
+          {
+            "value": "yes",
+            "desc": "Select any subtitle track as fallback"
+          }
+        ]
+      }
+    ]
+  }
+]
