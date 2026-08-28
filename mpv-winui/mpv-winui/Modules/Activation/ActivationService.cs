@@ -113,7 +113,7 @@ namespace mpv_winui.Modules.Activation
                     return new FileItem(path, FileType.File);
                 }
 
-                return null;
+                return new FileItem(path, FileType.Other);
             });
         }
     }
