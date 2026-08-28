@@ -9,6 +9,7 @@ namespace mpv_winui.Modules.Player
         File,
         Folder,
         Url,
+        Other,
     }
 
     public record FileItem(string Path, FileType Type = FileType.File);
