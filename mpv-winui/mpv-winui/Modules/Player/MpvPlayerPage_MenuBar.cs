@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.About;
 using mpv_winui.Modules.FileSystem;
+using mpv_winui.Modules.MediaInfo;
 using mpv_winui.Modules.Player.Menu;
 using System;
 using System.Collections.Generic;
@@ -224,6 +225,9 @@ namespace mpv_winui.Modules.Player
                         case "conf-edit":
                             ShowMpvConfigWindow();
                             break;
+                        case "media-info":
+                            await ShowMediaInfoDialogAsync();
+                            break;
                     }
                 }
             }
@@ -267,6 +271,24 @@ namespace mpv_winui.Modules.Player
                 CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = XamlRoot
             };
+            await dialog.ShowAsync();
+        }
+
+        private async Task ShowMediaInfoDialogAsync()
+        {
+            var dialog = new ContentDialog
+            {
+                Title = AppContext.AppLang.MediaInfo,
+                Content = new MediaInfoUserControl(_mediaPlayer?.CurrentPath)
+                {
+                    MinWidth = 400
+                },
+                CloseButtonText = AppContext.AppLang.Close,
+                XamlRoot = XamlRoot,
+                Padding = new Thickness(0),
+            };
+            dialog.Resources["ContentDialogMaxWidth"] = 900;
+            dialog.Resources["ContentDialogPadding"] = new Thickness(12);
             await dialog.ShowAsync();
         }
     }

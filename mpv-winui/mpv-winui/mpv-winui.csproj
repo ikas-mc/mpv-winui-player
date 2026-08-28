@@ -82,6 +82,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Include="..\libs\bin\MediaInfo.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Include="..\libs\bin\MediaInfo.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
       <None Update="App.ico">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

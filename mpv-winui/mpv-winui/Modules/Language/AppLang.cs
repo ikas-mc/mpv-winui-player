@@ -50,5 +50,6 @@ namespace mpv_winui.Modules.Language
         public string AudioTracks { get; set; } = "Audio Tracks";
         public string VideoTracks { get; set; } = "Video Tracks";
         public string SecondSubtitle { get; set; } = "Secondary Subtitle";
+        public string MediaInfo { get; set; } = "Media Info";
     }
 }

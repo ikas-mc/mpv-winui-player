@@ -212,7 +212,6 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="mpv-folder"
                     Text="Open Mpv Config Folder" />
-                <MenuFlyoutSeparator />
                 <MenuFlyoutSubItem Text="Open">
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
@@ -240,6 +239,11 @@
                         Tag="open-menu-json"
                         Text="menu.json" />
                 </MenuFlyoutSubItem>
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="media-info"
+                    Text="Media Info" />
             </MenuBarItem>
 
             <MenuBarItem
