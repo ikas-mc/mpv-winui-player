@@ -363,6 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 .idea/
+.air/
 
 /mpv-winui/libs-dev
 /mpv-winui/libs
