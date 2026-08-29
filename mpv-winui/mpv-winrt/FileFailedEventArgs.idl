@@ -1,6 +1,6 @@
 namespace mpv_winrt
 {
-	runtimeclass PlaybackFailedEventArgs
+	runtimeclass FileFailedEventArgs
 	{
 		String Message { get; };
 	};

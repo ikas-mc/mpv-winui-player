@@ -178,7 +178,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             {
                 _previewPlayer = null;
                 player.SwapChainChanged -= PreviewPlayer_SwapChainChanged;
-                player.MediaOpened = null;
+                player.FileLoaded = null;
                 Task.Run(() => player.Close()).FireAndForget(OnCloseError);
             }
         }

@@ -1,11 +1,11 @@
 #pragma once
-#include "PlaybackFailedEventArgs.g.h"
+#include "FileFailedEventArgs.g.h"
 
 namespace winrt::mpv_winrt::implementation
 {
-    struct PlaybackFailedEventArgs : PlaybackFailedEventArgsT<PlaybackFailedEventArgs>
+    struct FileFailedEventArgs : FileFailedEventArgsT<FileFailedEventArgs>
     {
-        PlaybackFailedEventArgs(hstring const& message) : m_message(message)
+        FileFailedEventArgs(hstring const& message) : m_message(message)
         {
         }
 

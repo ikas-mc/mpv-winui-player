@@ -32,7 +32,7 @@
     <ClInclude Include="SpeedChangedEventArgs.h" />
     <ClInclude Include="MediaInfoChangedEventArgs.h" />
     <ClInclude Include="NetworkInfoChangedEventArgs.h" />
-    <ClInclude Include="PlaybackFailedEventArgs.h" />
+    <ClInclude Include="FileFailedEventArgs.h" />
     <ClInclude Include="TrackListChangedEventArgs.h" />
     <ClInclude Include="TrackListCountChangedEventArgs.h" />
     <ClInclude Include="WindowChangedEventArgs.h" />
@@ -54,7 +54,7 @@
     <Midl Include="SpeedChangedEventArgs.idl" />
     <Midl Include="MediaInfoChangedEventArgs.idl" />
     <Midl Include="NetworkInfoChangedEventArgs.idl" />
-    <Midl Include="PlaybackFailedEventArgs.idl" />
+    <Midl Include="FileFailedEventArgs.idl" />
     <Midl Include="TrackListChangedEventArgs.idl" />
     <Midl Include="TrackListCountChangedEventArgs.idl" />
     <Midl Include="WindowChangedEventArgs.idl" />
