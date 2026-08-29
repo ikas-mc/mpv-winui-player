@@ -56,27 +56,27 @@ namespace mpv_winui.Modules.Player
             });
         }
 
-        public Action<MpvMediaPlayer, object?>? MediaOpened
+        public Action<MpvMediaPlayer, object?>? FileStarted
         {
             get; set;
         }
-        public Action<MpvMediaPlayer, string?>? MediaFailed
+        public Action<MpvMediaPlayer, object?>? FileLoaded
         {
             get; set;
         }
-        public Action<MpvMediaPlayer, object?>? MediaEnded
+        public Action<MpvMediaPlayer, string?>? FileFailed
+        {
+            get; set;
+        }
+        public Action<MpvMediaPlayer, object?>? FileEnded
+        {
+            get; set;
+        }
+        public Action<MpvMediaPlayer, object?>? FileStopped
         {
             get; set;
         }
         public Action<MpvMediaPlayer, bool>? PlaybackStateChanged
-        {
-            get; set;
-        }
-        public Action<MpvMediaPlayer, object?>? BufferingStarted
-        {
-            get; set;
-        }
-        public Action<MpvMediaPlayer, object?>? BufferingEnded
         {
             get; set;
         }
@@ -100,7 +100,11 @@ namespace mpv_winui.Modules.Player
         {
             get; set;
         }
-        public Action<MpvMediaPlayer, object?>? Seeked
+        public Action<MpvMediaPlayer, object?>? SeekStarted
+        {
+            get; set;
+        }
+        public Action<MpvMediaPlayer, object?>? PlaybackRestarted
         {
             get; set;
         }
@@ -111,11 +115,6 @@ namespace mpv_winui.Modules.Player
         }
 
         public Action<MpvMediaPlayer, WindowChangedEventArgs>? WindowChanged
-        {
-            get; set;
-        }
-
-        public Action<MpvMediaPlayer, object?>? SeekingStarted
         {
             get; set;
         }
@@ -146,7 +145,6 @@ namespace mpv_winui.Modules.Player
             set
             {
                 _mpvPlayer.Position(value);
-                SeekingStarted?.Invoke(this, value);
             }
         }
 
@@ -156,7 +154,6 @@ namespace mpv_winui.Modules.Player
             set
             {
                 _mpvPlayer.Position(value.TotalSeconds);
-                SeekingStarted?.Invoke(this, value.TotalSeconds);
             }
         }
 
@@ -236,13 +233,13 @@ namespace mpv_winui.Modules.Player
 
         public async Task InitializeAsync(string configFolder, int volume, mpv_winrt.DisplayColorKind colorKind, int refreshRate)
         {
-            _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
+            _mpvPlayer.SwapChainChanged += MpvPlayer_SwapChainChanged;
             await Task.Run(() => { _mpvPlayer.Initialize(configFolder, 1, 1, volume, colorKind, refreshRate); });
         }
 
         public Task InitializeForPreviewAsync()
         {
-            _mpvPlayer.VoConfigured += MpvPlayer_VoConfigured;
+            _mpvPlayer.SwapChainChanged += MpvPlayer_SwapChainChanged;
             return Task.Run(() => { _mpvPlayer.InitializeForPreview(1, 1); });
         }
 
@@ -275,15 +272,17 @@ namespace mpv_winui.Modules.Player
 
         public void StartListen()
         {
-            _mpvPlayer.MediaLoaded += MpvPlayer_MediaLoaded;
-            _mpvPlayer.PlaybackEnded += MpvPlayer_PlaybackEnded;
-            _mpvPlayer.PlaybackFailed += MpvPlayer_PlaybackFailed;
+            _mpvPlayer.FileStarted += MpvPlayer_FileStarted;
             _mpvPlayer.FileLoaded += MpvPlayer_FileLoaded;
+            _mpvPlayer.FileFailed += MpvPlayer_FileFailed;
+            _mpvPlayer.FileEnded += MpvPlayer_FileEnded;
+            _mpvPlayer.FileStopped += MpvPlayer_FileStopped;
             _mpvPlayer.PlaybackStateChanged += MpvPlayer_PlaybackStateChanged;
             _mpvPlayer.PositionChanged += MpvPlayer_PositionChanged;
             _mpvPlayer.SpeedChanged += MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged += MpvPlayer_VolumeChanged;
-            _mpvPlayer.Seeked += MpvPlayer_Seeked;
+            _mpvPlayer.SeekStarted += MpvPlayer_SeekStarted;
+            _mpvPlayer.PlaybackRestarted += MpvPlayer_PlaybackRestarted;
             _mpvPlayer.MediaInfoChanged += MpvPlayer_MediaInfoChanged;
             _mpvPlayer.LoopFileChanged += MpvPlayer_LoopFileChanged;
             _mpvPlayer.LoopPlaylistChanged += MpvPlayer_LoopPlaylistChanged;
@@ -294,15 +293,17 @@ namespace mpv_winui.Modules.Player
 
         public void StopListen()
         {
-            _mpvPlayer.MediaLoaded -= MpvPlayer_MediaLoaded;
-            _mpvPlayer.PlaybackEnded -= MpvPlayer_PlaybackEnded;
-            _mpvPlayer.PlaybackFailed -= MpvPlayer_PlaybackFailed;
+            _mpvPlayer.FileStarted -= MpvPlayer_FileStarted;
             _mpvPlayer.FileLoaded -= MpvPlayer_FileLoaded;
+            _mpvPlayer.FileFailed -= MpvPlayer_FileFailed;
+            _mpvPlayer.FileEnded -= MpvPlayer_FileEnded;
+            _mpvPlayer.FileStopped -= MpvPlayer_FileStopped;
             _mpvPlayer.PlaybackStateChanged -= MpvPlayer_PlaybackStateChanged;
             _mpvPlayer.PositionChanged -= MpvPlayer_PositionChanged;
             _mpvPlayer.SpeedChanged -= MpvPlayer_SpeedChanged;
             _mpvPlayer.VolumeChanged -= MpvPlayer_VolumeChanged;
-            _mpvPlayer.Seeked -= MpvPlayer_Seeked;
+            _mpvPlayer.SeekStarted -= MpvPlayer_SeekStarted;
+            _mpvPlayer.PlaybackRestarted -= MpvPlayer_PlaybackRestarted;
             _mpvPlayer.MediaInfoChanged -= MpvPlayer_MediaInfoChanged;
             _mpvPlayer.LoopFileChanged -= MpvPlayer_LoopFileChanged;
             _mpvPlayer.LoopPlaylistChanged -= MpvPlayer_LoopPlaylistChanged;
@@ -311,7 +312,7 @@ namespace mpv_winui.Modules.Player
             _mpvPlayer.WindowChanged -= MpvPlayer_WindowChanged;
         }
 
-        private void MpvPlayer_VoConfigured()
+        private void MpvPlayer_SwapChainChanged()
         {
             SwapChainChanged?.Invoke(this, null);
         }
@@ -346,10 +347,19 @@ namespace mpv_winui.Modules.Player
             PlaylistChanged?.Invoke(this, null);
         }
 
-        private void MpvPlayer_Seeked()
+        private void MpvPlayer_FileStarted()
         {
-            Seeked?.Invoke(this, null);
-            BufferingStarted?.Invoke(this, null);
+            FileStarted?.Invoke(this, null);
+        }
+
+        private void MpvPlayer_SeekStarted()
+        {
+            SeekStarted?.Invoke(this, null);
+        }
+
+        private void MpvPlayer_PlaybackRestarted()
+        {
+            PlaybackRestarted?.Invoke(this, null);
         }
 
         private void MpvPlayer_VolumeChanged(VolumeChangedEventArgs args)
@@ -374,22 +384,22 @@ namespace mpv_winui.Modules.Player
         {
             var isPaused = _mpvPlayer.IsPaused();
             PlaybackStateChanged?.Invoke(this, isPaused);
-            MediaOpened?.Invoke(this, null);
+            FileLoaded?.Invoke(this, null);
         }
 
-        private void MpvPlayer_PlaybackEnded()
+        private void MpvPlayer_FileEnded()
         {
-            MediaEnded?.Invoke(this, null);
+            FileEnded?.Invoke(this, null);
         }
 
-        private void MpvPlayer_PlaybackFailed(PlaybackFailedEventArgs args)
+        private void MpvPlayer_FileFailed(FileFailedEventArgs args)
         {
-            MediaFailed?.Invoke(this, args.Message);
+            FileFailed?.Invoke(this, args.Message);
         }
 
-        private void MpvPlayer_MediaLoaded()
+        private void MpvPlayer_FileStopped()
         {
-            BufferingEnded?.Invoke(this, null);
+            FileStopped?.Invoke(this, null);
         }
 
         public void Pause() => _mpvPlayer.Pause();
@@ -565,7 +575,7 @@ namespace mpv_winui.Modules.Player
 
         public void Close()
         {
-            _mpvPlayer.VoConfigured -= MpvPlayer_VoConfigured;
+            _mpvPlayer.SwapChainChanged -= MpvPlayer_SwapChainChanged;
             _mpvPlayer?.Destroy();
         }
     }

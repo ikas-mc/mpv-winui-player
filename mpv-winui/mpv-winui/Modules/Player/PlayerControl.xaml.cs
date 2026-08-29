@@ -298,30 +298,26 @@ namespace mpv_winui.Modules.Player
 
         private void AddEventListeners()
         {
-            _mediaPlayer?.MediaOpened += MediaPlayer_MediaOpened;
-            _mediaPlayer?.MediaFailed += MediaPlayer_MediaFailed;
+            _mediaPlayer?.FileLoaded += MediaPlayer_FileLoaded;
+            _mediaPlayer?.FileFailed += MediaPlayer_FileFailed;
             _mediaPlayer?.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
-            _mediaPlayer?.BufferingStarted += PlaybackSession_BufferingStarted;
-            _mediaPlayer?.BufferingEnded += PlaybackSession_BufferingEnded;
+            _mediaPlayer?.SeekStarted += MediaPlayer_SeekStarted;
+            _mediaPlayer?.PlaybackRestarted += MediaPlayer_PlaybackRestarted;
             _mediaPlayer?.NaturalDurationChanged += PlaybackSession_NaturalDurationChanged;
             _mediaPlayer?.VolumeChangedChanged += PlaybackSession_VolumeChangedChanged;
-            _mediaPlayer?.Seeked += MediaPlayer_Seeked;
-            _mediaPlayer?.SeekingStarted += MediaPlayer_SeekingStarted;
             _mediaPlayer?.RepeatStateChanged += MediaPlayer_RepeatStateChanged;
             _mediaPlayer?.ShuffleEnabledChanged += MediaPlayer_ShuffleEnabledChanged;
         }
 
         private void RemoveEventListeners()
         {
-            _mediaPlayer?.MediaOpened -= MediaPlayer_MediaOpened;
-            _mediaPlayer?.MediaFailed -= MediaPlayer_MediaFailed;
+            _mediaPlayer?.FileLoaded -= MediaPlayer_FileLoaded;
+            _mediaPlayer?.FileFailed -= MediaPlayer_FileFailed;
             _mediaPlayer?.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
-            _mediaPlayer?.BufferingStarted -= PlaybackSession_BufferingStarted;
-            _mediaPlayer?.BufferingEnded -= PlaybackSession_BufferingEnded;
+            _mediaPlayer?.SeekStarted -= MediaPlayer_SeekStarted;
+            _mediaPlayer?.PlaybackRestarted -= MediaPlayer_PlaybackRestarted;
             _mediaPlayer?.NaturalDurationChanged -= PlaybackSession_NaturalDurationChanged;
             _mediaPlayer?.VolumeChangedChanged -= PlaybackSession_VolumeChangedChanged;
-            _mediaPlayer?.Seeked -= MediaPlayer_Seeked;
-            _mediaPlayer?.SeekingStarted -= MediaPlayer_SeekingStarted;
             _mediaPlayer?.RepeatStateChanged -= MediaPlayer_RepeatStateChanged;
             _mediaPlayer?.ShuffleEnabledChanged -= MediaPlayer_ShuffleEnabledChanged;
         }
@@ -494,7 +490,7 @@ namespace mpv_winui.Modules.Player
             });
         }
 
-        private async void MediaPlayer_MediaOpened(MpvMediaPlayer sender, object? args)
+        private async void MediaPlayer_FileLoaded(MpvMediaPlayer sender, object? args)
         {
             _hasError = false;
             _sourceLoaded = true;
@@ -513,7 +509,7 @@ namespace mpv_winui.Modules.Player
             });
         }
 
-        private async void MediaPlayer_SeekingStarted(MpvMediaPlayer sender, object? args)
+        private async void MediaPlayer_SeekStarted(MpvMediaPlayer sender, object? args)
         {
             DispatcherQueue.RunAsync(() =>
             {
@@ -522,7 +518,7 @@ namespace mpv_winui.Modules.Player
             });
         }
 
-        private async void MediaPlayer_Seeked(MpvMediaPlayer sender, object? args)
+        private async void MediaPlayer_PlaybackRestarted(MpvMediaPlayer sender, object? args)
         {
             DispatcherQueue.RunAsync(() =>
             {
@@ -570,7 +566,7 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        private async void MediaPlayer_MediaFailed(MpvMediaPlayer sender, string? args)
+        private async void MediaPlayer_FileFailed(MpvMediaPlayer sender, string? args)
         {
             _hasError = true;
             _sourceLoaded = false;
@@ -581,18 +577,6 @@ namespace mpv_winui.Modules.Player
                 UpdatePlaybackStatusUI(true);
                 UpdateChapters(true);
             });
-        }
-
-        private async void PlaybackSession_BufferingStarted(MpvMediaPlayer sender, object? args)
-        {
-            _isBuffering = true;
-            DispatcherQueue.RunAsync(() => { UpdatePlaybackStatusUI(true); });
-        }
-
-        private async void PlaybackSession_BufferingEnded(MpvMediaPlayer sender, object? args)
-        {
-            _isBuffering = false;
-            DispatcherQueue.RunAsync(() => { UpdatePlaybackStatusUI(true); });
         }
 
         private async void PlaybackSession_NaturalDurationChanged(MpvMediaPlayer sender, object? args)

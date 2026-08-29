@@ -10,7 +10,7 @@
 #include "MpvProfile.h"
 #include "MpvTrack.h"
 #include "NetworkInfoChangedEventArgs.h"
-#include "PlaybackFailedEventArgs.h"
+#include "FileFailedEventArgs.h"
 #include "PlaybackStateChangedEventArgs.h"
 #include "PositionChangedEventArgs.h"
 #include "SpeedChangedEventArgs.h"
@@ -241,20 +241,21 @@ namespace winrt::mpv_winrt::implementation
     {
         switch (event->event_id)
         {
+            case MPV_EVENT_START_FILE:
+                {
+                    m_fileStartedEvent();
+                    break;
+                }
+
             case MPV_EVENT_FILE_LOADED:
                 {
                     m_fileLoadedEvent();
                     break;
                 }
 
-            case MPV_EVENT_START_FILE:
-                {
-                    break;
-                }
-
             case MPV_EVENT_PLAYBACK_RESTART:
                 {
-                    m_mediaLoadedEvent();
+                    m_playbackRestartedEvent();
                     break;
                 }
 
@@ -263,20 +264,24 @@ namespace winrt::mpv_winrt::implementation
                     auto end_file = static_cast<mpv_event_end_file*>(event->data);
                     if (end_file->reason == MPV_END_FILE_REASON_EOF)
                     {
-                        m_playbackEndedEvent();
+                        m_fileEndedEvent();
                     }
                     else if (end_file->reason == MPV_END_FILE_REASON_ERROR)
                     {
-                        auto args = winrt::make<implementation::PlaybackFailedEventArgs>(
+                        auto args = winrt::make<implementation::FileFailedEventArgs>(
                             winrt::to_hstring(mpv_error_string(end_file->error)));
-                        m_playbackFailedEvent(args);
+                        m_fileFailedEvent(args);
+                    }
+                    else if (end_file->reason == MPV_END_FILE_REASON_STOP)
+                    {
+                        m_fileStoppedEvent();
                     }
                     break;
                 }
 
             case MPV_EVENT_SEEK:
                 {
-                    m_seekedEvent();
+                    m_seekStartedEvent();
                     break;
                 }
 
@@ -287,7 +292,7 @@ namespace winrt::mpv_winrt::implementation
                     if (swapChain != m_swapChain.load())
                     {
                         m_swapChain.store(swapChain);
-                        m_voConfiguredEvent();
+                        m_swapChainChangedEvent();
                     }
                     break;
                 }
@@ -449,44 +454,44 @@ namespace winrt::mpv_winrt::implementation
         }
     }
 
-    winrt::event_token MpvPlayer::MediaLoaded(winrt::mpv_winrt::MediaLoadedEventHandler const& handler)
+    winrt::event_token MpvPlayer::FileStarted(winrt::mpv_winrt::FileStartedEventHandler const& handler)
     {
-        return m_mediaLoadedEvent.add(handler);
+        return m_fileStartedEvent.add(handler);
     }
 
-    void MpvPlayer::MediaLoaded(winrt::event_token const& token) noexcept
+    void MpvPlayer::FileStarted(winrt::event_token const& token) noexcept
     {
-        m_mediaLoadedEvent.remove(token);
+        m_fileStartedEvent.remove(token);
     }
 
-    winrt::event_token MpvPlayer::PlaybackEnded(winrt::mpv_winrt::PlaybackEndedEventHandler const& handler)
+    winrt::event_token MpvPlayer::FileEnded(winrt::mpv_winrt::FileEndedEventHandler const& handler)
     {
-        return m_playbackEndedEvent.add(handler);
+        return m_fileEndedEvent.add(handler);
     }
 
-    void MpvPlayer::PlaybackEnded(winrt::event_token const& token) noexcept
+    void MpvPlayer::FileEnded(winrt::event_token const& token) noexcept
     {
-        m_playbackEndedEvent.remove(token);
+        m_fileEndedEvent.remove(token);
     }
 
-    winrt::event_token MpvPlayer::PlaybackFailed(winrt::mpv_winrt::PlaybackFailedEventHandler const& handler)
+    winrt::event_token MpvPlayer::FileFailed(winrt::mpv_winrt::FileFailedEventHandler const& handler)
     {
-        return m_playbackFailedEvent.add(handler);
+        return m_fileFailedEvent.add(handler);
     }
 
-    void MpvPlayer::PlaybackFailed(winrt::event_token const& token) noexcept
+    void MpvPlayer::FileFailed(winrt::event_token const& token) noexcept
     {
-        m_playbackFailedEvent.remove(token);
+        m_fileFailedEvent.remove(token);
     }
 
-    winrt::event_token MpvPlayer::Seeked(winrt::mpv_winrt::SeekEventHandler const& handler)
+    winrt::event_token MpvPlayer::SeekStarted(winrt::mpv_winrt::SeekStartedEventHandler const& handler)
     {
-        return m_seekedEvent.add(handler);
+        return m_seekStartedEvent.add(handler);
     }
 
-    void MpvPlayer::Seeked(winrt::event_token const& token) noexcept
+    void MpvPlayer::SeekStarted(winrt::event_token const& token) noexcept
     {
-        m_seekedEvent.remove(token);
+        m_seekStartedEvent.remove(token);
     }
 
     winrt::event_token MpvPlayer::FileLoaded(winrt::mpv_winrt::FileLoadedEventHandler const& handler)
@@ -497,6 +502,26 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::FileLoaded(winrt::event_token const& token) noexcept
     {
         m_fileLoadedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::FileStopped(winrt::mpv_winrt::FileStoppedEventHandler const& handler)
+    {
+        return m_fileStoppedEvent.add(handler);
+    }
+
+    void MpvPlayer::FileStopped(winrt::event_token const& token) noexcept
+    {
+        m_fileStoppedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::PlaybackRestarted(winrt::mpv_winrt::PlaybackRestartedEventHandler const& handler)
+    {
+        return m_playbackRestartedEvent.add(handler);
+    }
+
+    void MpvPlayer::PlaybackRestarted(winrt::event_token const& token) noexcept
+    {
+        m_playbackRestartedEvent.remove(token);
     }
 
     winrt::event_token MpvPlayer::TrackChanged(winrt::mpv_winrt::TrackChangedEventHandler const& handler)
@@ -591,14 +616,14 @@ namespace winrt::mpv_winrt::implementation
         m_trackListCountChangedEvent.remove(token);
     }
 
-    winrt::event_token MpvPlayer::VoConfigured(winrt::mpv_winrt::VoConfiguredEventHandler const& handler)
+    winrt::event_token MpvPlayer::SwapChainChanged(winrt::mpv_winrt::SwapChainChangedEventHandler const& handler)
     {
-        return m_voConfiguredEvent.add(handler);
+        return m_swapChainChangedEvent.add(handler);
     }
 
-    void MpvPlayer::VoConfigured(winrt::event_token const& token) noexcept
+    void MpvPlayer::SwapChainChanged(winrt::event_token const& token) noexcept
     {
-        m_voConfiguredEvent.remove(token);
+        m_swapChainChangedEvent.remove(token);
     }
 
     winrt::event_token MpvPlayer::WindowChanged(winrt::mpv_winrt::WindowChangedEventHandler const& handler)

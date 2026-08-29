@@ -12,18 +12,21 @@ import "PositionChangedEventArgs.idl";
 import "SpeedChangedEventArgs.idl";
 import "MediaInfoChangedEventArgs.idl";
 import "NetworkInfoChangedEventArgs.idl";
-import "PlaybackFailedEventArgs.idl";
+import "FileFailedEventArgs.idl";
 import "TrackListChangedEventArgs.idl";
 import "TrackListCountChangedEventArgs.idl";
 import "WindowChangedEventArgs.idl";
 
 namespace mpv_winrt
 {
-    delegate void MediaLoadedEventHandler();
-    delegate void PlaybackEndedEventHandler();
-    delegate void PlaybackFailedEventHandler(PlaybackFailedEventArgs args);
-    delegate void SeekEventHandler();
+    delegate void FileStartedEventHandler();
     delegate void FileLoadedEventHandler();
+    delegate void FileFailedEventHandler(FileFailedEventArgs args);
+    delegate void FileEndedEventHandler();
+    delegate void FileStoppedEventHandler();
+    delegate void SeekStartedEventHandler();
+    delegate void PlaybackRestartedEventHandler();
+    delegate void SwapChainChangedEventHandler();
     delegate void TrackChangedEventHandler();
 
     delegate void PlaybackStateChangedEventHandler(PlaybackStateChangedEventArgs args);
@@ -34,7 +37,6 @@ namespace mpv_winrt
     delegate void NetworkInfoChangedEventHandler(NetworkInfoChangedEventArgs args);
     delegate void TrackListChangedEventHandler(TrackListChangedEventArgs args);
     delegate void TrackListCountChangedEventHandler(TrackListCountChangedEventArgs args);
-    delegate void VoConfiguredEventHandler();
     delegate void WindowChangedEventHandler(WindowChangedEventArgs args);
     delegate void LoopFileChangedEventHandler();
     delegate void LoopPlaylistChangedEventHandler();
@@ -121,11 +123,13 @@ namespace mpv_winrt
         String GetSubtitleExtensions();
         String GetVersion();
 
-        event MediaLoadedEventHandler MediaLoaded;
-        event PlaybackEndedEventHandler PlaybackEnded;
-        event PlaybackFailedEventHandler PlaybackFailed;
-        event SeekEventHandler Seeked;
+        event FileStartedEventHandler FileStarted;
         event FileLoadedEventHandler FileLoaded;
+        event FileFailedEventHandler FileFailed;
+        event FileEndedEventHandler FileEnded;
+        event FileStoppedEventHandler FileStopped;
+        event SeekStartedEventHandler SeekStarted;
+        event PlaybackRestartedEventHandler PlaybackRestarted;
         event TrackChangedEventHandler TrackChanged;
 
         event PlaybackStateChangedEventHandler PlaybackStateChanged;
@@ -136,7 +140,7 @@ namespace mpv_winrt
         event NetworkInfoChangedEventHandler NetworkInfoChanged;
         event TrackListChangedEventHandler TrackListChanged;
         event TrackListCountChangedEventHandler TrackListCountChanged;
-        event VoConfiguredEventHandler VoConfigured;
+        event SwapChainChangedEventHandler SwapChainChanged;
         event WindowChangedEventHandler WindowChanged;
         event LoopFileChangedEventHandler LoopFileChanged;
         event LoopPlaylistChangedEventHandler LoopPlaylistChanged;
