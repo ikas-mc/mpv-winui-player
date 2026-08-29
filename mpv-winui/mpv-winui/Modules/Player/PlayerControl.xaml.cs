@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
 using System;
 using System.Diagnostics;
@@ -32,9 +33,8 @@ namespace mpv_winui.Modules.Player
         private bool _isBuffering = false;
         private bool _isInScrubMode = false;
         private bool _isDragging = false;
-        private bool _sourceLoaded = false;
 
-        private MpvMediaPlayer? _mediaPlayer;
+        private MpvPlayer? _mediaPlayer;
 
         public static readonly DependencyProperty FullWindowButtonVisibilityProperty = DependencyProperty.Register("FullWindowButtonVisibility", typeof(Visibility), typeof(PlayerControl), new PropertyMetadata(Visibility.Collapsed, (DependencyObject d, DependencyPropertyChangedEventArgs e) =>
         {
@@ -75,7 +75,7 @@ namespace mpv_winui.Modules.Player
             _positionUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
         }
 
-        public MpvMediaPlayer? MediaPlayer
+        public MpvPlayer? MediaPlayer
         {
             get
             {
@@ -95,7 +95,6 @@ namespace mpv_winui.Modules.Player
 
                         UpdateShuffleButtonUI();
                         UpdateRepeatButtonUI();
-                        VolumeSlider.Value2 = _mediaPlayer?.Volume ?? 50; //TODO
                     }
                 }
             }
@@ -236,7 +235,7 @@ namespace mpv_winui.Modules.Player
 
             if (_mediaPlayer is { } player)
             {
-                VolumeSlider.Value2 = player.Volume;
+                VolumeSlider.Value2 = player.Volume();
             }
         }
 
@@ -298,28 +297,32 @@ namespace mpv_winui.Modules.Player
 
         private void AddEventListeners()
         {
+            _mediaPlayer?.FileStarted += MediaPlayer_FileStarted;
             _mediaPlayer?.FileLoaded += MediaPlayer_FileLoaded;
             _mediaPlayer?.FileFailed += MediaPlayer_FileFailed;
             _mediaPlayer?.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
             _mediaPlayer?.SeekStarted += MediaPlayer_SeekStarted;
+            _mediaPlayer?.BufferingChanged += MediaPlayer_BufferingChanged;
             _mediaPlayer?.PlaybackRestarted += MediaPlayer_PlaybackRestarted;
-            _mediaPlayer?.NaturalDurationChanged += PlaybackSession_NaturalDurationChanged;
-            _mediaPlayer?.VolumeChangedChanged += PlaybackSession_VolumeChangedChanged;
-            _mediaPlayer?.RepeatStateChanged += MediaPlayer_RepeatStateChanged;
-            _mediaPlayer?.ShuffleEnabledChanged += MediaPlayer_ShuffleEnabledChanged;
+            _mediaPlayer?.VolumeChanged += PlaybackSession_VolumeChanged;
+            _mediaPlayer?.LoopFileChanged += PlaybackSession_RepeatStateChanged;
+            _mediaPlayer?.LoopPlaylistChanged += PlaybackSession_RepeatStateChanged;
+            _mediaPlayer?.ShuffleChanged += PlaybackSession_ShuffleChanged;
         }
 
         private void RemoveEventListeners()
         {
+            _mediaPlayer?.FileStarted -= MediaPlayer_FileStarted;
             _mediaPlayer?.FileLoaded -= MediaPlayer_FileLoaded;
             _mediaPlayer?.FileFailed -= MediaPlayer_FileFailed;
             _mediaPlayer?.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
             _mediaPlayer?.SeekStarted -= MediaPlayer_SeekStarted;
+            _mediaPlayer?.BufferingChanged -= MediaPlayer_BufferingChanged;
             _mediaPlayer?.PlaybackRestarted -= MediaPlayer_PlaybackRestarted;
-            _mediaPlayer?.NaturalDurationChanged -= PlaybackSession_NaturalDurationChanged;
-            _mediaPlayer?.VolumeChangedChanged -= PlaybackSession_VolumeChangedChanged;
-            _mediaPlayer?.RepeatStateChanged -= MediaPlayer_RepeatStateChanged;
-            _mediaPlayer?.ShuffleEnabledChanged -= MediaPlayer_ShuffleEnabledChanged;
+            _mediaPlayer?.VolumeChanged -= PlaybackSession_VolumeChanged;
+            _mediaPlayer?.LoopFileChanged -= PlaybackSession_RepeatStateChanged;
+            _mediaPlayer?.LoopPlaylistChanged -= PlaybackSession_RepeatStateChanged;
+            _mediaPlayer?.ShuffleChanged -= PlaybackSession_ShuffleChanged;
         }
 
         private void NextTrackButton_Click(object sender, RoutedEventArgs e)
@@ -362,7 +365,7 @@ namespace mpv_winui.Modules.Player
         {
             if (sender is MenuFlyoutItemBase item && item.Tag is string ar)
             {
-                _mediaPlayer?.AspectRatio = ar;
+                _mediaPlayer?.SetAspectRatio(ar);
             }
         }
 
@@ -376,7 +379,7 @@ namespace mpv_winui.Modules.Player
             try
             {
                 TrackSelectorControl.VideoTrackSelected -= TrackSelectorControl_VideoTrackSelected;
-                TrackSelectorControl.LoadVideoTracks(_mediaPlayer?.VideoTracks() ?? []);
+                TrackSelectorControl.LoadVideoTracks(_mediaPlayer?.GetVideoTracks() ?? []);
                 TrackSelectorControl.VideoTrackSelected += TrackSelectorControl_VideoTrackSelected;
             }
             catch (Exception ex)
@@ -387,7 +390,7 @@ namespace mpv_winui.Modules.Player
             try
             {
                 TrackSelectorControl.SubtitleTrackSelected -= TrackSelectorControl_SubtitleTrackSelected;
-                TrackSelectorControl.LoadSubtitleTracks(_mediaPlayer?.SubtitleTracks() ?? [], "Off");
+                TrackSelectorControl.LoadSubtitleTracks(_mediaPlayer?.GetSubtitleTracks() ?? [], "Off");
                 TrackSelectorControl.SubtitleTrackSelected += TrackSelectorControl_SubtitleTrackSelected;
             }
             catch (Exception ex)
@@ -398,7 +401,7 @@ namespace mpv_winui.Modules.Player
             try
             {
                 TrackSelectorControl.AudioTrackSelected -= TrackSelectorControl_AudioTrackSelected;
-                TrackSelectorControl.LoadAudioTracks(_mediaPlayer?.AudioTracks() ?? []);
+                TrackSelectorControl.LoadAudioTracks(_mediaPlayer?.GetAudioTracks() ?? []);
                 TrackSelectorControl.AudioTrackSelected += TrackSelectorControl_AudioTrackSelected;
             }
             catch (Exception ex)
@@ -409,7 +412,7 @@ namespace mpv_winui.Modules.Player
             try
             {
                 TrackSelectorControl.SecondSubTrackSelected -= TrackSelectorControl_SecondSubTrackSelected;
-                TrackSelectorControl.LoadSecondSubtitleTracks(_mediaPlayer?.SecondSubtitleTracks() ?? [], AppContext.AppLang.Off);
+                TrackSelectorControl.LoadSecondSubtitleTracks(_mediaPlayer?.GetSubtitleTracks() ?? [], _mediaPlayer?.CurrentSecondSubtitleTrack() ?? -1, AppContext.AppLang.Off);
                 TrackSelectorControl.SecondSubTrackSelected += TrackSelectorControl_SecondSubTrackSelected;
                 TrackSelectorControl.SetSecondSubVisibility(true);
             }
@@ -421,22 +424,22 @@ namespace mpv_winui.Modules.Player
 
         private void TrackSelectorControl_VideoTrackSelected(object? sender, int trackIndex)
         {
-            _mediaPlayer?.CurrentVideoTrack = trackIndex;
+            _mediaPlayer?.CurrentVideoTrack(trackIndex);
         }
 
         private void TrackSelectorControl_SubtitleTrackSelected(object? sender, int trackIndex)
         {
-            _mediaPlayer?.CurrentSubtitleTrack = trackIndex;
+            _mediaPlayer?.CurrentSubtitleTrack(trackIndex);
         }
 
         private void TrackSelectorControl_AudioTrackSelected(object? sender, int trackIndex)
         {
-            _mediaPlayer?.CurrentAudioTrack = trackIndex;
+            _mediaPlayer?.CurrentAudioTrack(trackIndex);
         }
 
         private void TrackSelectorControl_SecondSubTrackSelected(object? sender, int trackIndex)
         {
-            _mediaPlayer?.CurrentSecondSubtitleTrack = trackIndex;
+            _mediaPlayer?.CurrentSecondSubtitleTrack(trackIndex);
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -448,7 +451,7 @@ namespace mpv_winui.Modules.Player
         {
             if (_mediaPlayer != null && sender is MenuFlyoutItem item && double.TryParse(item.Tag.ToString(), out double speed))
             {
-                _mediaPlayer?.PlaybackRate = speed;
+                _mediaPlayer?.PlaybackSpeed(speed);
             }
         }
 
@@ -465,19 +468,25 @@ namespace mpv_winui.Modules.Player
 
         public void Forward()
         {
-            _mediaPlayer?.Position += 30;
+            if (_mediaPlayer is { } player)
+            {
+                player.Position(player.Position() + 30);
+            }
         }
 
         public void Backward()
         {
-            _mediaPlayer?.Position -= 10;
+            if (_mediaPlayer is { } player)
+            {
+                player.Position(player.Position() - 10);
+            }
         }
 
-        private async void PlaybackSession_PlaybackStateChanged(MpvMediaPlayer sender, bool args)
+        private async void PlaybackSession_PlaybackStateChanged(PlaybackStateChangedEventArgs args)
         {
             DispatcherQueue.RunAsync(() =>
             {
-                if (args)
+                if (args.IsPaused)
                 {
                     _positionUpdateTimer.Stop();
                 }
@@ -486,30 +495,44 @@ namespace mpv_winui.Modules.Player
                     _positionUpdateTimer.Start();
                 }
 
-                UpdatePlayPauseUI(args, true);
+                UpdatePlayPauseUI(args.IsPaused, true);
             });
         }
 
-        private async void MediaPlayer_FileLoaded(MpvMediaPlayer sender, object? args)
+        private void MediaPlayer_FileStarted()
         {
-            _hasError = false;
-            _sourceLoaded = true;
             DispatcherQueue.RunAsync(() =>
             {
-                UpdateProgressSliderValue(0, sender.Duration);
-                if (sender.Duration > 0)
-                {
-                    ApplyAdaptiveSliderStep(sender.Duration);
-                }
-
+                _hasError = false;
+                _isBuffering = true;
                 UpdatePlaybackStatusUI(false);
-                //UpdatePlayPauseUI(false);
-                UpdateVolumeUI(false);
-                UpdateChapters(false);
             });
         }
 
-        private async void MediaPlayer_SeekStarted(MpvMediaPlayer sender, object? args)
+        private void MediaPlayer_FileLoaded()
+        {
+            _hasError = false;
+            var duration = _mediaPlayer?.Duration();
+            var isPaused = _mediaPlayer?.IsPaused();
+            if (duration != null)
+            {
+                DispatcherQueue.RunAsync(() =>
+                {
+                    UpdateProgressSliderValue(0, duration);
+                    if (duration > 0)
+                    {
+                        ApplyAdaptiveSliderStep(duration.Value);
+                    }
+
+                    UpdatePlaybackStatusUI(false);
+                    UpdatePlayPauseUI(isPaused ?? true, false);
+                    UpdateVolumeUI(false);
+                    UpdateChapters(false);
+                });
+            }
+        }
+
+        private void MediaPlayer_SeekStarted()
         {
             DispatcherQueue.RunAsync(() =>
             {
@@ -518,7 +541,16 @@ namespace mpv_winui.Modules.Player
             });
         }
 
-        private async void MediaPlayer_PlaybackRestarted(MpvMediaPlayer sender, object? args)
+        private void MediaPlayer_BufferingChanged(bool isBuffering)
+        {
+            DispatcherQueue.RunAsync(() =>
+            {
+                _isBuffering = isBuffering;
+                UpdatePlaybackStatusUI(true);
+            });
+        }
+
+        private void MediaPlayer_PlaybackRestarted()
         {
             DispatcherQueue.RunAsync(() =>
             {
@@ -549,8 +581,8 @@ namespace mpv_winui.Modules.Player
         {
             if (!hide && _mediaPlayer is { } player)
             {
-                double duration = player.Duration;
-                var ticks = player.Chapters()
+                double duration = player.Duration();
+                var ticks = player.GetChapters()
                     .Select(c => c.Time)
                     .Where(t => t > 0 && (duration <= 0 || t < duration))
                     .ToList();
@@ -566,45 +598,32 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        private async void MediaPlayer_FileFailed(MpvMediaPlayer sender, string? args)
+        private void MediaPlayer_FileFailed(FileFailedEventArgs args)
         {
-            _hasError = true;
-            _sourceLoaded = false;
-
             DispatcherQueue.RunAsync(() =>
             {
-                ErrorTextBlock.Text = args;
+                _hasError = true;
+                ErrorTextBlock.Text = args.Message;
                 UpdatePlaybackStatusUI(true);
                 UpdateChapters(true);
             });
         }
 
-        private async void PlaybackSession_NaturalDurationChanged(MpvMediaPlayer sender, object? args)
+        private void PlaybackSession_VolumeChanged(VolumeChangedEventArgs args)
         {
             DispatcherQueue.RunAsync(() =>
             {
-                if (sender.Duration > 0)
-                {
-                    UpdateProgressSliderValue(null, sender.Duration);
-                }
-            });
-        }
-
-        private async void PlaybackSession_VolumeChangedChanged(MpvMediaPlayer sender, int volume)
-        {
-            DispatcherQueue.RunAsync(() =>
-            {
-                VolumeSlider.Value2 = volume;
+                VolumeSlider.Value2 = args.Volume;
                 UpdateVolumeUI(true);
             });
         }
 
-        private void MediaPlayer_RepeatStateChanged(MpvMediaPlayer sender, RepeatState state)
+        private void PlaybackSession_RepeatStateChanged()
         {
             DispatcherQueue.RunAsync(UpdateRepeatButtonUI);
         }
 
-        private void MediaPlayer_ShuffleEnabledChanged(MpvMediaPlayer sender, bool enabled)
+        private void PlaybackSession_ShuffleChanged()
         {
             DispatcherQueue.RunAsync(UpdateShuffleButtonUI);
         }
@@ -621,7 +640,7 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
-            if (MediaPlayer.Playing)
+            if (!MediaPlayer.IsPaused())
             {
                 MediaPlayer?.Pause();
             }
@@ -646,7 +665,7 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
-            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+            MediaPlayer.IsMuted(!MediaPlayer.IsMuted());
             UpdateVolumeUI(true);
         }
 
@@ -686,12 +705,12 @@ namespace mpv_winui.Modules.Player
         {
             if (MediaPlayer is { } player)
             {
-                player.RepeatState = player.RepeatState switch
+                player.SetRepeatState(player.GetRepeatState() switch
                 {
                     RepeatState.All => RepeatState.One,
                     RepeatState.One => RepeatState.None,
                     _ => RepeatState.All,
-                };
+                });
                 UpdateRepeatButtonUI();
             }
         }
@@ -700,13 +719,13 @@ namespace mpv_winui.Modules.Player
         {
             if (MediaPlayer is { } player)
             {
-                if (player.ShuffleEnabled)
+                if (player.Shuffle())
                 {
-                    player.ShuffleEnabled = false;
+                    player.SetShuffle(false);
                 }
                 else
                 {
-                    player.ShuffleEnabled = true;
+                    player.SetShuffle(true);
 
                     //TODO 
                     player.PlaylistShuffle();
@@ -724,22 +743,22 @@ namespace mpv_winui.Modules.Player
 
             if (!_isInScrubMode)
             {
-                MediaPlayer?.Position = e.NewValue;
+                MediaPlayer?.Position(e.NewValue);
             }
         }
 
         private void OnVolumeSliderValueChanged(object sender, double value)
         {
-            MediaPlayer?.Volume = value;
+            MediaPlayer?.Volume(value);
         }
 
         private void OnPositionUpdateTimerTick(object? sender, object e)
         {
-            if (MediaPlayer?.Playing == true)
+            if (MediaPlayer?.IsPaused() == false)
             {
-                UpdateProgressSliderValue(MediaPlayer?.Position);
-                TimeElapsedElement.Text = FormatTime(MediaPlayer?.Position ?? 0);
-                TimeRemainingElement.Text = FormatTime(MediaPlayer?.Duration ?? 0);
+                UpdateProgressSliderValue(MediaPlayer?.Position());
+                TimeElapsedElement.Text = FormatTime(MediaPlayer?.Position() ?? 0);
+                TimeRemainingElement.Text = FormatTime(MediaPlayer?.Duration() ?? 0);
                 OnPositionChanged?.Invoke();
             }
         }
@@ -853,7 +872,7 @@ namespace mpv_winui.Modules.Player
 
         private void UpdateRepeatButtonUI()
         {
-            var stateName = MediaPlayer?.RepeatState switch
+            var stateName = MediaPlayer?.GetRepeatState() switch
             {
                 RepeatState.One => "RepeatOneState",
                 RepeatState.None => "RepeatNoneState",
@@ -865,7 +884,7 @@ namespace mpv_winui.Modules.Player
 
         private void UpdateShuffleButtonUI()
         {
-            var stateName = MediaPlayer?.ShuffleEnabled switch
+            var stateName = MediaPlayer?.Shuffle() switch
             {
                 true => "ShuffleState",
                 _ => "ShuffleNoneState",
@@ -883,10 +902,6 @@ namespace mpv_winui.Modules.Player
             else if (_isBuffering)
             {
                 VisualStateManager.GoToState(this, "Buffering", useTransitions);
-            }
-            else if (!_sourceLoaded)
-            {
-                VisualStateManager.GoToState(this, "MediaLoading", useTransitions);
             }
             else
             {
@@ -908,13 +923,13 @@ namespace mpv_winui.Modules.Player
 
         private void UpdateVolumeUI(bool useTransitions)
         {
-            if (MediaPlayer?.IsMuted == true)
+            if (MediaPlayer?.IsMuted() == true)
             {
                 VisualStateManager.GoToState(this, "MuteState", useTransitions);
             }
             else
             {
-                var volume = MediaPlayer?.Volume;
+                var volume = MediaPlayer?.Volume();
                 switch (volume)
                 {
                     case < 0.01:
@@ -980,14 +995,14 @@ namespace mpv_winui.Modules.Player
 
         private void UpdatePreview(PointerRoutedEventArgs e)
         {
-            if (MediaPlayer == null || MediaPlayer.Duration <= 0)
+            if (MediaPlayer == null || MediaPlayer.Duration() <= 0)
             {
                 return;
             }
 
             var point = e.GetCurrentPoint(ProgressSlider);
             var fraction = point.Position.X / ProgressSlider.ActualWidth;
-            var hoverSec = Math.Max(0, fraction * MediaPlayer.Duration);
+            var hoverSec = Math.Max(0, fraction * MediaPlayer.Duration());
 
             PreviewUpdateRequested?.Invoke(this, (hoverSec, point.Position.X, 0D));
         }
@@ -1004,17 +1019,17 @@ namespace mpv_winui.Modules.Player
 
         private void VolumeMuteButton_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
-            if (_mediaPlayer?.Volume is double value && sender is UIElement element)
+            if (_mediaPlayer?.Volume() is double value && sender is UIElement element)
             {
                 var delta = e.GetCurrentPoint(element).Properties.MouseWheelDelta;
 
                 if (delta > 0)
                 {
-                    _mediaPlayer?.Volume = Math.Min(value + 2, 100);
+                    _mediaPlayer?.Volume(Math.Min(value + 2, 100));
                 }
                 else if (delta < 0)
                 {
-                    _mediaPlayer?.Volume = Math.Max(value - 2, 0);
+                    _mediaPlayer?.Volume(Math.Max(value - 2, 0));
                 }
             }
         }

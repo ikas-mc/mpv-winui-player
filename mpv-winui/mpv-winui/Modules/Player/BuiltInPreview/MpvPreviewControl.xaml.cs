@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
 using NLog;
 using System;
@@ -10,8 +11,8 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
     public sealed partial class MpvPreviewControl : UserControl
     {
         private static readonly Logger _logger = LogManager.GetLogger("BuiltInPreview");
-        private MpvMediaPlayer? _previewPlayer;
-        private Task<MpvMediaPlayer?>? _previewTask;
+        private MpvPlayer? _previewPlayer;
+        private Task<MpvPlayer?>? _previewTask;
         private bool _keepAlive;
         private int _keepAliveTimeout;
         private string _previewLoadedPath = string.Empty;
@@ -97,12 +98,12 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             DestroyPreviewPlayer();
         }
 
-        private async Task<MpvMediaPlayer?> CreatePreviewPlayerAsync()
+        private async Task<MpvPlayer?> CreatePreviewPlayerAsync()
         {
-            MpvMediaPlayer? created = null;
+            MpvPlayer? created = null;
             try
             {
-                created = new MpvMediaPlayer();
+                created = new MpvPlayer();
                 created.SwapChainChanged += PreviewPlayer_SwapChainChanged;
                 await created.InitializeForPreviewAsync();
             }
@@ -114,7 +115,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
                     try
                     {
                         created.SwapChainChanged -= PreviewPlayer_SwapChainChanged;
-                        await Task.Run(() => created.Close());
+                        await Task.Run(() => created.Destroy());
                     }
                     catch (Exception ex2)
                     {
@@ -141,14 +142,14 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             }
             else if (Math.Abs(sec - _lastPreviewSec) > 0.05)
             {
-                _previewPlayer!.Position = sec;
+                _previewPlayer!.Position(sec);
                 _lastPreviewSec = sec;
             }
 
             PreviewPanel.Visibility = Visibility.Visible;
         }
 
-        private void PreviewPlayer_SwapChainChanged(MpvMediaPlayer player, object? arg)
+        private void PreviewPlayer_SwapChainChanged()
         {
             DispatcherQueue.RunAsync(() =>
             {
@@ -161,7 +162,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
                 var height = (uint)Math.Floor(PreviewPanel.ActualHeight * PreviewPanel.CompositionScaleY);
                 _previewPlayer.UpdateSize(Math.Max(1, width), Math.Max(1, height));
 
-                _previewPlayer.UpdatePanel(PreviewPanel);
+                _previewPlayer.AttachSwapChain(PreviewPanel);
             });
         }
 
@@ -178,8 +179,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             {
                 _previewPlayer = null;
                 player.SwapChainChanged -= PreviewPlayer_SwapChainChanged;
-                player.FileLoaded = null;
-                Task.Run(() => player.Close()).FireAndForget(OnCloseError);
+                Task.Run(() => player.Destroy()).FireAndForget(OnCloseError);
             }
         }
 

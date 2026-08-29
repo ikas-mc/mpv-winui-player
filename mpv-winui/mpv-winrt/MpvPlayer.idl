@@ -28,6 +28,7 @@ namespace mpv_winrt
     delegate void PlaybackRestartedEventHandler();
     delegate void SwapChainChangedEventHandler();
     delegate void TrackChangedEventHandler();
+    delegate void BufferingChangedEventHandler(Boolean isBuffering);
 
     delegate void PlaybackStateChangedEventHandler(PlaybackStateChangedEventArgs args);
     delegate void VolumeChangedEventHandler(VolumeChangedEventArgs args);
@@ -65,6 +66,13 @@ namespace mpv_winrt
 
         void Command(Windows.Foundation.Collections.IVector<String> args);
         void CommandString(String cmd);
+
+        void PlaylistPlayIndex(Int32 index);
+        void PlaylistMove(Int32 from, Int32 to);
+        void PlaylistRemove(Int32 index);
+        void PlaylistNext();
+        void PlaylistPrevious();
+        void PlaylistShuffle();
 
         String GetWatchHistoryPath();
         String GetWatchLaterFolderPath();
@@ -120,7 +128,7 @@ namespace mpv_winrt
         Int32 CurrentEdition();
 
         Windows.Foundation.Collections.IVectorView<MpvMenuItem> GetMenu();
-        String GetSubtitleExtensions();
+        Windows.Foundation.Collections.IVectorView<String> GetSubtitleExtensions();
         String GetVersion();
 
         event FileStartedEventHandler FileStarted;
@@ -131,6 +139,7 @@ namespace mpv_winrt
         event SeekStartedEventHandler SeekStarted;
         event PlaybackRestartedEventHandler PlaybackRestarted;
         event TrackChangedEventHandler TrackChanged;
+        event BufferingChangedEventHandler BufferingChanged;
 
         event PlaybackStateChangedEventHandler PlaybackStateChanged;
         event VolumeChangedEventHandler VolumeChanged;

@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
 using System;
 
@@ -9,23 +10,23 @@ namespace mpv_winui.Modules.Player
     //TODO use state
     public sealed partial class VolumeFlyoutControl : UserControl
     {
-        private readonly WeakReference<MpvMediaPlayer?> _player = new(null);
+        private readonly WeakReference<MpvPlayer?> _player = new(null);
 
-        public VolumeFlyoutControl(MpvMediaPlayer player)
+        public VolumeFlyoutControl(MpvPlayer player)
         {
             this.InitializeComponent();
             _player.SetTarget(player);
-            VolumeSlider.Value = player.Volume;
+            VolumeSlider.Value = player.Volume();
             VolumeSlider.ValueChanged += VolumeSlider_ValueChanged;
-            UpdateVolumeIcon(player.IsMuted, player.Volume);
+            UpdateVolumeIcon(player.IsMuted(), player.Volume());
         }
 
         private void MuteButton_Click(object sender, RoutedEventArgs e)
         {
             if (_player.TryGetTarget(out var player))
             {
-                player.IsMuted = !player.IsMuted;
-                UpdateVolumeIcon(player.IsMuted, player.Volume);
+                player.IsMuted(!player.IsMuted());
+                UpdateVolumeIcon(player.IsMuted(), player.Volume());
             }
         }
 
@@ -33,8 +34,8 @@ namespace mpv_winui.Modules.Player
         {
             if (_player.TryGetTarget(out var player))
             {
-                player.Volume = e.NewValue;
-                UpdateVolumeIcon(player.IsMuted, e.NewValue);
+                player.Volume(e.NewValue);
+                UpdateVolumeIcon(player.IsMuted(), e.NewValue);
             }
         }
 

@@ -33,6 +33,7 @@ namespace winrt::mpv_winrt::implementation
         LoopFile = 10,
         LoopPlaylist = 11,
         Shuffle = 12,
+        PausedForCache = 13,
         MenuData = 41,
         Playlist = 42,
 
@@ -69,6 +70,13 @@ namespace winrt::mpv_winrt::implementation
 
         void Command(winrt::Windows::Foundation::Collections::IVector<hstring> const& args);
         void CommandString(hstring const& cmd);
+
+        void PlaylistPlayIndex(int32_t index);
+        void PlaylistMove(int32_t from, int32_t to);
+        void PlaylistRemove(int32_t index);
+        void PlaylistNext();
+        void PlaylistPrevious();
+        void PlaylistShuffle();
 
         winrt::hstring GetWatchHistoryPath();
         winrt::hstring GetWatchLaterFolderPath();
@@ -123,7 +131,7 @@ namespace winrt::mpv_winrt::implementation
         int32_t CurrentEdition();
 
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> GetMenu();
-        winrt::hstring GetSubtitleExtensions();
+        winrt::Windows::Foundation::Collections::IVectorView<winrt::hstring> GetSubtitleExtensions();
         winrt::hstring GetVersion();
 
         winrt::event_token FileStarted(winrt::mpv_winrt::FileStartedEventHandler const& handler);
@@ -144,6 +152,8 @@ namespace winrt::mpv_winrt::implementation
         void SwapChainChanged(winrt::event_token const& token) noexcept;
         winrt::event_token TrackChanged(winrt::mpv_winrt::TrackChangedEventHandler const& handler);
         void TrackChanged(winrt::event_token const& token) noexcept;
+        winrt::event_token BufferingChanged(winrt::mpv_winrt::BufferingChangedEventHandler const& handler);
+        void BufferingChanged(winrt::event_token const& token) noexcept;
 
         winrt::event_token PlaybackStateChanged(winrt::mpv_winrt::PlaybackStateChangedEventHandler const& handler);
         void PlaybackStateChanged(winrt::event_token const& token) noexcept;
@@ -206,6 +216,7 @@ namespace winrt::mpv_winrt::implementation
         winrt::event<winrt::mpv_winrt::PlaybackRestartedEventHandler> m_playbackRestartedEvent;
         winrt::event<winrt::mpv_winrt::SwapChainChangedEventHandler> m_swapChainChangedEvent;
         winrt::event<winrt::mpv_winrt::TrackChangedEventHandler> m_trackChangedEvent;
+        winrt::event<winrt::mpv_winrt::BufferingChangedEventHandler> m_bufferingChangedEvent;
 
         winrt::event<winrt::mpv_winrt::PlaybackStateChangedEventHandler> m_playbackStateChangedEvent;
         winrt::event<winrt::mpv_winrt::VolumeChangedEventHandler> m_volumeChangedEvent;

@@ -201,7 +201,7 @@ namespace mpv_winui.Modules.Player
                             {
                                 mainWindow.SaveWindowPositionAndSize();
                             }
-                            AppInstance.Restart("Reset");
+                            AppInstance.Restart(string.Empty);
                             break;
                         }
                         case "about":
@@ -267,7 +267,7 @@ namespace mpv_winui.Modules.Player
             var dialog = new ContentDialog
             {
                 Title = AppContext.AppLang.About,
-                Content = AboutControl.Create(_mediaPlayer?.MpvVersion),
+                Content = AboutControl.Create(_mediaPlayer?.GetVersion()),
                 CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = XamlRoot
             };
@@ -279,7 +279,7 @@ namespace mpv_winui.Modules.Player
             var dialog = new ContentDialog
             {
                 Title = AppContext.AppLang.MediaInfo,
-                Content = new MediaInfoUserControl(_mediaPlayer?.CurrentPath)
+                Content = new MediaInfoUserControl(_mediaPlayer?.GetCurrentPath())
                 {
                     MinWidth = 400
                 },

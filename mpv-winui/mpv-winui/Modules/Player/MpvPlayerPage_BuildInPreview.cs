@@ -29,7 +29,7 @@ namespace mpv_winui.Modules.Player
 
         private void PlayerControl_Preview2UpdateRequested(object? sender, (double HoverSec, double X, double Y) args)
         {
-            var path = _mediaPlayer.CurrentPath;
+            var path = _mediaPlayer.GetCurrentPath();
             if (string.IsNullOrEmpty(path))
             {
                 MpvPreview.Hide();
