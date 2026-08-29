@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using mpv_winrt;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,7 +30,7 @@ namespace mpv_winui.Modules.Player
             InitializeComponent();
         }
 
-        public void LoadVideoTracks(IList<IPlayerTrackItem> tracks)
+        public void LoadVideoTracks(IReadOnlyList<MpvTrack> tracks)
         {
             VideoItems.Clear();
             var selectedIndex = -1;
@@ -38,19 +39,19 @@ namespace mpv_winui.Modules.Player
                 for (var i = 0; i < tracks.Count; i++)
                 {
                     var track = tracks[i];
-                    if (track.Checked)
+                    if (track.Selected)
                     {
                         selectedIndex = i;
                     }
 
-                    VideoItems.Add(new TrackItem(track.Id, track.Label));
+                    VideoItems.Add(new TrackItem(track.Index, $"{track.Index} {track.Title} {track.Codec}"));
                 }
             }
 
             VideoListView.SelectedIndex = selectedIndex;
         }
 
-        public void LoadSubtitleTracks(IList<IPlayerTrackItem> tracks, string offLabel)
+        public void LoadSubtitleTracks(IReadOnlyList<MpvTrack> tracks, string offLabel)
         {
             SubtitleItems.Clear();
             SubtitleItems.Add(new TrackItem(-1, offLabel));
@@ -60,19 +61,19 @@ namespace mpv_winui.Modules.Player
                 for (var i = 0; i < tracks.Count; i++)
                 {
                     var track = tracks[i];
-                    if (track.Checked)
+                    if (track.Selected)
                     {
                         selectedIndex = i + 1;
                     }
 
-                    SubtitleItems.Add(new TrackItem(track.Id, track.Label));
+                    SubtitleItems.Add(new TrackItem(track.Index, $"{track.Index} {track.Title} {track.Lang}"));
                 }
             }
 
             SubtitleListView.SelectedIndex = selectedIndex;
         }
 
-        public void LoadAudioTracks(IList<IPlayerTrackItem> tracks)
+        public void LoadAudioTracks(IReadOnlyList<MpvTrack> tracks)
         {
             AudioItems.Clear();
             var selectedIndex = -1;
@@ -81,19 +82,19 @@ namespace mpv_winui.Modules.Player
                 for (var i = 0; i < tracks.Count; i++)
                 {
                     var track = tracks[i];
-                    if (track.Checked)
+                    if (track.Selected)
                     {
                         selectedIndex = i;
                     }
 
-                    AudioItems.Add(new TrackItem(track.Id, track.Label));
+                    AudioItems.Add(new TrackItem(track.Index, $"{track.Index} {track.Title} {track.Codec}"));
                 }
             }
 
             AudioListView.SelectedIndex = selectedIndex;
         }
 
-        public void LoadSecondSubtitleTracks(IList<IPlayerTrackItem> tracks, string offLabel)
+        public void LoadSecondSubtitleTracks(IReadOnlyList<MpvTrack> tracks, int currentId, string offLabel)
         {
             SecondSubItems.Clear();
             SecondSubItems.Add(new TrackItem(-1, offLabel));
@@ -104,12 +105,12 @@ namespace mpv_winui.Modules.Player
                 for (var i = 0; i < tracks.Count; i++)
                 {
                     var track = tracks[i];
-                    if (track.Checked)
+                    if (track.Index == currentId)
                     {
                         selectedIndex = i + 1;
                     }
 
-                    SecondSubItems.Add(new TrackItem(track.Id, track.Label));
+                    SecondSubItems.Add(new TrackItem(track.Index, $"{track.Index} {track.Title} {track.Lang}"));
                 }
             }
 

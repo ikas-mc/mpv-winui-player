@@ -103,6 +103,7 @@ namespace winrt::mpv_winrt::implementation
 
         mpv_observe_property(m_mpv, MpvObserveId::CoreIdle, "core-idle", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Pause, "pause", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, MpvObserveId::PausedForCache, "paused-for-cache", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Duration, "duration", MPV_FORMAT_DOUBLE);
         // mpv_observe_property(m_mpv, MpvObserveId::PlaybackTime, "playback-time", MPV_FORMAT_DOUBLE);
         // mpv_observe_property(m_mpv, MpvObserveId::TimePos, "time-pos", MPV_FORMAT_DOUBLE);
@@ -309,6 +310,13 @@ namespace winrt::mpv_winrt::implementation
                     {
                         case MpvObserveId::CoreIdle:
                             break;
+
+                        case MpvObserveId::PausedForCache:
+                            {
+                                int buffering = prop->data ? *static_cast<int*>(prop->data) : 0;
+                                m_bufferingChangedEvent(buffering != 0);
+                                break;
+                            }
 
                         case MpvObserveId::Pause:
                             {
@@ -532,6 +540,16 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::TrackChanged(winrt::event_token const& token) noexcept
     {
         m_trackChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::BufferingChanged(winrt::mpv_winrt::BufferingChangedEventHandler const& handler)
+    {
+        return m_bufferingChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::BufferingChanged(winrt::event_token const& token) noexcept
+    {
+        m_bufferingChangedEvent.remove(token);
     }
 
     winrt::event_token MpvPlayer::PlaybackStateChanged(
@@ -776,11 +794,11 @@ namespace winrt::mpv_winrt::implementation
             return;
         }
 
+        const size_t count = args.Size();
         std::vector<std::string> utf8Args;
-        utf8Args.reserve(args.Size());
-
         std::vector<const char*> cArgs;
-        cArgs.reserve(args.Size() + 1);
+        utf8Args.reserve(count);
+        cArgs.reserve(count + 1);
 
         for (auto const& item : args)
         {
@@ -1106,6 +1124,63 @@ namespace winrt::mpv_winrt::implementation
         }
 
         return !IsStringPropertyEqual("shuffle", "no");
+    }
+
+    void MpvPlayer::PlaylistPlayIndex(int32_t index)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        const auto cmd = std::format("playlist-play-index {}", index);
+        mpv_command_string(m_mpv, cmd.c_str());
+    }
+
+    void MpvPlayer::PlaylistMove(int32_t from, int32_t to)
+    {
+        if (!m_mpv || from == to || to < 0)
+        {
+            return;
+        }
+
+        const auto cmd = std::format("playlist-move {} {}", from, from < to ? to + 1 : to);
+        mpv_command_string(m_mpv, cmd.c_str());
+    }
+
+    void MpvPlayer::PlaylistRemove(int32_t index)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        const auto cmd = std::format("playlist-remove {}", index);
+        mpv_command_string(m_mpv, cmd.c_str());
+    }
+
+    void MpvPlayer::PlaylistNext()
+    {
+        if (m_mpv)
+        {
+            mpv_command_string(m_mpv, "playlist-next");
+        }
+    }
+
+    void MpvPlayer::PlaylistPrevious()
+    {
+        if (m_mpv)
+        {
+            mpv_command_string(m_mpv, "playlist-prev");
+        }
+    }
+
+    void MpvPlayer::PlaylistShuffle()
+    {
+        if (m_mpv)
+        {
+            mpv_command_string(m_mpv, "playlist-shuffle");
+        }
     }
 
     void MpvPlayer::SetAspectRatio(hstring const& ratio)
@@ -1852,9 +1927,41 @@ namespace winrt::mpv_winrt::implementation
         return items.GetView();
     }
 
-    winrt::hstring MpvPlayer::GetSubtitleExtensions()
+    winrt::Windows::Foundation::Collections::IVectorView<winrt::hstring> MpvPlayer::GetSubtitleExtensions()
     {
-        return GetHStringProperty("sub-auto-exts");
+        auto extensions = winrt::single_threaded_vector<winrt::hstring>();
+        if (!m_mpv)
+        {
+            return extensions.GetView();
+        }
+
+        mpv_node node;
+        if (mpv_get_property(m_mpv, "sub-auto-exts", MPV_FORMAT_NODE, &node) < 0)
+        {
+            return extensions.GetView();
+        }
+
+        if (node.format == MPV_FORMAT_NODE_ARRAY)
+        {
+            for (int i = 0; i < node.u.list->num; i++)
+            {
+                mpv_node& value = node.u.list->values[i];
+                if (value.format != MPV_FORMAT_STRING || !value.u.string)
+                {
+                    continue;
+                }
+
+                const char* ext = value.u.string;
+                if (ext[0] == '.')
+                {
+                    ext++;
+                }
+                extensions.Append(winrt::to_hstring(ext));
+            }
+        }
+
+        mpv_free_node_contents(&node);
+        return extensions.GetView();
     }
 
     winrt::hstring MpvPlayer::GetVersion()

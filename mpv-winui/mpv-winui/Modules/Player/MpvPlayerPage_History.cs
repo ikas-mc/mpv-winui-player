@@ -14,7 +14,7 @@ namespace mpv_winui.Modules.Player
         private async Task ShowWatchHistoryDialogAsync()
         {
             var control = new WatchHistoryControl();
-            control.Initialize(_mediaPlayer.WatchHistoryPath, _mediaPlayer.SaveWatchHistory, OnException, _logger);
+            control.Initialize(_mediaPlayer.GetWatchHistoryPath(), _mediaPlayer.SaveWatchHistory(), OnException, _logger);
             control.ItemClick += WatchHistoryControl_ItemClick;
 
             var dialog = new ContentDialog
@@ -33,7 +33,7 @@ namespace mpv_winui.Modules.Player
         private async Task ShowWatchLaterDialogAsync()
         {
             var control = new WatchLaterControl();
-            control.Initialize(_mediaPlayer.WatchLaterFolderPath, OnException, _logger);
+            control.Initialize(_mediaPlayer.GetWatchLaterFolderPath(), OnException, _logger);
             control.ItemClick += WatchLaterControl_ItemClick;
             var dialog = new ContentDialog
             {

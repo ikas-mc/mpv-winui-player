@@ -32,7 +32,7 @@ namespace mpv_winui.Modules.Player
 
         private async Task GetPlaylistAsync()
         {
-            var items = await Task.Run(() => _mediaPlayer.Playlist().Select(x => new PlaylistItem(x)).ToList());
+            var items = await Task.Run(() => _mediaPlayer.GetPlaylist().Select(x => new PlaylistItem(x)).ToList());
             PlaylistItems.Clear();
             if (items?.Count > 0)
             {
@@ -81,7 +81,7 @@ namespace mpv_winui.Modules.Player
             return PlaylistContainer.Visibility == Visibility.Visible;
         }
 
-        private void MpvPlayerPage_PlaylistChanged(MpvMediaPlayer player, object? arg2)
+        private void MpvPlayerPage_PlaylistChanged()
         {
             DispatcherQueue.RunAsync(() =>
             {

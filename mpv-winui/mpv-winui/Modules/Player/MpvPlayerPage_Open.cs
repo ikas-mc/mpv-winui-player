@@ -126,7 +126,7 @@ namespace mpv_winui.Modules.Player
             var subFile = await subPicker.PickSingleFileAsync();
             if (!string.IsNullOrEmpty(subFile?.Path))
             {
-                _mediaPlayer.AddSubtitle(subFile.Path, true);
+                _mediaPlayer.AddSubtitle(subFile.Path, true, "");
             }
         }
 

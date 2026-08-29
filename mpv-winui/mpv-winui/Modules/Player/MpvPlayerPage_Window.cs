@@ -6,7 +6,7 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
-        private void MpvPlayerPage_WindowChanged(MpvMediaPlayer player, WindowChangedEventArgs args)
+        private void MpvPlayerPage_WindowChanged(WindowChangedEventArgs args)
         {
             DispatcherQueue.RunAsync(() =>
             {

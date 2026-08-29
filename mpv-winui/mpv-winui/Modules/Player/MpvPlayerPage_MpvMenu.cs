@@ -311,7 +311,7 @@ namespace mpv_winui.Modules.Player
 
         private void PlayerView_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            var menuItems = _mediaPlayer.MenuData();
+            var menuItems = _mediaPlayer.GetMenu();
             var flyout = BuildMenuFlyoutFromData(menuItems);
             if (args.TryGetPosition(PlayerView, out var point))
             {

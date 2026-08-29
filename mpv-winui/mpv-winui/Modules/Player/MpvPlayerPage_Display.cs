@@ -154,7 +154,7 @@ namespace mpv_winui.Modules.Player
                 if (rate != _lastRefreshRate)
                 {
                     _lastRefreshRate = rate;
-                    _mediaPlayer?.UpdateDisplayRefreshRate(rate);
+                    _mediaPlayer?.UpdateDisplayRefreshRate((int)rate);
                 }
             }
         }
