@@ -96,30 +96,6 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-
-
-        private async Task OpenDvdAsync()
-        {
-            //TODO
-            var picker = new FolderPicker(_appWindow.Id);
-            var folder = await picker.PickSingleFolderAsync();
-            if (folder?.Path is string path && !string.IsNullOrEmpty(path))
-            {
-                await PlayFolder(path, OpenMode.Replace);
-            }
-        }
-
-        private async Task OpenBdAsync()
-        {
-            //TODO check bd
-            var picker = new FolderPicker(_appWindow.Id);
-            var folder = await picker.PickSingleFolderAsync();
-            if (folder?.Path is string path && !string.IsNullOrEmpty(path))
-            {
-                await PlayFolder(path, OpenMode.Replace);
-            }
-        }
-
         private async Task LoadSubtitleAsync()
         {
             var subPicker = new FileOpenPicker(_appWindow.Id);

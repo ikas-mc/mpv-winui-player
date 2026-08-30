@@ -119,6 +119,32 @@ public sealed partial class SettingsPage : Page
 
             new Option
             {
+                Key =  nameof(AppContext.AppSetting.EnableMouseInput),
+                Label = "Mouse Input",
+                Description = "Enable mouse input to mpv. Restart required.",
+                Icon = "\uE961",
+                GroupKey="Input",
+                GroupLabel="Input",
+                Type = OptionType.Boolean,
+                Getter = () => AppContext.AppSetting.EnableMouseInput,
+                Setter = v => AppContext.AppSetting.EnableMouseInput = (bool)v!
+            },
+
+            new Option
+            {
+                Key =  nameof(AppContext.AppSetting.EnableMouseInputDiscNavOnly),
+                Label = "Mouse Input Disc Nav Only",
+                Description = "When mouse input is enabled, send events to mpv only when the disc menu is active. Restart required.",
+                Icon = "\uE961",
+                GroupKey="Input",
+                GroupLabel="Input",
+                Type = OptionType.Boolean,
+                Getter = () => AppContext.AppSetting.EnableMouseInputDiscNavOnly,
+                Setter = v => AppContext.AppSetting.EnableMouseInputDiscNavOnly = (bool)v!
+            },
+
+            new Option
+            {
                 Key =  nameof(AppContext.AppSetting.EnableDebugLog),
                 Label = "Debug Log",
                 Description = "Enable app and mpv debug log. Restart required.",

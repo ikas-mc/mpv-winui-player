@@ -55,15 +55,16 @@ namespace mpv_winui.Modules.Player
             if (_isPlayerInitialized)
             {
                 SetupPlayerView();
-
-                PlayerControl.MediaPlayer = _mediaPlayer;
+                SetupPlayControl();
 
                 _mediaPlayer.PlaylistChanged += MpvPlayerPage_PlaylistChanged;
                 _mediaPlayer.VolumeChanged += MpvPlayerPage_VolumeChanged;
                 _mediaPlayer.WindowChanged += MpvPlayerPage_WindowChanged;
                 _mediaPlayer.MediaInfoChanged += MpvPlayerPage_MediaInfoChanged;
+                _mediaPlayer.DiscMenuActiveChanged += MpvPlayerPage_DiscMenuActiveChanged;
 
                 SetupKeyboardInput();
+                SetupMouseInput();
 
                 if (AppContext.AppSetting.EnableVideoPreview)
                 {
@@ -92,9 +93,13 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.VolumeChanged -= MpvPlayerPage_VolumeChanged;
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
             _mediaPlayer.MediaInfoChanged -= MpvPlayerPage_MediaInfoChanged;
+            _mediaPlayer.DiscMenuActiveChanged -= MpvPlayerPage_DiscMenuActiveChanged;
+
             TeardownPlayerView();
             CleanupKeyboardInput();
+            CleanupMouseInput();
             CleanupPreview();
+            CleanupPlayControl();
             CleanupBuiltInPreview();
             _mediaPlayer.Destroy();
         }
@@ -118,11 +123,6 @@ namespace mpv_winui.Modules.Player
         private void MpvPlayerPage_VolumeChanged(VolumeChangedEventArgs args)
         {
             AppContext.AppSetting.LastVideoVolume = (int)args.Volume;
-        }
-
-        private void PlayerView_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            PlayerControl.ToggleControlPanel();
         }
 
         private void AppQuit()

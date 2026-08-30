@@ -387,8 +387,7 @@
             Drop="OnDrop">
             <SwapChainPanel
                 x:Name="PlayerView"
-                ContextRequested="PlayerView_ContextRequested"
-                Tapped="PlayerView_Tapped">
+                ContextRequested="PlayerView_ContextRequested">
                 <Border Background="Transparent" />
             </SwapChainPanel>
             <preview:MpvSoftwarePreviewControl

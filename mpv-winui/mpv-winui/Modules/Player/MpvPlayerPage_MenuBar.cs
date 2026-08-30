@@ -129,6 +129,12 @@ namespace mpv_winui.Modules.Player
                         case "open-bd":
                             await OpenBdAsync();
                             break;
+                        case "open-dvda":
+                            await OpenDvdaAsync();
+                            break;
+                        case "open-cdda":
+                            await OpenCddaAsync();
+                            break;
                         case "load-subtitle":
                             await LoadSubtitleAsync();
                             break;
