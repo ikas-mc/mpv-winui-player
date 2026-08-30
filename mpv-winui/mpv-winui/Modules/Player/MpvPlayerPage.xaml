@@ -140,6 +140,33 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="open-bd"
                     Text="Open Blu-ray" />
+                <MenuFlyoutSubItem Text="Open Disc">
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-cdda"
+                        Text="Open CD" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-dvda"
+                        Text="Open DVDA" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-cd-img"
+                        Text="Open CD Img" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-dvd-img"
+                        Text="Open DVD Img" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-dvda-img"
+                        Text="Open DVDA Img" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="open-bd-img"
+                        Text="Open BD Img" />
+                </MenuFlyoutSubItem>
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
