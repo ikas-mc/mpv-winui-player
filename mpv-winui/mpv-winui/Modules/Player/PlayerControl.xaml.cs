@@ -756,10 +756,15 @@ namespace mpv_winui.Modules.Player
         {
             if (MediaPlayer?.IsPaused() == false)
             {
-                UpdateProgressSliderValue(MediaPlayer?.Position());
-                TimeElapsedElement.Text = FormatTime(MediaPlayer?.Position() ?? 0);
-                TimeRemainingElement.Text = FormatTime(MediaPlayer?.Duration() ?? 0);
-                OnPositionChanged?.Invoke();
+                var position = MediaPlayer?.Position();
+                var duration = MediaPlayer?.Duration();
+                if (null != position && null != duration)
+                {
+                    UpdateProgressSliderValue(position, duration);
+                    TimeElapsedElement.Text = FormatTime(position ?? 0);
+                    TimeRemainingElement.Text = FormatTime(duration ?? 0);
+                    OnPositionChanged?.Invoke();
+                }
             }
         }
 
@@ -771,7 +776,7 @@ namespace mpv_winui.Modules.Player
                 ProgressSlider.Value = value ?? 0;
             }
 
-            if (null != max)
+            if (null != max && max != ProgressSlider.Maximum)
             {
                 ProgressSlider.Maximum = max ?? 0;
             }

@@ -93,5 +93,17 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(BuiltInPreviewAliveTimeout), 20);
             set => _dataSetting.SetValue(nameof(BuiltInPreviewAliveTimeout), value);
         }
+
+        public bool EnableMouseInput
+        {
+            get => _dataSetting.GetValue(nameof(EnableMouseInput), false);
+            set => _dataSetting.SetValue(nameof(EnableMouseInput), value);
+        }
+
+        public bool EnableMouseInputDiscNavOnly
+        {
+            get => _dataSetting.GetValue(nameof(EnableMouseInputDiscNavOnly), false);
+            set => _dataSetting.SetValue(nameof(EnableMouseInputDiscNavOnly), value);
+        }
     }
 }

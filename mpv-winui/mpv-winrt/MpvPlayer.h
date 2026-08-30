@@ -36,6 +36,7 @@ namespace winrt::mpv_winrt::implementation
         PausedForCache = 13,
         MenuData = 41,
         Playlist = 42,
+        DiscMenuActive = 50,
 
         // donot change
         Fullscreen = 201,
@@ -173,6 +174,8 @@ namespace winrt::mpv_winrt::implementation
         void TrackListCountChanged(winrt::event_token const& token) noexcept;
         winrt::event_token WindowChanged(winrt::mpv_winrt::WindowChangedEventHandler const& handler);
         void WindowChanged(winrt::event_token const& token) noexcept;
+        winrt::event_token DiscMenuActiveChanged(winrt::mpv_winrt::DiscMenuActiveChangedEventHandler const& handler);
+        void DiscMenuActiveChanged(winrt::event_token const& token) noexcept;
         winrt::event_token LoopFileChanged(winrt::mpv_winrt::LoopFileChangedEventHandler const& handler);
         void LoopFileChanged(winrt::event_token const& token) noexcept;
         winrt::event_token LoopPlaylistChanged(winrt::mpv_winrt::LoopPlaylistChangedEventHandler const& handler);
@@ -227,6 +230,7 @@ namespace winrt::mpv_winrt::implementation
         winrt::event<winrt::mpv_winrt::TrackListChangedEventHandler> m_trackListChangedEvent;
         winrt::event<winrt::mpv_winrt::TrackListCountChangedEventHandler> m_trackListCountChangedEvent;
         winrt::event<winrt::mpv_winrt::WindowChangedEventHandler> m_windowChangedEvent;
+        winrt::event<winrt::mpv_winrt::DiscMenuActiveChangedEventHandler> m_discMenuActiveChangedEvent;
         winrt::event<winrt::mpv_winrt::LoopFileChangedEventHandler> m_loopFileChangedEvent;
         winrt::event<winrt::mpv_winrt::LoopPlaylistChangedEventHandler> m_loopPlaylistChangedEvent;
         winrt::event<winrt::mpv_winrt::ShuffleChangedEventHandler> m_shuffleChangedEvent;

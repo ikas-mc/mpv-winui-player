@@ -136,6 +136,7 @@ namespace winrt::mpv_winrt::implementation
         mpv_observe_property(m_mpv, MpvObserveId::WindowMaximized, "window-maximized", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::TitleBar, "title-bar", MPV_FORMAT_FLAG);
         mpv_observe_property(m_mpv, MpvObserveId::Border, "border", MPV_FORMAT_FLAG);
+        mpv_observe_property(m_mpv, MpvObserveId::DiscMenuActive, "disc-menu-active", MPV_FORMAT_FLAG);
 
         // mpv_get_property(m_mpv, "display-swapchain", MPV_FORMAT_INT64, &m_swapChain);
 
@@ -454,6 +455,13 @@ namespace winrt::mpv_winrt::implementation
                                 break;
                             }
 
+                        case MpvObserveId::DiscMenuActive:
+                            {
+                                bool active = prop->data ? *static_cast<int*>(prop->data) != 0 : false;
+                                m_discMenuActiveChangedEvent(active);
+                                break;
+                            }
+
                         default:
                             break;
                     }
@@ -652,6 +660,16 @@ namespace winrt::mpv_winrt::implementation
     void MpvPlayer::WindowChanged(winrt::event_token const& token) noexcept
     {
         m_windowChangedEvent.remove(token);
+    }
+
+    winrt::event_token MpvPlayer::DiscMenuActiveChanged(winrt::mpv_winrt::DiscMenuActiveChangedEventHandler const& handler)
+    {
+        return m_discMenuActiveChangedEvent.add(handler);
+    }
+
+    void MpvPlayer::DiscMenuActiveChanged(winrt::event_token const& token) noexcept
+    {
+        m_discMenuActiveChangedEvent.remove(token);
     }
 
     winrt::event_token MpvPlayer::LoopFileChanged(winrt::mpv_winrt::LoopFileChangedEventHandler const& handler)

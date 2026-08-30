@@ -149,6 +149,42 @@ namespace mpv_winui.Modules.Player
             return Task.Run(() => player.Open(files, action));
         }
 
+        public static Task OpenBdAsync(this MpvPlayer player, string path)
+        {
+            return Task.Run(() =>
+            {
+                player.Command(["set", "bluray-device", path]);
+                player.Command(["osd-auto", "loadfile", "bd://"]);
+            });
+        }
+
+        public static Task OpenDvdAsync(this MpvPlayer player, string path)
+        {
+            return Task.Run(() =>
+            {
+                player.Command(["set", "dvd-device", path]);
+                player.Command(["osd-auto", "loadfile", "dvd://"]);
+            });
+        }
+
+        public static Task OpenDvdaAsync(this MpvPlayer player, string path)
+        {
+            return Task.Run(() =>
+            {
+                player.Command(["set", "dvda-device", path]);
+                player.Command(["osd-auto", "loadfile", "dvda://"]);
+            });
+        }
+
+        public static Task OpenCddaAsync(this MpvPlayer player, string path)
+        {
+            return Task.Run(() =>
+            {
+                player.Command(["set", "cdda-device", path]);
+                player.Command(["osd-auto", "loadfile", "cdda://"]);
+            });
+        }
+
         public static async ValueTask RunCommandAsync(this MpvPlayer player, IList<string> args)
         {
             if (args?.Count > 0)
