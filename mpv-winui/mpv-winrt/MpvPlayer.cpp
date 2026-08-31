@@ -1859,7 +1859,66 @@ namespace winrt::mpv_winrt::implementation
 
     int32_t MpvPlayer::CurrentEdition()
     {
+        if (!m_mpv)
+        {
+            return -1;
+        }
+
+        int64_t value = -1;
+        if (mpv_get_property(m_mpv, "current-edition", MPV_FORMAT_INT64, &value) < 0)
+        {
+            return -1;
+        }
+        return static_cast<int32_t>(value);
+    }
+
+    int32_t MpvPlayer::Edition()
+    {
         return static_cast<int32_t>(GetInt64Property("edition"));
+    }
+
+    void MpvPlayer::Edition(int32_t value)
+    {
+        SetInt64Property("edition", value);
+    }
+
+    winrt::hstring MpvPlayer::GetDiscPath(winrt::mpv_winrt::DiscType type)
+    {
+        switch (type)
+        {
+            case winrt::mpv_winrt::DiscType::Dvd:
+                return GetHStringProperty("dvd-device");
+            case winrt::mpv_winrt::DiscType::Bd:
+                return GetHStringProperty("bluray-device");
+            case winrt::mpv_winrt::DiscType::Dvda:
+                return GetHStringProperty("dvda-device");
+            case winrt::mpv_winrt::DiscType::Cdda:
+                return GetHStringProperty("cdda-device");
+            default:
+                return L"";
+        }
+    }
+
+    void MpvPlayer::SetDiscPath(winrt::mpv_winrt::DiscType type, winrt::hstring const& path)
+    {
+        std::string pathStr = winrt::to_string(path);
+        switch (type)
+        {
+            case winrt::mpv_winrt::DiscType::Dvd:
+                SetStringProperty("dvd-device", pathStr);
+                break;
+            case winrt::mpv_winrt::DiscType::Bd:
+                SetStringProperty("bluray-device", pathStr);
+                break;
+            case winrt::mpv_winrt::DiscType::Dvda:
+                SetStringProperty("dvda-device", pathStr);
+                break;
+            case winrt::mpv_winrt::DiscType::Cdda:
+                SetStringProperty("cdda-device", pathStr);
+                break;
+            default:
+                break;
+        }
     }
 
     static winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> ParseMenuNode(mpv_node* node)

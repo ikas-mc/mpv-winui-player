@@ -1,4 +1,5 @@
 using Microsoft.Windows.Storage.Pickers;
+using mpv_winrt;
 using System;
 using System.Threading.Tasks;
 
@@ -106,6 +107,32 @@ namespace mpv_winui.Modules.Player
             {
                 await _mediaPlayer.OpenBdAsync(path);
             }
+        }
+
+        public static bool TryGetDiscType(string path, out DiscType? discType)
+        {
+            if (path.StartsWith("dvd://", StringComparison.Ordinal))
+            {
+                discType = DiscType.Dvd;
+                return true;
+            }
+            if (path.StartsWith("bd://", StringComparison.Ordinal) || path.StartsWith("bluray://", StringComparison.Ordinal))
+            {
+                discType = DiscType.Bd;
+                return true;
+            }
+            if (path.StartsWith("dvda://", StringComparison.Ordinal))
+            {
+                discType = DiscType.Dvda;
+                return true;
+            }
+            if (path.StartsWith("cdda://", StringComparison.Ordinal))
+            {
+                discType = DiscType.Cdda;
+                return true;
+            }
+            discType = default;
+            return false;
         }
     }
 }

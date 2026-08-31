@@ -23,6 +23,9 @@ namespace winrt::mpv_winrt::implementation
         void LoadFile(winrt::hstring const& url);
         void SetPosition(double position);
         void Pause();
+        void SetEdition(int32_t edition);
+        void SetDiscPath(winrt::mpv_winrt::DiscType type, winrt::hstring const& path);
+        void SetVideoTrack(int32_t value);
 
     private:
         void CreateContext();

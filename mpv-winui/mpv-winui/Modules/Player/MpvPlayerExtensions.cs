@@ -153,7 +153,7 @@ namespace mpv_winui.Modules.Player
         {
             return Task.Run(() =>
             {
-                player.Command(["set", "bluray-device", path]);
+                player.SetDiscPath(DiscType.Bd, path);
                 player.Command(["osd-auto", "loadfile", "bd://"]);
             });
         }
@@ -162,7 +162,7 @@ namespace mpv_winui.Modules.Player
         {
             return Task.Run(() =>
             {
-                player.Command(["set", "dvd-device", path]);
+                player.SetDiscPath(DiscType.Dvd, path);
                 player.Command(["osd-auto", "loadfile", "dvd://"]);
             });
         }
@@ -171,7 +171,7 @@ namespace mpv_winui.Modules.Player
         {
             return Task.Run(() =>
             {
-                player.Command(["set", "dvda-device", path]);
+                player.SetDiscPath(DiscType.Dvda, path);
                 player.Command(["osd-auto", "loadfile", "dvda://"]);
             });
         }
@@ -180,7 +180,7 @@ namespace mpv_winui.Modules.Player
         {
             return Task.Run(() =>
             {
-                player.Command(["set", "cdda-device", path]);
+                player.SetDiscPath(DiscType.Cdda, path);
                 player.Command(["osd-auto", "loadfile", "cdda://"]);
             });
         }
