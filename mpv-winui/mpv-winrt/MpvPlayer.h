@@ -129,7 +129,11 @@ namespace winrt::mpv_winrt::implementation
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvProfile> GetProfiles();
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvAudioDevice> GetAudioDevices();
         int32_t CurrentChapter();
+        int32_t Edition();
+        void Edition(int32_t value);
         int32_t CurrentEdition();
+        winrt::hstring GetDiscPath(winrt::mpv_winrt::DiscType type);
+        void SetDiscPath(winrt::mpv_winrt::DiscType type, winrt::hstring const& path);
 
         winrt::Windows::Foundation::Collections::IVectorView<winrt::mpv_winrt::MpvMenuItem> GetMenu();
         winrt::Windows::Foundation::Collections::IVectorView<winrt::hstring> GetSubtitleExtensions();

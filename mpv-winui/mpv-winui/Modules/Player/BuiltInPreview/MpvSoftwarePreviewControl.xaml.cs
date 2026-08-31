@@ -15,9 +15,12 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
         private Task<MpvPreviewer?>? _previewTask;
         private bool _keepAlive;
         private int _keepAliveTimeout;
-        private string _previewLoadedPath = string.Empty;
+        private string _lastPath = string.Empty;
+        private string _lastDiscPath = string.Empty;
+        private int _lastEdition = -1;
+        private int _lastVideoTrack = -1;
         private double _lastPreviewSec = -1;
-        private (string Path, double Sec)? _pendingPreview;
+        private (string Path, double Sec, bool IsDisc, DiscType? DiscType, string DiscPath, int CurrentEdition, int currentVideoTrack)? _pendingPreview;
         private readonly DispatcherTimer _previewDestroyTimer;
 
         public MpvSoftwarePreviewControl()
@@ -39,7 +42,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             set => _keepAliveTimeout = value;
         }
 
-        public async void Show(double hoverSec, string path)
+        public async void Show(double hoverSec, string path, bool isDisc, DiscType? discType, string discPath, int currentEdition, int currentVideoTrack)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -49,11 +52,11 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
 
             if (_previewer != null)
             {
-                ShowAt(path, hoverSec);
+                ShowAt(path, hoverSec, isDisc, discType, discPath, currentEdition, currentVideoTrack);
                 return;
             }
 
-            _pendingPreview = (path, hoverSec);
+            _pendingPreview = (path, hoverSec, isDisc, discType, discPath, currentEdition, currentVideoTrack);
 
             if (_previewTask == null)
             {
@@ -63,7 +66,7 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
 
                 if (_previewer != null && _pendingPreview is { } pending)
                 {
-                    ShowAt(pending.Path, pending.Sec);
+                    ShowAt(pending.Path, pending.Sec, pending.IsDisc, pending.DiscType, pending.DiscPath, pending.CurrentEdition, pending.currentVideoTrack);
                 }
             }
         }
@@ -147,23 +150,59 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             return previewer;
         }
 
-        private void ShowAt(string path, double sec)
+        private void ShowAt(string path, double sec, bool isDisc, DiscType? discType, string discPath, int currentEdition, int currentVideoTrack)
         {
             _previewDestroyTimer.Stop();
 
-            if (!string.Equals(_previewLoadedPath, path, StringComparison.Ordinal))
+            if (isDisc)
             {
-                _previewLoadedPath = path;
-                _lastPreviewSec = -1;
+                if (!string.Equals(_lastPath, path, StringComparison.Ordinal) || !string.Equals(_lastDiscPath, discPath, StringComparison.Ordinal))
+                {
+                    _lastPath = path;
+                    _lastDiscPath = discPath;
+                    Task.Run(() =>
+                    {
+                        if (null != discType)
+                        {
+                            _previewer?.SetDiscPath(discType.Value, discPath);
+                        }
+                        _previewer?.LoadFile(path);
+                    }).FireAndForget(OnException);
+                }
+            }
+            else
+            {
+                if (!string.Equals(_lastPath, path, StringComparison.Ordinal))
+                {
+                    _lastPath = path;
+                    _lastDiscPath = string.Empty;
+
+                    Task.Run(() =>
+                    {
+                        _previewer?.LoadFile(path);
+                    }).FireAndForget(OnException);
+                }
+            }
+
+            if (currentEdition >= 0 && currentEdition != _lastEdition)
+            {
+                _lastEdition = currentEdition;
                 Task.Run(() =>
                 {
-                    _previewer?.LoadFile(path);
-                    _previewer?.SetPosition(sec);
+                    _previewer?.SetEdition(currentEdition);
                 }).FireAndForget(OnException);
-
-                _lastPreviewSec = sec;
             }
-            else if (Math.Abs(sec - _lastPreviewSec) > 0.05)
+
+            if (currentVideoTrack >= 0 && currentVideoTrack != _lastVideoTrack)
+            {
+                _lastVideoTrack = currentVideoTrack;
+                Task.Run(() =>
+                {
+                    _previewer?.SetVideoTrack(currentVideoTrack);
+                }).FireAndForget(OnException);
+            }
+
+            if (Math.Abs(sec - _lastPreviewSec) > 0.05)
             {
                 _previewer?.SetPosition(sec);
                 _lastPreviewSec = sec;
@@ -177,7 +216,9 @@ namespace mpv_winui.Modules.Player.BuiltInPreview
             _previewDestroyTimer.Stop();
             _pendingPreview = null;
 
-            _previewLoadedPath = string.Empty;
+            _lastPath = string.Empty;
+            _lastDiscPath = string.Empty;
+            _lastEdition = -1;
             _lastPreviewSec = -1;
             ThumbnailImage.Source = null;
             PreviewCard.Visibility = Visibility.Collapsed;

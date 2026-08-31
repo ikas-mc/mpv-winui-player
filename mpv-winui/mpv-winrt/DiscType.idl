@@ -1,0 +1,10 @@
+namespace mpv_winrt
+{
+    enum DiscType
+    {
+        Dvd = 0,
+        Bd = 1,
+        Dvda = 2,
+        Cdda = 3
+    };
+}

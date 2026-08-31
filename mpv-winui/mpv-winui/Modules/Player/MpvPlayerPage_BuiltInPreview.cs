@@ -29,12 +29,34 @@ namespace mpv_winui.Modules.Player
 
         private void PlayerControl_Preview2UpdateRequested(object? sender, (double HoverSec, double X, double Y) args)
         {
+            if (_discMenuActive)
+            {
+                return;
+            }
+
             var path = _mediaPlayer.GetCurrentPath();
             if (string.IsNullOrEmpty(path))
             {
-                MpvPreview.Hide();
                 return;
             }
+
+            string discPath;
+            var isDisc = TryGetDiscType(path, out var discType);
+            if (isDisc)
+            {
+                if (null == discType)
+                {
+                    return;
+                }
+                discPath = _mediaPlayer.GetDiscPath(discType.Value);
+            }
+            else
+            {
+                discPath = string.Empty;
+            }
+
+            var currentEdition = _mediaPlayer.CurrentEdition();
+            var currentVideoTrack = _mediaPlayer.CurrentVideoTrack();
 
             var point = PlayerControl.TransformSliderPoint(PlayerView, args.X, args.Y);
             if (_logger.IsDebugEnabled)
@@ -55,7 +77,7 @@ namespace mpv_winui.Modules.Player
             }
             PreviewControlTranslation.Y = point.Y - MpvPreview.ActualHeight - 8;
 
-            MpvPreview.Show(args.HoverSec, path);
+            MpvPreview.Show(args.HoverSec, path, isDisc, discType, discPath, currentEdition, currentVideoTrack);
             MpvPreview.Visibility = Visibility.Visible;
         }
 

@@ -243,6 +243,51 @@ namespace winrt::mpv_winrt::implementation
         mpv_set_property(m_mpv, "pause", MPV_FORMAT_FLAG, &paused);
     }
 
+    void MpvPreviewer::SetEdition(int32_t edition)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+        mpv_set_option_string(m_mpv, "edition", std::to_string(edition).c_str());
+    }
+
+    void MpvPreviewer::SetDiscPath(winrt::mpv_winrt::DiscType type, winrt::hstring const& path)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+        std::string value = winrt::to_string(path);
+        switch (type)
+        {
+            case winrt::mpv_winrt::DiscType::Dvd:
+                mpv_set_option_string(m_mpv, "dvd-device", value.c_str());
+                break;
+            case winrt::mpv_winrt::DiscType::Bd:
+                mpv_set_option_string(m_mpv, "bluray-device", value.c_str());
+                break;
+            case winrt::mpv_winrt::DiscType::Dvda:
+                mpv_set_option_string(m_mpv, "dvda-device", value.c_str());
+                break;
+            case winrt::mpv_winrt::DiscType::Cdda:
+                mpv_set_option_string(m_mpv, "cdda-device", value.c_str());
+                break;
+            default:
+                break;
+        }
+    }
+
+    void MpvPreviewer::SetVideoTrack(int32_t value)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        mpv_set_option_string(m_mpv, "vid", std::to_string(value).c_str());
+    }
+
     void MpvPreviewer::Destroy()
     {
         std::lock_guard lifecycleLock(m_lifecycleMutex);
