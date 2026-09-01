@@ -2,7 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.About;
 using mpv_winui.Modules.FileSystem;
-using mpv_winui.Modules.MediaInfo;
 using mpv_winui.Modules.Player.Menu;
 using System;
 using System.Collections.Generic;
@@ -244,7 +243,7 @@ namespace mpv_winui.Modules.Player
                             ShowMpvConfigWindow();
                             break;
                         case "media-info":
-                            await ShowMediaInfoDialogAsync();
+                            ShowMediaInfoWindow();
                             break;
                     }
                 }
@@ -271,6 +270,14 @@ namespace mpv_winui.Modules.Player
             }
         }
 
+        private void ShowMediaInfoWindow()
+        {
+            if (App.Window is MainWindow window)
+            {
+                window.OpenMediaInfoWindow(_mediaPlayer?.GetCurrentPath());
+            }
+        }
+
         private async Task OpenConfigFileAsync(string fileName, bool inMpvFolder)
         {
             var folder = inMpvFolder
@@ -289,24 +296,6 @@ namespace mpv_winui.Modules.Player
                 CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = XamlRoot
             };
-            await dialog.ShowAsync();
-        }
-
-        private async Task ShowMediaInfoDialogAsync()
-        {
-            var dialog = new ContentDialog
-            {
-                Title = AppContext.AppLang.MediaInfo,
-                Content = new MediaInfoUserControl(_mediaPlayer?.GetCurrentPath())
-                {
-                    MinWidth = 400
-                },
-                CloseButtonText = AppContext.AppLang.Close,
-                XamlRoot = XamlRoot,
-                Padding = new Thickness(0),
-            };
-            dialog.Resources["ContentDialogMaxWidth"] = 900;
-            dialog.Resources["ContentDialogPadding"] = new Thickness(12);
             await dialog.ShowAsync();
         }
     }

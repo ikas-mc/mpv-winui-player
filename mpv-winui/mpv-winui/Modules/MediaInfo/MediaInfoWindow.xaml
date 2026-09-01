@@ -1,5 +1,5 @@
 <basewin:BaseWindow
-    x:Class="mpv_winui.Modules.Settings.SettingsWindow"
+    x:Class="mpv_winui.Modules.MediaInfo.MediaInfoWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:basewin="using:mpv_winui.Modules.Common.View">
@@ -8,17 +8,16 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border
+        <TextBlock
             Grid.Row="0"
-            Padding="12,8">
-            <TextBlock
-                FontSize="16"
-                FontWeight="SemiBold"
-                Text="Settings" />
-        </Border>
-        <Frame
-            x:Name="PageFrame"
+            Margin="12,0,0,0"
+            VerticalAlignment="Center"
+            FontSize="16"
+            FontWeight="SemiBold"
+            Text="Media Info" />
+        <Grid
+            x:Name="ContentHost"
             Grid.Row="1"
-            Loaded="PageFrame_Loaded" />
+            Margin="12,0,0,8" />
     </Grid>
 </basewin:BaseWindow>

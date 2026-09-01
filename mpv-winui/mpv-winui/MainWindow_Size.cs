@@ -7,7 +7,7 @@ using WinRT;
 
 namespace mpv_winui
 {
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : BaseWindow
     {
         public const int MIN_LOGICAL_WIDTH = 250;
         public const int MIN_LOGICAL_HEIGHT = 250;

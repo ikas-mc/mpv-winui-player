@@ -164,7 +164,7 @@ public sealed partial class SettingsPage : Page
         {
             if (App.Window is MainWindow mainWindow)
             {
-                mainWindow.UpdateCurrentTheme();
+                mainWindow.UpdateTheme();
             }
         });
     }
@@ -175,7 +175,7 @@ public sealed partial class SettingsPage : Page
         {
             if (App.Window is MainWindow mainWindow)
             {
-                mainWindow.UpdateCurrentBackdrop();
+                mainWindow.UpdateBackdrop();
             }
         });
     }
