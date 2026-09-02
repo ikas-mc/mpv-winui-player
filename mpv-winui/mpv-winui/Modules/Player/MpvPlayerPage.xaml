@@ -229,7 +229,15 @@
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-edit"
-                    Text="Mpv Conf Editor (Alpha)" />
+                    Text="Mpv Conf Editor" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="edit-menu-mpv"
+                    Text="Mpv Menu Editor" />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="edit-menu-menubar"
+                    Text="Menu Bar Editor" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
@@ -263,8 +271,8 @@
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
-                        Tag="open-menu-json"
-                        Text="menu.json" />
+                        Tag="open-mpwv-menu-conf"
+                        Text="mpvw-menu.conf" />
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem

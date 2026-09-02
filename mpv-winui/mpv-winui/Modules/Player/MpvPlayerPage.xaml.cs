@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.Player
 {
-    public sealed partial class MpvPlayerPage : Page, IParameterRefreshSupportView, IMpvOptionApplySupport
+    public sealed partial class MpvPlayerPage : Page, IParameterRefreshSupportView, IMpvOptionApplySupport, IMpvCommandApplySupport
     {
         private static readonly Logger _logger = LogManager.GetLogger("MpvPlayer");
         private const string MpvConfigFolderName = "mpv";
@@ -174,6 +174,16 @@ namespace mpv_winui.Modules.Player
             {
                 _mediaPlayer.Command(["set", key, value ?? string.Empty]);
             });
+        }
+
+        async Task IMpvCommandApplySupport.ApplyMpvCommandAsync(string command)
+        {
+            if (!_isPlayerInitialized || string.IsNullOrEmpty(command))
+            {
+                return;
+            }
+
+            await _mediaPlayer.RunCommandAsync(command);
         }
     }
 }
