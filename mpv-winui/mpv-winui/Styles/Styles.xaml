@@ -16,6 +16,8 @@
             <SolidColorBrush
                 x:Key="SystemAccentColor2Brush"
                 Color="{StaticResource SystemAccentColorDark2}" />
+            <Color x:Key="NavContentBackGroundColor">#40FFFFFF</Color>
+            <Color x:Key="NavContentBorderColor">#08000000</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush
@@ -27,6 +29,8 @@
             <SolidColorBrush
                 x:Key="SystemAccentColor2Brush"
                 Color="{StaticResource SystemAccentColorLight2}" />
+            <Color x:Key="NavContentBackGroundColor">#2C3A3A3A</Color>
+            <Color x:Key="NavContentBorderColor">#19000000</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <x:Double x:Key="ToggleSwitchPreContentMargin">4</x:Double>
@@ -832,6 +836,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style
+        x:Key="SquareAppBarButtonStyle"
+        BasedOn="{StaticResource DefaultAppBarButtonStyle}"
+        TargetType="AppBarButton">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorSecondaryBrush}" />
     </Style>
 
 </ResourceDictionary>

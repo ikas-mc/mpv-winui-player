@@ -6,6 +6,7 @@ using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.MediaInfo;
+using mpv_winui.Modules.Menu.MenuEditor;
 using mpv_winui.Modules.MpvConf;
 using mpv_winui.Modules.Player;
 using mpv_winui.Modules.Settings;
@@ -91,6 +92,20 @@ namespace mpv_winui
             });
         }
 
+        public void RunMpvCommand(string command)
+        {
+            DispatcherQueue.RunAsync(() =>
+            {
+                if (ShellFrame?.Content is IMpvCommandApplySupport view)
+                {
+                    view.ApplyMpvCommandAsync(command).FireAndForget(ex =>
+                    {
+                        AppContext.AppLogger.Error(ex);
+                    });
+                }
+            });
+        }
+
         public void ChangeFullWindow(bool full)
         {
             if (full)
@@ -121,6 +136,11 @@ namespace mpv_winui
         public void OpenMediaInfoWindow(string? path)
         {
             _windowsManager.Open("mediainfo_" + HashUtil.ComputeMd5(path ?? string.Empty), () => new MediaInfoWindow(path), this, 0.8, 480, 320);
+        }
+
+        public void OpenMenuEditorWindow(string filePath, MenuType type)
+        {
+            _windowsManager.Open("menueditor_" + HashUtil.ComputeMd5(filePath ?? string.Empty), () => new MenuEditorWindow(filePath ?? string.Empty, type), this, 0.8, 720, 480);
         }
 
         private void Window_Activated(object sender, WindowActivatedEventArgs args)

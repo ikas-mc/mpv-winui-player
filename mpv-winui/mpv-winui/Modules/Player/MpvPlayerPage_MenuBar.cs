@@ -2,7 +2,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.About;
 using mpv_winui.Modules.FileSystem;
-using mpv_winui.Modules.Player.Menu;
+using mpv_winui.Modules.Menu.MenuBar;
+using mpv_winui.Modules.Menu.MenuEditor;
+using mpv_winui.Modules.Menu.MpvMenu;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,12 +15,14 @@ namespace mpv_winui.Modules.Player
 {
     public sealed partial class MpvPlayerPage
     {
+        private const string MpvMenuConfFileName = "mpv\\menu.conf";
+
         private async void SetupCustomMenuBarItems()
         {
-            List<CustomMenuItem>? menuItems = null;
+            List<MpvMenuItem>? menuItems = null;
             try
             {
-                menuItems = await MenuService.Instance.TryLoadAsync();
+                menuItems = await MenuBarService.Instance.TryLoadAsync();
             }
             catch (Exception ex)
             {
@@ -46,7 +50,7 @@ namespace mpv_winui.Modules.Player
             }
         }
 
-        private void AddCustomMenuDataItems(IList<MenuFlyoutItemBase> target, IReadOnlyList<CustomMenuItem>? items)
+        private void AddCustomMenuDataItems(IList<MenuFlyoutItemBase> target, IReadOnlyList<MpvMenuItem>? items)
         {
             if (items == null)
             {
@@ -82,15 +86,11 @@ namespace mpv_winui.Modules.Player
 
         private async void CustomMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuFlyoutItem { Tag: CustomMenuItem data })
+            if (sender is MenuFlyoutItem { Tag: MpvMenuItem data })
             {
                 try
                 {
-                    if (data.Command?.Count > 0)
-                    {
-                        await _mediaPlayer.RunCommandAsync(data.Command);
-                    }
-                    else if (!string.IsNullOrEmpty(data.CommandString))
+                    if (!string.IsNullOrEmpty(data.CommandString))
                     {
                         await _mediaPlayer.RunCommandAsync(data.CommandString);
                     }
@@ -182,8 +182,14 @@ namespace mpv_winui.Modules.Player
                         case "open-mpv-log":
                             await OpenConfigFileAsync("mpv.log", true);
                             break;
-                        case "open-menu-json":
-                            await OpenConfigFileAsync("menu.json", false);
+                        case "open-mpwv-menu-conf":
+                            await OpenConfigFileAsync("mpvw-menu.conf", false);
+                            break;
+                        case "edit-menu-menubar":
+                            ShowMenuEditorWindow(MenuBarService.Instance.FilePath, MenuType.Menubar);
+                            break;
+                        case "edit-menu-mpv":
+                            ShowMenuEditorWindow(AppData.Current.ResolveLocalData(MpvMenuConfFileName), MenuType.ContextMenu);
                             break;
                         case "link-mpv-wiki":
                             await Launcher.LaunchUriAsync(new Uri("https://github.com/mpv-player/mpv/wiki"));
@@ -275,6 +281,14 @@ namespace mpv_winui.Modules.Player
             if (App.Window is MainWindow window)
             {
                 window.OpenMediaInfoWindow(_mediaPlayer?.GetCurrentPath());
+            }
+        }
+
+        private void ShowMenuEditorWindow(string filePath, MenuType type)
+        {
+            if (App.Window is MainWindow window)
+            {
+                window.OpenMenuEditorWindow(filePath, type);
             }
         }
 
