@@ -1,5 +1,7 @@
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using mpv_winui.Modules.Settings;
 
 namespace mpv_winui.Modules.Player
 {
@@ -7,6 +9,8 @@ namespace mpv_winui.Modules.Player
     {
         private void SetupPlayControl()
         {
+            UpdatePlayControlStyle();
+
             PlayerControl.MediaPlayer = _mediaPlayer;
             PlayerView.PointerPressed += PlayerView_PointerPressed2;
         }
@@ -41,6 +45,33 @@ namespace mpv_winui.Modules.Player
         public void TogglePlayerControl()
         {
             PlayerControl.ToggleControlPanel();
+        }
+
+        public void UpdatePlayControlStyle()
+        {
+            var style = AppContext.AppSetting.PlayerStyle;
+
+            switch (style)
+            {
+                case AppSettings.PlayerStyle_Center:
+                {
+                    PlayerControl.Style = Application.Current.Resources["CenterPlayerControlStyle"] as Style;
+                    break;
+                }
+
+                case AppSettings.PlayerStyle_Compact:
+                {
+                    PlayerControl.Style = Application.Current.Resources["CompactPlayerControlStyle"] as Style;
+                    break;
+                }
+
+                case AppSettings.PlayerStyle_Default:
+                default:
+                {
+                    PlayerControl?.Style = null;
+                    break;
+                }
+            }
         }
     }
 }

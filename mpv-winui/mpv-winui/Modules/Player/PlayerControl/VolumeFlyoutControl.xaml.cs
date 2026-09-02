@@ -5,7 +5,7 @@ using mpv_winrt;
 using mpv_winui.Modules.Common.Utils;
 using System;
 
-namespace mpv_winui.Modules.Player
+namespace mpv_winui.Modules.Player.PlayerControl
 {
     //TODO use state
     public sealed partial class VolumeFlyoutControl : UserControl
@@ -17,7 +17,6 @@ namespace mpv_winui.Modules.Player
             this.InitializeComponent();
             _player.SetTarget(player);
             VolumeSlider.Value = player.Volume();
-            VolumeSlider.ValueChanged += VolumeSlider_ValueChanged;
             UpdateVolumeIcon(player.IsMuted(), player.Volume());
         }
 

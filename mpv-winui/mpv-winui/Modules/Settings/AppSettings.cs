@@ -28,6 +28,15 @@ namespace mpv_winui.Modules.Settings
             set => _dataSetting.SetValue(nameof(BackdropType), value);
         }
 
+        public const string PlayerStyle_Default = "Default";
+        public const string PlayerStyle_Center = "Center";
+        public const string PlayerStyle_Compact = "Compact";
+        public string PlayerStyle
+        {
+            get => _dataSetting.GetValue(nameof(PlayerStyle), PlayerStyle_Default);
+            set => _dataSetting.SetValue(nameof(PlayerStyle), value);
+        }
+
         public bool EnableDebugLog
         {
             get => _dataSetting.GetValue(nameof(EnableDebugLog), false);

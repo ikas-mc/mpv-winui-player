@@ -106,6 +106,17 @@ namespace mpv_winui
             });
         }
 
+        public void UpdatePlayControlStyle()
+        {
+            DispatcherQueue.RunAsync(() =>
+            {
+                if (ShellFrame?.Content is MpvPlayerPage page)
+                {
+                    page.UpdatePlayControlStyle();
+                }
+            });
+        }
+
         public void ChangeFullWindow(bool full)
         {
             if (full)
