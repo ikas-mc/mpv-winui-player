@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace mpv_winui.Modules.Player
+namespace mpv_winui.Modules.Player.PlayerControl
 {
     public class TrackItem(int index, string label)
     {

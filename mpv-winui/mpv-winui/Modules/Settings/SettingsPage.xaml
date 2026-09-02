@@ -10,11 +10,12 @@
 
     <Grid>
         <ctl:OptionListControl
-            Padding="8,0,8,0"
+            Margin="8,0,0,8"
+            Padding="0,0,12,0"
             OptionList="{x:Bind Settings}">
             <ctl:OptionListControl.Footer>
                 <StackPanel
-                    Spacing="16"
+                    Spacing="8"
                     Visibility="{x:Bind _isUnpackaged}">
                     <ar:FileAssociationControl
                         x:Name="FileAssociationView"

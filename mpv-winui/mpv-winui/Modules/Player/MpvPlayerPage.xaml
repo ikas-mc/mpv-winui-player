@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pc="using:mpv_winui.Modules.Player.PlayerControl"
     xmlns:preview="using:mpv_winui.Modules.Player.BuiltInPreview"
     mc:Ignorable="d">
 
@@ -441,12 +442,11 @@
             </preview:MpvSoftwarePreviewControl>
         </Grid>
 
-        <local:PlayerControl
+        <pc:PlayerControl
             x:Name="PlayerControl"
             Grid.Row="2"
             Grid.Column="0"
             VerticalAlignment="Stretch"
-            FullWindowButtonVisibility="Visible"
             NextTrackButtonVisibility="Visible"
             OnFullScreenRequest="PlayerControl_OnFullScreenRequest"
             OnFullWindowRequest="PlayerControl_OnFullWindowRequest"

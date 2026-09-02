@@ -48,6 +48,7 @@ public sealed partial class SettingsPage : Page
                 Key =  nameof(AppContext.AppSetting.BackdropType),
                 Label = "Backdrop",
                 Description = "Window background. Restart required.",
+                Icon="\uE91B",
                 GroupKey="Style",
                 GroupLabel="Style",
                 Type = OptionType.StringList,
@@ -58,6 +59,26 @@ public sealed partial class SettingsPage : Page
                     {
                         AppContext.AppSetting.BackdropType = (string)v;
                         UpdateBackdrop();
+                    }
+                }
+            },
+
+            new Option
+            {
+                Key = nameof(AppContext.AppSetting.PlayerStyle),
+                Label = "Player Control Style",
+                Description = "Player control style.",
+                Icon = "\uE768",
+                GroupKey = "Style",
+                GroupLabel = "Style",
+                Type = OptionType.StringList,
+                Options = [AppSettings.PlayerStyle_Default, AppSettings.PlayerStyle_Center, AppSettings.PlayerStyle_Compact],
+                Getter = () => AppContext.AppSetting.PlayerStyle,
+                Setter = v =>{
+                    if ((string)v != AppContext.AppSetting.PlayerStyle)
+                    {
+                        AppContext.AppSetting.PlayerStyle = (string)v;
+                        UpdatePlayControlStyle();
                     }
                 }
             },
@@ -176,6 +197,17 @@ public sealed partial class SettingsPage : Page
             if (App.Window is MainWindow mainWindow)
             {
                 mainWindow.UpdateBackdrop();
+            }
+        });
+    }
+
+    private void UpdatePlayControlStyle()
+    {
+        DispatcherQueue.RunAsync(() =>
+        {
+            if (App.Window is MainWindow mainWindow)
+            {
+                mainWindow.UpdatePlayControlStyle();
             }
         });
     }
