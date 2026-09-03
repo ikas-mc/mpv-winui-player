@@ -23,6 +23,11 @@ namespace mpv_winui
             try
             {
                 lastRect = AppContext.AppSetting.WindowPositionAndSize;
+                if (AppContext.AppLogger.IsDebugEnabled)
+                {
+                    AppContext.AppLogger.Debug("restore window position and size: lastRect={}", lastRect);
+                }
+
                 if (!string.IsNullOrEmpty(lastRect))
                 {
                     int[] v = Array.ConvertAll(lastRect.Split(','), int.Parse);
@@ -32,6 +37,12 @@ namespace mpv_winui
                         _y = v[1];
                         _w = v[2];
                         _h = v[3];
+
+                        if (AppContext.AppLogger.IsDebugEnabled)
+                        {
+                            AppContext.AppLogger.Debug("restore window position and size: x={},y={},w={},h={}.", _x, _y, _w, _h);
+                        }
+
                         if (_x > 0 && _y > 0 && _w > 0 && _h > 0)
                         {
                             AppWindow.MoveAndResize(new RectInt32(_x, _y, Math.Max(100, _w), Math.Max(100, _h)));
@@ -102,7 +113,7 @@ namespace mpv_winui
             try
             {
                 AppContext.AppSetting.WindowPositionAndSize = $"{_x},{_y},{_w},{_h}";
-                if (AppContext.AppLogger.IsTraceEnabled)
+                if (AppContext.AppLogger.IsDebugEnabled)
                 {
                     AppContext.AppLogger.Debug("save window position and size: x={},y={},w={},h={}.", _x, _y, _w, _h);
                 }
