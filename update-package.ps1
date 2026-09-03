@@ -27,9 +27,9 @@ foreach ($manifestPath in $manifestPaths) {
     }
 
 
-    $manifest.Package.Identity.Name = "mpv-winui"
-    $manifest.Package.Properties.DisplayName = "mpv-winui"
-    ($manifest.GetElementsByTagName("uap:VisualElements")).SetAttribute("DisplayName", "mpv-winui")
+    $manifest.Package.Identity.Name = "mpvw"
+    $manifest.Package.Properties.DisplayName = "mpvw"
+    ($manifest.GetElementsByTagName("uap:VisualElements")).SetAttribute("DisplayName", "mpvw")
 
     $manifest.Save($appxManifestPath)
 }
