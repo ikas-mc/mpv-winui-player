@@ -509,7 +509,7 @@ public sealed partial class MpvConfEditorPage : Page
             SaveButton.IsEnabled = false;
             try
             {
-                await Task.Run(_manager.Save);
+                await _manager.SaveAsync(AppContext.AppSetting.EnableSaveBackup);
 
                 BuildProfiles();
                 BuildGroups();

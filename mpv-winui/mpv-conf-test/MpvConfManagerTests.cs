@@ -8,14 +8,14 @@ public class MpvConfManagerTests
     private string _dir = null!;
 
     [SetUp]
-    public void SetUp()
+    public async Task SetUp()
     {
         _dir = Path.Combine(Path.GetTempPath(), "mpv-conf-test-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_dir);
     }
 
     [TearDown]
-    public void TearDown()
+    public async Task TearDown()
     {
         if (Directory.Exists(_dir))
         {
@@ -31,7 +31,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void LoadAndSave_RoundTripsUnchangedFile()
+    public async Task LoadAndSave_RoundTripsUnchangedFile()
     {
         string original =
             "### Logs\n" +
@@ -46,13 +46,13 @@ public class MpvConfManagerTests
         string path = WriteSample(original);
         var manager = new MpvConfManager(path);
         manager.Load();
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo(original));
     }
 
     [Test]
-    public void ModifyValue_SavesOnlyThatLineChanged()
+    public async Task ModifyValue_SavesOnlyThatLineChanged()
     {
         string path = WriteSample("msg-level=all=error\nlog-file=~~/mpv.log\n");
         var manager = new MpvConfManager(path);
@@ -61,13 +61,13 @@ public class MpvConfManagerTests
         var option = manager.Get("msg-level")!;
         option.Value = "all=info";
 
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("msg-level=all=info\nlog-file=~~/mpv.log\n"));
     }
 
     [Test]
-    public void ToggleEnabled_AddsAndRemovesHash()
+    public async Task ToggleEnabled_AddsAndRemovesHash()
     {
         string path = WriteSample("osc=no\n");
         var manager = new MpvConfManager(path);
@@ -75,19 +75,19 @@ public class MpvConfManagerTests
 
         var option = manager.Get("osc")!;
         option.Enabled = false;
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("# osc=no\n"));
 
         manager.Load();
         var disabled = manager.Get("osc")!;
         Assert.That(disabled.Enabled, Is.False);
         disabled.Enabled = true;
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("osc=no\n"));
     }
 
     [Test]
-    public void InsertSection_AddsHeader_OnlyOnce()
+    public async Task InsertSection_AddsHeader_OnlyOnce()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -95,14 +95,14 @@ public class MpvConfManagerTests
 
         manager.InsertSection("newsec");
         manager.InsertSection("newsec");
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n[newsec]\n"));
         Assert.That(manager.Sections, Does.Contain("newsec"));
     }
 
     [Test]
-    public void InsertOption_AppendsAtEndAndReindexes()
+    public async Task InsertOption_AppendsAtEndAndReindexes()
     {
         string path = WriteSample("a=1\nb=2\n");
         var manager = new MpvConfManager(path);
@@ -111,7 +111,7 @@ public class MpvConfManagerTests
         var added = manager.InsertOption("c", "3");
         Assert.That(added.LineNumber, Is.EqualTo(2));
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\nb=2\nc=3\n"));
 
         var lines = manager.Lines;
@@ -120,7 +120,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void InsertOption_InSection_AppendsAfterSectionLines()
+    public async Task InsertOption_InSection_AppendsAfterSectionLines()
     {
         string path = WriteSample("[sect]\na=1\nb=2\n");
         var manager = new MpvConfManager(path);
@@ -129,50 +129,50 @@ public class MpvConfManagerTests
         var added = manager.InsertOption("c", "3", "sect");
         Assert.That(added.Section, Is.EqualTo("sect"));
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("[sect]\na=1\nb=2\nc=3\n"));
     }
 
     [Test]
-    public void InsertOption_IntoMissingSection_CreatesHeader()
+    public async Task InsertOption_IntoMissingSection_CreatesHeader()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
         manager.Load();
 
         manager.InsertOption("c", "3", "newsection");
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n[newsection]\nc=3\n"));
     }
 
     [Test]
-    public void UnknownAndBlankLinesArePreservedOnSave()
+    public async Task UnknownAndBlankLinesArePreservedOnSave()
     {
         string path = WriteSample("# note\n\nweird line here\nreal=1\n");
         var manager = new MpvConfManager(path);
         manager.Load();
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("# note\n\nweird line here\nreal=1\n"));
         Assert.That(manager.Lines[2].Type, Is.EqualTo(MpvConfLineType.Invalid));
     }
 
     [Test]
-    public void InsertDisabled_WritesCommentPrefix()
+    public async Task InsertDisabled_WritesCommentPrefix()
     {
         string path = WriteSample(string.Empty);
         var manager = new MpvConfManager(path);
         manager.Load();
 
         manager.InsertDisabled("gpu-api", "d3d11");
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("# gpu-api=d3d11\n"));
     }
 
     [Test]
-    public void GetAll_ReturnsRepeatedKeys()
+    public async Task GetAll_ReturnsRepeatedKeys()
     {
         string path = WriteSample("key=a\nkey=b\n");
         var manager = new MpvConfManager(path);
@@ -182,7 +182,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Load_ReadsLineBased_WithAndWithoutTrailingNewline()
+    public async Task Load_ReadsLineBased_WithAndWithoutTrailingNewline()
     {
         string withNewline = WriteSample("a=1\nb=2\n");
         var first = new MpvConfManager(withNewline);
@@ -201,7 +201,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Load_EmptyFile_ProducesNoLines()
+    public async Task Load_EmptyFile_ProducesNoLines()
     {
         string path = WriteSample(string.Empty);
         var manager = new MpvConfManager(path);
@@ -212,7 +212,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Load_MissingFile_ProducesNoLinesAndIsLoaded()
+    public async Task Load_MissingFile_ProducesNoLinesAndIsLoaded()
     {
         var manager = new MpvConfManager(Path.Combine(_dir, "missing.conf"));
         manager.Load();
@@ -222,7 +222,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Load_CrLfFile_ReadsOptionsAndValueWithoutCr()
+    public async Task Load_CrLfFile_ReadsOptionsAndValueWithoutCr()
     {
         string path = WriteSample("a=1\r\nb=2\r\n");
         var manager = new MpvConfManager(path);
@@ -234,7 +234,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Load_Utf8Bom_IsStrippedByReader()
+    public async Task Load_Utf8Bom_IsStrippedByReader()
     {
         string path = Path.Combine(_dir, "bom.conf");
         File.WriteAllText(path, "\uFEFFhwdec=auto\n");
@@ -245,36 +245,36 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Save_NormalizesToTrailingNewline()
+    public async Task Save_NormalizesToTrailingNewline()
     {
         string path = Path.Combine(_dir, "plain.conf");
         File.WriteAllText(path, "a=1");
         var manager = new MpvConfManager(path);
         manager.Load();
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n"));
     }
 
     [Test]
-    public void Save_WritesLfLineEndings()
+    public async Task Save_WritesLfLineEndings()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
         manager.Load();
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n"));
         Assert.That(File.ReadAllText(path), Does.Not.Contain("\r"));
     }
 
     [Test]
-    public void LoadAndSave_ReloadKeepsSameOptions()
+    public async Task LoadAndSave_ReloadKeepsSameOptions()
     {
         string path = WriteSample("# note\n# osc=no\n[sec]\nprofile-cond=x\n");
         var manager = new MpvConfManager(path);
         manager.Load();
-        manager.Save();
+        await manager.SaveAsync();
 
         var reloaded = new MpvConfManager(path);
         reloaded.Load();
@@ -285,7 +285,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Remove_DeletesLineAndReindexes()
+    public async Task Remove_DeletesLineAndReindexes()
     {
         string path = WriteSample("a=1\nb=2\nc=3\n");
         var manager = new MpvConfManager(path);
@@ -296,12 +296,12 @@ public class MpvConfManagerTests
         Assert.That(manager.Get("b"), Is.Null);
         Assert.That(manager.Get("c")!.LineNumber, Is.EqualTo(1));
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\nc=3\n"));
     }
 
     [Test]
-    public void Remove_ReturnsFalseForForeignLine()
+    public async Task Remove_ReturnsFalseForForeignLine()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -313,7 +313,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void InsertOption_IntoDefaultProfile_GoesBeforeFirstSection()
+    public async Task InsertOption_IntoDefaultProfile_GoesBeforeFirstSection()
     {
         string path = WriteSample("fs=yes\n[mpvw-sdr]\nprofile-cond=x\n[other]\n");
         var manager = new MpvConfManager(path);
@@ -321,12 +321,12 @@ public class MpvConfManagerTests
 
         manager.InsertOption("hwdec", "auto", "");
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("fs=yes\nhwdec=auto\n[mpvw-sdr]\nprofile-cond=x\n[other]\n"));
     }
 
     [Test]
-    public void InsertOption_IntoDefaultProfile_NoSections_AppendsAtEnd()
+    public async Task InsertOption_IntoDefaultProfile_NoSections_AppendsAtEnd()
     {
         string path = WriteSample("fs=yes\n");
         var manager = new MpvConfManager(path);
@@ -334,12 +334,12 @@ public class MpvConfManagerTests
 
         manager.InsertOption("hwdec", "auto", "");
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("fs=yes\nhwdec=auto\n"));
     }
 
     [Test]
-    public void Remove_ExistingLine_BecomesDeleted_NotVisible()
+    public async Task Remove_ExistingLine_BecomesDeleted_NotVisible()
     {
         string path = WriteSample("a=1\nb=2\nc=3\n");
         var manager = new MpvConfManager(path);
@@ -357,7 +357,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Remove_AddedLine_DropsEntirely()
+    public async Task Remove_AddedLine_DropsEntirely()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -373,7 +373,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Restore_DeletedLine_ReturnsToExisting_KeepsPosition()
+    public async Task Restore_DeletedLine_ReturnsToExisting_KeepsPosition()
     {
         string path = WriteSample("a=1\nb=2\nc=3\n");
         var manager = new MpvConfManager(path);
@@ -391,7 +391,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Restore_NonDeletedLine_ReturnsFalse()
+    public async Task Restore_NonDeletedLine_ReturnsFalse()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -401,7 +401,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Remove_AlreadyDeleted_ReturnsFalse()
+    public async Task Remove_AlreadyDeleted_ReturnsFalse()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -413,7 +413,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void Save_RemovesDeletedLines_AndResetsStatus()
+    public async Task Save_RemovesDeletedLines_AndResetsStatus()
     {
         string path = WriteSample("a=1\nb=2\nc=3\n");
         var manager = new MpvConfManager(path);
@@ -423,7 +423,7 @@ public class MpvConfManagerTests
         manager.Remove(b);
         var added = manager.InsertOption("d", "4");
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\nc=3\nd=4\n"));
         Assert.That(manager.DeletedLines, Is.Empty);
         Assert.That(manager.Lines, Does.Not.Contain(b));
@@ -434,7 +434,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void InsertOption_AfterDeletion_RestoresInPlace()
+    public async Task InsertOption_AfterDeletion_RestoresInPlace()
     {
         string path = WriteSample("a=1\nb=2\n");
         var manager = new MpvConfManager(path);
@@ -450,12 +450,12 @@ public class MpvConfManagerTests
         Assert.That(manager.DeletedLines, Is.Empty);
         Assert.That(manager.Get("b")!.LineNumber, Is.EqualTo(1));
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\nb=9\n"));
     }
 
     [Test]
-    public void RemoveSection_FlagsHeaderOnly_KeepsMemberLineStates()
+    public async Task RemoveSection_FlagsHeaderOnly_KeepsMemberLineStates()
     {
         string path = WriteSample("a=1\n[sect]\nb=2\n[other]\nd=4\n");
         var manager = new MpvConfManager(path);
@@ -478,7 +478,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void RemoveSection_PreservesAddedAndModifiedStates_UntilSave()
+    public async Task RemoveSection_PreservesAddedAndModifiedStates_UntilSave()
     {
         string path = WriteSample("[sect]\nb=2\n");
         var manager = new MpvConfManager(path);
@@ -497,14 +497,14 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void RemoveSection_SaveDropsSectionFromFileAndMemory()
+    public async Task RemoveSection_SaveDropsSectionFromFileAndMemory()
     {
         string path = WriteSample("a=1\n[sect]\nb=2\n[other]\nd=4\n");
         var manager = new MpvConfManager(path);
         manager.Load();
 
         manager.RemoveSection("sect");
-        manager.Save();
+        await manager.SaveAsync();
 
         Assert.That(File.ReadAllText(path), Is.EqualTo("a=1\n[other]\nd=4\n"));
         Assert.That(manager.Sections, Does.Not.Contain("sect"));
@@ -514,7 +514,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void RestoreSection_ClearsFlag_FileUnchangedAfterSave()
+    public async Task RestoreSection_ClearsFlag_FileUnchangedAfterSave()
     {
         string original = "a=1\n[sect]\nb=2\n";
         string path = WriteSample(original);
@@ -525,12 +525,12 @@ public class MpvConfManagerTests
         Assert.That(manager.RestoreSection("sect"), Is.True);
         Assert.That(manager.IsSectionDeleted("sect"), Is.False);
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo(original));
     }
 
     [Test]
-    public void RestoreSection_DoesNotTouchIndividuallyDeletedLines()
+    public async Task RestoreSection_DoesNotTouchIndividuallyDeletedLines()
     {
         string path = WriteSample("[sect]\nb=2\nc=3\n");
         var manager = new MpvConfManager(path);
@@ -546,12 +546,12 @@ public class MpvConfManagerTests
         Assert.That(manager.Get("b", "sect"), Is.Not.Null);
         Assert.That(manager.Get("c", "sect"), Is.Null);
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("[sect]\nb=2\n"));
     }
 
     [Test]
-    public void IsSectionDeleted_UnknownOrMissing_ReturnsFalse()
+    public async Task IsSectionDeleted_UnknownOrMissing_ReturnsFalse()
     {
         string path = WriteSample("a=1\n");
         var manager = new MpvConfManager(path);
@@ -562,7 +562,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void RenameSection_RenamesHeaderRawAndOptionSections_PreservesState()
+    public async Task RenameSection_RenamesHeaderRawAndOptionSections_PreservesState()
     {
         string path = WriteSample("[sect]\na=1\nb=2\n");
         var manager = new MpvConfManager(path);
@@ -582,12 +582,12 @@ public class MpvConfManagerTests
         Assert.That(manager.DeletedLines.All(l => l.Section == "renamed"), Is.True);
         Assert.That(manager.ContainsSection("sect"), Is.False);
 
-        manager.Save();
+        await manager.SaveAsync();
         Assert.That(File.ReadAllText(path), Is.EqualTo("[renamed]\na=9\n"));
     }
 
     [Test]
-    public void RenameSection_FlagFollowsHeader()
+    public async Task RenameSection_FlagFollowsHeader()
     {
         string path = WriteSample("[s]\nx=1\n");
         var manager = new MpvConfManager(path);
@@ -601,7 +601,7 @@ public class MpvConfManagerTests
     }
 
     [Test]
-    public void RenameSection_RejectsInvalidTargets()
+    public async Task RenameSection_RejectsInvalidTargets()
     {
         string path = WriteSample("[s]\nx=1\n[t]\n");
         var manager = new MpvConfManager(path);

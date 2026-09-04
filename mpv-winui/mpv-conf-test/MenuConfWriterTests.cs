@@ -23,10 +23,10 @@ public class MenuConfWriterTests
         }
     }
 
-    private string WriteTemp(IEnumerable<MpvMenuItem> items)
+    private async Task<string> WriteTemp(IEnumerable<MpvMenuItem> items)
     {
         var path = Path.Combine(_tempDir, "menu.conf");
-        MenuConfWriter.Save(path, items);
+        await MenuConfWriter.SaveAsync(path, items);
         return path;
     }
 
@@ -36,7 +36,7 @@ public class MenuConfWriterTests
     }
 
     [Test]
-    public void Save_WritesItemsWithTabIndentation()
+    public async Task Save_WritesItemsWithTabIndentation()
     {
         var items = new List<MpvMenuItem>
         {
@@ -51,27 +51,27 @@ public class MenuConfWriterTests
             },
         };
 
-        var path = WriteTemp(items);
+        var path = await WriteTemp(items);
         var text = NormalizeNewLines(File.ReadAllText(path));
 
         Assert.That(text, Is.EqualTo("Menu\n\tPlay\tplaylist-play\n\tFullscreen\tcycle fullscreen\n"));
     }
 
     [Test]
-    public void Save_WritesStatesInFixedOrder()
+    public async Task Save_WritesStatesInFixedOrder()
     {
         var items = new List<MpvMenuItem>
         {
             new() { Name = "Item", CommandString = "cmd", Hidden = "h", Disabled = "d", Checked = "c" },
         };
 
-        var path = WriteTemp(items);
+        var path = await WriteTemp(items);
 
         Assert.That(NormalizeNewLines(File.ReadAllText(path)), Is.EqualTo("Item\tcmd\thidden=h\tdisabled=d\tchecked=c\n"));
     }
 
     [Test]
-    public void Save_WritesSeparatorAsBlankLine()
+    public async Task Save_WritesSeparatorAsBlankLine()
     {
         var items = new List<MpvMenuItem>
         {
@@ -80,26 +80,26 @@ public class MenuConfWriterTests
             new() { Name = "Stop", CommandString = "stop" },
         };
 
-        var path = WriteTemp(items);
+        var path = await WriteTemp(items);
 
         Assert.That(NormalizeNewLines(File.ReadAllText(path)), Is.EqualTo("Play\tplaylist-play\n\nStop\tstop\n"));
     }
 
     [Test]
-    public void Save_EmptyStateValues_AreOmitted()
+    public async Task Save_EmptyStateValues_AreOmitted()
     {
         var items = new List<MpvMenuItem>
         {
             new() { Name = "Item", CommandString = "cmd", Hidden = string.Empty, Disabled = null, Checked = string.Empty },
         };
 
-        var path = WriteTemp(items);
+        var path = await WriteTemp(items);
 
         Assert.That(NormalizeNewLines(File.ReadAllText(path)), Is.EqualTo("Item\tcmd\n"));
     }
 
     [Test]
-    public void Save_DeepNesting_IndentsCorrectly()
+    public async Task Save_DeepNesting_IndentsCorrectly()
     {
         var items = new List<MpvMenuItem>
         {
@@ -120,42 +120,42 @@ public class MenuConfWriterTests
             },
         };
 
-        var path = WriteTemp(items);
+        var path = await WriteTemp(items);
 
         Assert.That(NormalizeNewLines(File.ReadAllText(path)), Is.EqualTo("Menu\n\tSub\n\t\tLeaf\tcmd\n"));
     }
 
     [Test]
-    public void Save_EmptyList_WritesEmptyFile()
+    public async Task Save_EmptyList_WritesEmptyFile()
     {
-        var path = WriteTemp(new List<MpvMenuItem>());
+        var path = await WriteTemp(new List<MpvMenuItem>());
 
         Assert.That(File.ReadAllText(path), Is.Empty);
     }
 
     [Test]
-    public void Save_CreatesMissingDirectories()
+    public async Task Save_CreatesMissingDirectories()
     {
         var path = Path.Combine(_tempDir, "nested", "deep", "menu.conf");
 
-        MenuConfWriter.Save(path, new List<MpvMenuItem> { new() { Name = "Item", CommandString = "cmd" } });
+        await MenuConfWriter.SaveAsync(path, new List<MpvMenuItem> { new() { Name = "Item", CommandString = "cmd" } });
 
         Assert.That(File.Exists(path), Is.True);
     }
 
     [Test]
-    public void Save_OverwritesExistingFile()
+    public async Task Save_OverwritesExistingFile()
     {
         var path = Path.Combine(_tempDir, "menu.conf");
         File.WriteAllText(path, "Stale\n");
 
-        MenuConfWriter.Save(path, new List<MpvMenuItem> { new() { Name = "Play", CommandString = "play" } });
+        await MenuConfWriter.SaveAsync(path, new List<MpvMenuItem> { new() { Name = "Play", CommandString = "play" } });
 
         Assert.That(NormalizeNewLines(File.ReadAllText(path)), Is.EqualTo("Play\tplay\n"));
     }
 
     [Test]
-    public void Roundtrip_ComplexStructure_PreservesTree()
+    public async Task Roundtrip_ComplexStructure_PreservesTree()
     {
         var expected = new List<MpvMenuItem>
         {
@@ -179,7 +179,7 @@ public class MenuConfWriterTests
             new() { Name = "Quit", CommandString = "quit", Disabled = "false" },
         };
 
-        var path = WriteTemp(expected);
+        var path = await WriteTemp(expected);
         var actual = MenuConfParser.Parse(path)!;
 
         Assert.That(actual, Has.Count.EqualTo(expected.Count));
@@ -190,14 +190,14 @@ public class MenuConfWriterTests
     }
 
     [Test]
-    public void Roundtrip_EmptySubmenu_StaysSubmenu()
+    public async Task Roundtrip_EmptySubmenu_StaysSubmenu()
     {
         var expected = new List<MpvMenuItem>
         {
             new() { Name = "Menu", Children = new List<MpvMenuItem>() },
         };
 
-        var path = WriteTemp(expected);
+        var path = await WriteTemp(expected);
         var actual = MenuConfParser.Parse(path)!;
 
         AssertItemsEqual(expected[0], actual[0]);

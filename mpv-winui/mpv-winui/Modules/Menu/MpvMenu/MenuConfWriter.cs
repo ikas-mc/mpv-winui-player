@@ -1,22 +1,17 @@
+using mpv_winui.Modules.FileSystem;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.Menu.MpvMenu
 {
     public static class MenuConfWriter
     {
-        public static void Save(string filePath, IEnumerable<MpvMenuItem> items)
+        public static async Task SaveAsync(string filePath, IEnumerable<MpvMenuItem> items, bool backup = false, int limit = 50)
         {
-            var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
             var builder = new StringBuilder();
             WriteItems(builder, items, 0);
-            File.WriteAllText(filePath, builder.ToString());
+            await FileService.Instance.BackAndSaveAsync(filePath, builder.ToString(), backup, limit).ConfigureAwait(false);
         }
 
         private static void WriteItems(StringBuilder builder, IEnumerable<MpvMenuItem> items, int depth)
