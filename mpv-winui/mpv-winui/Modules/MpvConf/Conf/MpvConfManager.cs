@@ -1,7 +1,9 @@
+using mpv_winui.Modules.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace mpv_winui.Modules.MpvConf.Conf;
 
@@ -45,15 +47,15 @@ public sealed class MpvConfManager
         IsLoaded = true;
     }
 
-    public void Save()
+    public async Task SaveAsync(bool backup = false, int limit = 50)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(_filePath) ?? string.Empty);
         var removedSections = _lines
             .Where(l => l.Type == MpvConfLineType.Section && l.SectionDeleted)
             .Select(l => l.Section)
             .ToHashSet(StringComparer.Ordinal);
         var present = _lines.Where(l => l.Status != MpvConfLineStatus.Deleted && !removedSections.Contains(l.Section)).ToList();
-        File.WriteAllText(_filePath, string.Join("\n", present.Select(l => l.Raw)) + "\n");
+        var content = string.Join("\n", present.Select(l => l.Raw)) + "\n";
+        await FileService.Instance.BackAndSaveAsync(_filePath, content, backup, limit).ConfigureAwait(false);
 
         _lines.Clear();
         _lines.AddRange(present);

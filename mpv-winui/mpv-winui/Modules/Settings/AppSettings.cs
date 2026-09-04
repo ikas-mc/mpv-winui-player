@@ -114,5 +114,11 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(EnableMouseInputDiscNavOnly), false);
             set => _dataSetting.SetValue(nameof(EnableMouseInputDiscNavOnly), value);
         }
+
+        public bool EnableSaveBackup
+        {
+            get => _dataSetting.GetValue(nameof(EnableSaveBackup), true);
+            set => _dataSetting.SetValue(nameof(EnableSaveBackup), value);
+        }
     }
 }

@@ -82,7 +82,7 @@ public sealed partial class MenuEditorPage
         }
 
         var items = Nodes.Select(CreateMpvMenuItem).ToList();
-        await Task.Run(() => MenuConfWriter.Save(_filePath, items));
+        await MenuConfWriter.SaveAsync(_filePath, items, AppContext.AppSetting.EnableSaveBackup);
         ShowMessage($"Saved {_filePath}");
     }
 

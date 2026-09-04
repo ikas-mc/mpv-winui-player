@@ -58,29 +58,29 @@ public class MpvConfOptionServiceEditTests
     }
 
     [Test]
-    public void EnableFromNotInFile_InsertsIntoSection_NotAtEndOfFile()
+    public async Task EnableFromNotInFile_InsertsIntoSection_NotAtEndOfFile()
     {
         var editor = Editor("[s1]\na=1\n[s2]\nb=2\n", out var manager);
         var item = new MpvConfOptionItem("s1", BoolDef(), null);
 
         editor.SetState(item, MpvOptionState.Enabled);
 
-        Assert.That(Join(manager), Is.EqualTo("[s1]\na=1\nkey=\"\"\n[s2]\nb=2\n"));
+        Assert.That(await Join(manager), Is.EqualTo("[s1]\na=1\nkey=\"\"\n[s2]\nb=2\n"));
     }
 
     [Test]
-    public void EnableFromNotInFile_DefaultProfile_GoesBeforeFirstSection()
+    public async Task EnableFromNotInFile_DefaultProfile_GoesBeforeFirstSection()
     {
         var editor = Editor("fs=yes\n[mpvw-sdr]\nprofile-cond=x\n", out var manager);
         var item = new MpvConfOptionItem("", BoolDef(), null);
 
         editor.SetState(item, MpvOptionState.Enabled);
 
-        Assert.That(Join(manager), Is.EqualTo("fs=yes\nkey=\"\"\n[mpvw-sdr]\nprofile-cond=x\n"));
+        Assert.That(await Join(manager), Is.EqualTo("fs=yes\nkey=\"\"\n[mpvw-sdr]\nprofile-cond=x\n"));
     }
 
     [Test]
-    public void Remove_RemovesOnlyOwnLine_KeepsOtherDuplicates()
+    public async Task Remove_RemovesOnlyOwnLine_KeepsOtherDuplicates()
     {
         var editor = Editor("[s]\nkey=yes\nkey=dup\nnum=3\n", out var manager);
         var item = new MpvConfOptionItem("s", BoolDef(), manager.Get("key", "s"));
@@ -89,11 +89,11 @@ public class MpvConfOptionServiceEditTests
 
         Assert.That(manager.GetAll("key", "s"), Has.Count.EqualTo(1));
         Assert.That(manager.GetAll("key", "s")[0].Value, Is.EqualTo("dup"));
-        Assert.That(Join(manager), Is.EqualTo("[s]\nkey=dup\nnum=3\n"));
+        Assert.That(await Join(manager), Is.EqualTo("[s]\nkey=dup\nnum=3\n"));
     }
 
     [Test]
-    public void EnableFromNotInFile_KeepsExistingDuplicateLines()
+    public async Task EnableFromNotInFile_KeepsExistingDuplicateLines()
     {
         var editor = Editor("[s]\nkey=old1\nkey=old2\n", out var manager);
         // An item reporting "not present" while duplicate lines already exist.
@@ -102,17 +102,17 @@ public class MpvConfOptionServiceEditTests
         editor.SetState(item, MpvOptionState.Enabled);
 
         Assert.That(manager.GetAll("key", "s"), Has.Count.EqualTo(3));
-        Assert.That(Join(manager), Is.EqualTo("[s]\nkey=old1\nkey=old2\nkey=\"\"\n"));
+        Assert.That(await Join(manager), Is.EqualTo("[s]\nkey=old1\nkey=old2\nkey=\"\"\n"));
     }
 
     [Test]
-    public void EditOneDuplicate_DoesNotAffectOtherLines()
+    public async Task EditOneDuplicate_DoesNotAffectOtherLines()
     {
         var editor = Editor("key=1\nkey=2\n", out var manager);
         var second = new MpvConfOptionItem("", BoolDef(), manager.GetAll("key", "")[1]);
 
         editor.SetValue(second, "3");
-        manager.Save();
+        await manager.SaveAsync();
 
         var lines = manager.GetAll("key", "");
         Assert.That(lines[0].Value, Is.EqualTo("1"));
@@ -323,9 +323,9 @@ public class MpvConfOptionServiceEditTests
         Assert.That(manager.Get("key", ""), Is.Null);
     }
 
-    private static string Join(MpvConfManager manager)
+    private static async Task<string> Join(MpvConfManager manager)
     {
-        manager.Save();
+        await manager.SaveAsync();
         return string.Join("\n", manager.Lines.Select(l => l.Raw)) + "\n";
     }
 }

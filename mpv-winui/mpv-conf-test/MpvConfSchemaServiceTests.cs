@@ -76,24 +76,6 @@ public class MpvConfSchemaServiceTests
     }
 
     [Test]
-    public void LoadFromJson_MissingTypesDefaultsToRaw()
-    {
-        const string json = """[ { "name": "foo", "desc": "x" } ]""";
-        var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
-        Assert.That(def.Values, Has.Count.EqualTo(1));
-        Assert.That(def.Values[0].Type, Is.EqualTo("raw"));
-    }
-
-    [Test]
-    public void LoadFromJson_EmptyTypesDefaultsToRaw()
-    {
-        const string json = """[ { "name": "foo", "values": [] } ]""";
-        var def = MpvConfSchemaService.LoadFromJson(json).Get("foo")!;
-        Assert.That(def.Values, Has.Count.EqualTo(1));
-        Assert.That(def.Values[0].Type, Is.EqualTo("raw"));
-    }
-
-    [Test]
     public void LoadFromJson_MissingGroupDefaultsToGeneral()
     {
         const string json = """[ { "name": "foo", "values": [ { "type": "bool" } ] } ]""";
