@@ -75,7 +75,8 @@
                                 Margin="6,0,0,0"
                                 VerticalAlignment="Center"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="00:00" />
+                                Text="00:00"
+                                Typography.NumeralAlignment="Tabular" />
                             <Grid Grid.Column="1">
                                 <ycc:TickBar
                                     x:Name="ProgressTickBar"
@@ -107,7 +108,8 @@
                                 Margin="0,0,6,0"
                                 VerticalAlignment="Center"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="00:00" />
+                                Text="00:00"
+                                Typography.NumeralAlignment="Tabular" />
                         </Grid>
 
                         <Grid Grid.Row="1">

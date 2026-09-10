@@ -128,7 +128,8 @@
                                     x:Name="TimeElapsedElement"
                                     VerticalAlignment="Center"
                                     Style="{ThemeResource CaptionTextBlockStyle}"
-                                    Text="00:00" />
+                                    Text="00:00"
+                                    Typography.NumeralAlignment="Tabular" />
                                 <TextBlock
                                     x:Name="TimeSeparatorElement"
                                     VerticalAlignment="Center"
@@ -138,7 +139,8 @@
                                     x:Name="TimeDurationElement"
                                     VerticalAlignment="Center"
                                     Style="{ThemeResource CaptionTextBlockStyle}"
-                                    Text="00:00" />
+                                    Text="00:00"
+                                    Typography.NumeralAlignment="Tabular" />
                             </StackPanel>
                         </Grid>
 
