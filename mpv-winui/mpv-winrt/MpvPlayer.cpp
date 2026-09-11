@@ -869,7 +869,7 @@ namespace winrt::mpv_winrt::implementation
 
     bool MpvPlayer::SaveWatchHistory()
     {
-        return GetFlagProperty("save-watch-history");
+        return GetFlagProperty("save-watch-history", false);
     }
 
     winrt::hstring MpvPlayer::GetCurrentPath()
@@ -883,7 +883,19 @@ namespace winrt::mpv_winrt::implementation
         {
             return true;
         }
-        return IsStringPropertyEqual("pause", "yes");
+
+        int idleActiveFlag = 0;
+        if (mpv_get_property(m_mpv, "idle-active", MPV_FORMAT_FLAG, &idleActiveFlag) < 0 || idleActiveFlag != 0)
+        {
+            return true;
+        }
+
+        int pauseFlag = 0;
+        if (mpv_get_property(m_mpv, "pause", MPV_FORMAT_FLAG, &pauseFlag) < 0)
+        {
+            return true;
+        }
+        return pauseFlag != 0;
     }
 
     // Volume control methods
@@ -1348,15 +1360,19 @@ namespace winrt::mpv_winrt::implementation
         return L"";
     }
 
-    bool MpvPlayer::GetFlagProperty(const char* name)
+    bool MpvPlayer::GetFlagProperty(const char* name, bool defaultValue)
     {
         if (!m_mpv)
         {
-            return false;
+            return defaultValue;
         }
 
         int flag = 0;
-        return mpv_get_property(m_mpv, name, MPV_FORMAT_FLAG, &flag) >= 0 && flag != 0;
+        if (mpv_get_property(m_mpv, name, MPV_FORMAT_FLAG, &flag) < 0)
+        {
+            return defaultValue;
+        }
+        return flag != 0;
     }
 
     bool MpvPlayer::IsStringPropertyEqual(const char* name, std::string_view expected)
