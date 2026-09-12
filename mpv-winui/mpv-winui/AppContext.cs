@@ -1,4 +1,5 @@
 using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.FileSystem;
 using mpv_winui.Modules.Language;
 using mpv_winui.Modules.Settings;
 using NLog;
@@ -20,6 +21,7 @@ namespace mpv_winui
         {
             _task = Task.WhenAll([
                 Task.Run(LoggerHelper.SetupLogger),
+                AppData.Current.OpenLocalDataFolderAsync(),
                 AppBootstrap.RunAsync()
             ]);
         }

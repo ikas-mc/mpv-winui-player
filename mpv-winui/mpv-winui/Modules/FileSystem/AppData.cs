@@ -1,8 +1,9 @@
-using Microsoft.Windows.Storage;
 using mpv_winui.Modules.AppModel;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
+using ApplicationData = Microsoft.Windows.Storage.ApplicationData;
 
 namespace mpv_winui.Modules.FileSystem
 {
@@ -16,66 +17,35 @@ namespace mpv_winui.Modules.FileSystem
 
         public const string AppDataPublisher = "ikas-mc";
 
-        //https://learn.microsoft.com/zh-cn/windows/windows-app-sdk/api/winrt/microsoft.windows.storage.applicationdata.getforunpackaged
-        private readonly bool _useUnpackagedAppData = true;
+        private static readonly Lazy<StorageFolder> _localFolder = new(EnsureLocalFolder, true);
 
         public string ResolveLocalData(string path)
         {
-            if (PackageHelper.IsPackaged)
-            {
-                var application = ApplicationData.GetDefault();
-                return Path.Combine(application.LocalPath, path);
-            }
-            else if (_useUnpackagedAppData)
-            {
-                var application = ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId);
-                return Path.Combine(application.LocalPath, path);
-            }
-            else
-            {
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId, path);
-            }
+            return Path.Combine(_localFolder.Value.Path, path);
         }
 
-        public async Task<Windows.Storage.StorageFolder> OpenOrCreateLocalDataFolderAsync(string path)
+        public async Task<StorageFolder> OpenOrCreateLocalDataFolderAsync(string path)
         {
-            if (PackageHelper.IsPackaged)
-            {
-                return await ApplicationData.GetDefault().LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
-            }
-            else if (_useUnpackagedAppData)
-            {
-                return await ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId).LocalFolder.CreateFolderAsync(path, Windows.Storage.CreationCollisionOption.OpenIfExists);
-            }
-            else
-            {
-                return await Task.Run(async () =>
-                {
-                    var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId, path);
-                    Directory.CreateDirectory(folderPath);
-                    return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
-                });
-            }
+            return await _localFolder.Value.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);
         }
 
-        public async Task<Windows.Storage.StorageFolder> OpenLocalDataFolderAsync()
+        public Task<StorageFolder> OpenLocalDataFolderAsync()
+        {
+            return Task.FromResult(_localFolder.Value);
+        }
+
+        private static StorageFolder EnsureLocalFolder()
         {
             if (PackageHelper.IsPackaged)
             {
                 return ApplicationData.GetDefault().LocalFolder;
             }
-            else if (_useUnpackagedAppData)
-            {
-                return ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId).LocalFolder;
-            }
             else
             {
-                return await Task.Run(async () =>
-                 {
-                     var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppDataId);
-                     Directory.CreateDirectory(folderPath);
-                     return await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
-                 });
+                //https://learn.microsoft.com/zh-cn/windows/windows-app-sdk/api/winrt/microsoft.windows.storage.applicationdata.getforunpackaged
+                var applicationData = ApplicationData.GetForUnpackaged(AppDataPublisher, AppDataId);
+                Directory.CreateDirectory(applicationData.LocalPath);
+                return applicationData.LocalFolder;
             }
         }
     }
