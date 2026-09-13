@@ -11,6 +11,14 @@ base on [mpv](https://github.com/mpv-player/mpv/) and [WinUI 3](https://github.c
 
 [Github Releases](https://github.com/ikas-mc/mpv-winui-player/releases)
 
+### mpvw-msix-x64-Release
+MSIX installer package
+
+### mpvw-unpackaged-x64-Release
+Unpackaged, can run directly after extracting
+
+### mpvw-app-data-sample
+Default configuration files, needs to be copied to the application's AppData directory
 
 ## Limitation
 
