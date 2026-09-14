@@ -17,6 +17,7 @@ public sealed partial class MenuEditorPage
         };
         Nodes.Add(node);
         SelectNode(node);
+        SelectNodeInTree(node);
     }
 
 
@@ -141,7 +142,9 @@ public sealed partial class MenuEditorPage
         var child = new MenuTreeItem { Name = "New item", Parent = node };
         node.Children.Add(child);
         node.Kind = MenuTreeItemKind.Menu;
+        ExpandNodeInTree(node);
         SelectNode(child);
+        SelectNodeInTree(child);
     }
 
     private void RemoveNode(MenuTreeItem node)
@@ -153,6 +156,19 @@ public sealed partial class MenuEditorPage
     private IList<MenuTreeItem> GetSiblings(MenuTreeItem node)
     {
         return node.Parent?.Children ?? Nodes;
+    }
+
+    private void ExpandNodeInTree(MenuTreeItem item)
+    {
+        if (MenuTree.ContainerFromItem(item) is UIElement container && MenuTree.NodeFromContainer(container) is { } node)
+        {
+            node.IsExpanded = true;
+        }
+    }
+
+    private void SelectNodeInTree(MenuTreeItem item)
+    {
+        MenuTree.SelectedItem = item;
     }
 
 }
