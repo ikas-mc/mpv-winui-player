@@ -20,7 +20,7 @@ namespace mpv_winui.Modules.Menu.MpvMenu
             {
                 if (item.IsSeparator)
                 {
-                    builder.AppendLine();
+                    builder.Append('\n');
                     continue;
                 }
 
@@ -37,7 +37,7 @@ namespace mpv_winui.Modules.Menu.MpvMenu
                 AppendState(builder, "disabled", item.Disabled);
                 AppendState(builder, "checked", item.Checked);
 
-                builder.AppendLine();
+                builder.Append('\n');
 
                 if (item.Children is { Count: > 0 })
                 {
