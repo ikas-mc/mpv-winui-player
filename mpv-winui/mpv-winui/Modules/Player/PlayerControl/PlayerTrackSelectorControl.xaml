@@ -38,7 +38,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="10"
-                            Text="{x:Bind SubtitleListView.SelectedIndex}" />
+                            Text="{x:Bind SubtitleListView.SelectedIndex, Mode=OneWay}" />
                     </StackPanel>
                 </PivotItem.Header>
                 <ListView
@@ -79,7 +79,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="10"
-                            Text="{x:Bind SecondSubListView.SelectedIndex}" />
+                            Text="{x:Bind SecondSubListView.SelectedIndex, Mode=OneWay}" />
                     </StackPanel>
                 </PivotItem.Header>
                 <ListView
@@ -120,7 +120,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="10"
-                            Text="{x:Bind VideoListView.SelectedIndex}" />
+                            Text="{x:Bind VideoListView.SelectedIndex, Mode=OneWay}" />
                     </StackPanel>
                 </PivotItem.Header>
                 <ListView
@@ -161,7 +161,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="10"
-                            Text="{x:Bind AudioListView.SelectedIndex}" />
+                            Text="{x:Bind AudioListView.SelectedIndex, Mode=OneWay}" />
                     </StackPanel>
                 </PivotItem.Header>
                 <ListView
