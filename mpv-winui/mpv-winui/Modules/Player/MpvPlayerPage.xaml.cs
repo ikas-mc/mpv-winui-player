@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using mpv_winrt;
-using mpv_winui.Modules.AppConfData;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.FileSystem;
@@ -65,6 +64,8 @@ namespace mpv_winui.Modules.Player
                 _mediaPlayer.MediaInfoChanged += MpvPlayerPage_MediaInfoChanged;
                 _mediaPlayer.DiscMenuActiveChanged += MpvPlayerPage_DiscMenuActiveChanged;
 
+                SetupKeepAwake();
+
                 SetupKeyboardInput();
                 SetupMouseInput();
 
@@ -98,6 +99,8 @@ namespace mpv_winui.Modules.Player
             _mediaPlayer.WindowChanged -= MpvPlayerPage_WindowChanged;
             _mediaPlayer.MediaInfoChanged -= MpvPlayerPage_MediaInfoChanged;
             _mediaPlayer.DiscMenuActiveChanged -= MpvPlayerPage_DiscMenuActiveChanged;
+
+            CleanupKeepAwake();
 
             TeardownPlayerView();
             CleanupKeyboardInput();

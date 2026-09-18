@@ -41,6 +41,7 @@ namespace mpv_winrt
 	delegate void TrackListCountChangedEventHandler(TrackListCountChangedEventArgs args);
 	delegate void WindowChangedEventHandler(WindowChangedEventArgs args);
 	delegate void DiscMenuActiveChangedEventHandler(Boolean isActive);
+	delegate void CoreIdleChangedEventHandler(Boolean isIdle);
 	delegate void LoopFileChangedEventHandler();
 	delegate void LoopPlaylistChangedEventHandler();
 	delegate void ShuffleChangedEventHandler();
@@ -158,6 +159,7 @@ namespace mpv_winrt
 		event SwapChainChangedEventHandler SwapChainChanged;
 		event WindowChangedEventHandler WindowChanged;
 		event DiscMenuActiveChangedEventHandler DiscMenuActiveChanged;
+		event CoreIdleChangedEventHandler CoreIdleChanged;
 		event LoopFileChangedEventHandler LoopFileChanged;
 		event LoopPlaylistChangedEventHandler LoopPlaylistChanged;
 		event ShuffleChangedEventHandler ShuffleChanged;

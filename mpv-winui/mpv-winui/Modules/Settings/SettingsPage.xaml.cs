@@ -166,6 +166,19 @@ public sealed partial class SettingsPage : Page
 
             new Option
             {
+                Key =  nameof(AppContext.AppSetting.KeepDisplayAwake),
+                Label = "Keep Display Awake",
+                Description = "Prevent the display from dimming or sleeping while playing. Restart required.",
+                Icon = "\uE945",
+                GroupKey="Power",
+                GroupLabel="Power",
+                Type = OptionType.Boolean,
+                Getter = () => AppContext.AppSetting.KeepDisplayAwake,
+                Setter = v => AppContext.AppSetting.KeepDisplayAwake = (bool)v!
+            },
+
+            new Option
+            {
                 Key =  nameof(AppContext.AppSetting.EnableDebugLog),
                 Label = "Debug Log",
                 Description = "Enable app and mpv debug log. Restart required.",
