@@ -121,6 +121,12 @@ namespace mpv_winui.Modules.Settings
             set => _dataSetting.SetValue(nameof(EnableSaveBackup), value);
         }
 
+        public bool KeepDisplayAwake
+        {
+            get => _dataSetting.GetValue(nameof(KeepDisplayAwake), true);
+            set => _dataSetting.SetValue(nameof(KeepDisplayAwake), value);
+        }
+
         public bool IsFirstRun
         {
             get => _dataSetting.GetValue(nameof(IsFirstRun), true);

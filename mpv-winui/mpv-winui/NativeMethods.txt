@@ -30,3 +30,5 @@ SetWindowSubclass
 WINDOWPOS
 CommandLineToArgvW
 LocalFree
+SetThreadExecutionState
+EXECUTION_STATE
