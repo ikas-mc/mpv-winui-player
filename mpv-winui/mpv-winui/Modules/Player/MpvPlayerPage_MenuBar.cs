@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.About;
+using mpv_winui.Modules.AppConfData;
 using mpv_winui.Modules.FileSystem;
 using mpv_winui.Modules.Menu.MenuBar;
 using mpv_winui.Modules.Menu.MenuEditor;
@@ -230,6 +231,9 @@ namespace mpv_winui.Modules.Player
                         case "about":
                             await ShowAboutDialogAsync();
                             break;
+                        case "import-conf-data":
+                            await ShowAppConfDataImportDialogAsync();
+                            break;
                         case "quit":
                             AppQuit();
                             break;
@@ -310,7 +314,16 @@ namespace mpv_winui.Modules.Player
                 CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = XamlRoot
             };
+
+            dialog.Resources["ContentDialogMaxWidth"] = 460;
+            dialog.Resources["ContentDialogPadding"] = new Thickness(12);
+
             await dialog.ShowAsync();
+        }
+
+        private Task ShowAppConfDataImportDialogAsync()
+        {
+            return AppConfDataImportDialog.ShowAsync(XamlRoot);
         }
     }
 }

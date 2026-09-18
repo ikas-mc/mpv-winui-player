@@ -120,5 +120,11 @@ namespace mpv_winui.Modules.Settings
             get => _dataSetting.GetValue(nameof(EnableSaveBackup), true);
             set => _dataSetting.SetValue(nameof(EnableSaveBackup), value);
         }
+
+        public bool IsFirstRun
+        {
+            get => _dataSetting.GetValue(nameof(IsFirstRun), true);
+            set => _dataSetting.SetValue(nameof(IsFirstRun), value);
+        }
     }
 }

@@ -1,3 +1,5 @@
+using Windows.Storage;
+
 namespace mpv_winui.Modules.FileSystem
 {
     public class AppData
@@ -11,6 +13,11 @@ namespace mpv_winui.Modules.FileSystem
         public string ResolveLocalData(string path)
         {
             return Path.Combine(Root, path);
+        }
+
+        public async Task<StorageFolder> OpenLocalDataFolderAsync()
+        {
+            return await StorageFolder.GetFolderFromPathAsync(Root);
         }
     }
 }
