@@ -307,6 +307,11 @@
                     Click="MenuFlyoutItem_Click"
                     Tag="link-mpvw-wiki"
                     Text="Mpvw Wiki" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="import-conf-data"
+                    Text="Import Data" />
             </MenuBarItem>
         </MenuBar>
 

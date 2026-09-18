@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
         <RootNamespace>mpv_conf_test</RootNamespace>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -27,6 +27,8 @@
 
     <ItemGroup>
         <Compile Include="..\mpv-winui\Modules\FileSystem\FileService.cs" Link="FileSystem\FileService.cs" />
+        <Compile Include="..\mpv-winui\Modules\AppConfData\AppConfDataNode.cs" Link="AppConfData\AppConfDataNode.cs" />
+        <Compile Include="..\mpv-winui\Modules\AppConfData\AppConfDataImportService.cs" Link="AppConfData\AppConfDataImportService.cs" />
         <Compile Include="..\mpv-winui\Modules\MpvConf\Conf\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />
         <Compile Include="..\mpv-winui\Modules\MpvConf\Option\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />
         <Compile Include="..\mpv-winui\Modules\MpvConf\Schema\**\*.cs" Link="MpvConf\Conf\%(RecursiveDir)%(Filename)%(Extension)" />

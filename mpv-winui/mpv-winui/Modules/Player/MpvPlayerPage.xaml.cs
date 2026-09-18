@@ -3,9 +3,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using mpv_winrt;
+using mpv_winui.Modules.AppConfData;
 using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.FileSystem;
+using mpv_winui.Modules.Welcome;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -78,6 +80,8 @@ namespace mpv_winui.Modules.Player
                 SetupCustomMenuBarItems();
 
                 OpenPendingPath().FireAndForget(OnException);
+
+                ShowFirstRunPromptIfNeeded().FireAndForget(OnException);
             }
             else
             {
@@ -134,6 +138,18 @@ namespace mpv_winui.Modules.Player
         {
             //TODO add notify
             _logger.Error(ex);
+        }
+
+        private async Task ShowFirstRunPromptIfNeeded()
+        {
+            if (!AppContext.AppSetting.IsFirstRun)
+            {
+                return;
+            }
+
+            AppContext.AppSetting.IsFirstRun = false;
+
+            await WelcomeWizardDialog.ShowAsync(XamlRoot);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
