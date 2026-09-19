@@ -121,6 +121,16 @@ namespace mpv_winui.Modules.Settings
             set => _dataSetting.SetValue(nameof(EnableSaveBackup), value);
         }
 
+        public const string PlayerControlToggleButton_LeftMiddle = "L-M";
+        public const string PlayerControlToggleButton_Middle = "M";
+        public const string PlayerControlToggleButton_LeftDouble = "LD";
+        public const string PlayerControlToggleButton_LeftDoubleMiddle = "LD-M";
+        public string PlayerControlToggleButton
+        {
+            get => _dataSetting.GetValue(nameof(PlayerControlToggleButton), PlayerControlToggleButton_LeftMiddle);
+            set => _dataSetting.SetValue(nameof(PlayerControlToggleButton), value);
+        }
+
         public bool KeepDisplayAwake
         {
             get => _dataSetting.GetValue(nameof(KeepDisplayAwake), true);

@@ -166,6 +166,20 @@ public sealed partial class SettingsPage : Page
 
             new Option
             {
+                Key = nameof(AppContext.AppSetting.PlayerControlToggleButton),
+                Label = "Player Control Toggle Button",
+                Description = "Mouse buttons to toggle player control. L: left, M: middle, D: double-click.",
+                Icon = "\uE961",
+                GroupKey = "Input",
+                GroupLabel = "Input",
+                Type = OptionType.StringList,
+                Options = [AppSettings.PlayerControlToggleButton_LeftMiddle, AppSettings.PlayerControlToggleButton_Middle, AppSettings.PlayerControlToggleButton_LeftDouble, AppSettings.PlayerControlToggleButton_LeftDoubleMiddle],
+                Getter = () => AppContext.AppSetting.PlayerControlToggleButton,
+                Setter = v => AppContext.AppSetting.PlayerControlToggleButton = (string)v
+            },
+
+            new Option
+            {
                 Key =  nameof(AppContext.AppSetting.KeepDisplayAwake),
                 Label = "Keep Display Awake",
                 Description = "Prevent the display from dimming or sleeping while playing. Restart required.",
