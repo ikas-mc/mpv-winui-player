@@ -13,36 +13,89 @@ namespace mpv_winui.Modules.Player
 
             PlayerControl.MediaPlayer = _mediaPlayer;
             PlayerView.PointerPressed += PlayerView_PointerPressed2;
+            PlayerView.DoubleTapped += PlayerView_DoubleTapped;
         }
 
         private void CleanupPlayControl()
         {
             PlayerView.PointerPressed -= PlayerView_PointerPressed2;
+            PlayerView.DoubleTapped -= PlayerView_DoubleTapped;
             PlayerControl.MediaPlayer = null;
         }
 
         private void PlayerView_PointerPressed2(object sender, PointerRoutedEventArgs e)
         {
             var kind = e.GetCurrentPoint(PlayerView).Properties.PointerUpdateKind;
-            HandlePlayControl(kind);
-        }
-
-        private void HandlePlayControl(PointerUpdateKind kind)
-        {
-            if (_discMenuActive && kind != PointerUpdateKind.MiddleButtonPressed)
-            {
-                return;
-            }
 
             if (kind != PointerUpdateKind.LeftButtonPressed && kind != PointerUpdateKind.MiddleButtonPressed)
             {
                 return;
             }
 
-            TogglePlayerControl();
+            var mode = AppContext.AppSetting.PlayerControlToggleButton;
+
+            switch (mode)
+            {
+                case AppSettings.PlayerControlToggleButton_Middle:
+                {
+                    if (kind == PointerUpdateKind.MiddleButtonPressed)
+                    {
+                        TogglePlayerControl();
+                    }
+
+                    break;
+                }
+
+                case AppSettings.PlayerControlToggleButton_LeftDouble:
+                {
+                    break;
+                }
+
+                case AppSettings.PlayerControlToggleButton_LeftDoubleMiddle:
+                {
+                    if (kind == PointerUpdateKind.MiddleButtonPressed)
+                    {
+                        TogglePlayerControl();
+                    }
+
+                    break;
+                }
+
+                case AppSettings.PlayerControlToggleButton_LeftMiddle:
+                default:
+                {
+                    if (_discMenuActive && kind == PointerUpdateKind.LeftButtonPressed)
+                    {
+                        break;
+                    }
+
+                    TogglePlayerControl();
+                    break;
+                }
+            }
         }
 
-        public void TogglePlayerControl()
+        private void PlayerView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var mode = AppContext.AppSetting.PlayerControlToggleButton;
+
+            switch (mode)
+            {
+                case AppSettings.PlayerControlToggleButton_LeftDouble:
+                case AppSettings.PlayerControlToggleButton_LeftDoubleMiddle:
+                {
+                    TogglePlayerControl();
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+        }
+
+        private void TogglePlayerControl()
         {
             PlayerControl.ToggleControlPanel();
         }
