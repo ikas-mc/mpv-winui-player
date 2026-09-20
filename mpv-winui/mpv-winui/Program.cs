@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Settings;
 using Microsoft.Windows.AppLifecycle;
 using mpv_winui.Modules.Common.Threading;
+using mpv_winui.Modules.Settings;
 using System;
 using System.Threading;
 using WinRT;
@@ -16,14 +17,17 @@ namespace mpv_winui
         {
             ComWrappersSupport.InitializeComWrappers();
 
-            //TODO config
-            var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
             var instance = AppInstance.FindOrRegisterForKey("main");
             if (!instance.IsCurrent)
             {
-                instance.RedirectActivationToAsync(activatedArgs).GetAwaiter().GetResult();
-                return;
+                if (IsSingleInstanceEnabled())
+                {
+                    var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
+                    instance.RedirectActivationToAsync(activatedArgs).GetAwaiter().GetResult();
+                    return;
+                }
             }
+
             instance.Activated += OnActivated;
 
             XamlOptionalChanges.EnableChange(XamlChangeId.DefaultStyleOptimizations);
@@ -43,6 +47,18 @@ namespace mpv_winui
             if (Application.Current is App app)
             {
                 app.OnActivated(args);
+            }
+        }
+
+        private static bool IsSingleInstanceEnabled()
+        {
+            try
+            {
+                return AppSettings.CreateDataSetting().GetValue(nameof(AppSettings.SingleAppInstance), true);
+            }
+            catch (Exception)
+            {
+                return true;
             }
         }
     }

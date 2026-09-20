@@ -32,7 +32,6 @@ namespace mpv_winui.Modules.Common.View
             window.SetWindowMinSize(minWidth, minHeight);
             UpdatePositionAndSize(window, parent, parentSizePercent, minWidth, minHeight);
 
-            window.ShowWindow();
             return window;
         }
 

@@ -9,9 +9,9 @@ namespace mpv_winui.Modules.Common.View
     {
         extension(Window window)
         {
-            public void ShowWindow()
+            public void ShowAndForegroundWindow()
             {
-                Win32WindowHelper.SetForegroundWindow(window);
+                Win32WindowHelper.ShowAndForegroundWindow(window);
             }
 
             public void SetWindowMinSize(double widthPx, double heightPx)

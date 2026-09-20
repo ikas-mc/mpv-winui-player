@@ -32,3 +32,5 @@ CommandLineToArgvW
 LocalFree
 SetThreadExecutionState
 EXECUTION_STATE
+IsZoomed
+IsIconic

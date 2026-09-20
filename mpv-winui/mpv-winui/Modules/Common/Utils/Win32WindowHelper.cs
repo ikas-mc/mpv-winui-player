@@ -23,9 +23,22 @@ namespace mpv_winui.Modules.Common.Utils
             PInvoke.SetForegroundWindow(new HWND(GetHwnd(window)));
         }
 
-        private static void ShowWindow(Window window, int value)
+        public static void ShowAndForegroundWindow(Window window)
         {
-            PInvoke.ShowWindow(new HWND(GetHwnd(window)), (SHOW_WINDOW_CMD)value);
+            var hwnd = new HWND(GetHwnd(window));
+
+            var nCmdShow = SHOW_WINDOW_CMD.SW_SHOW;
+            if (PInvoke.IsZoomed(hwnd))
+            {
+                nCmdShow = SHOW_WINDOW_CMD.SW_SHOWMAXIMIZED;
+            }
+            else if (PInvoke.IsIconic(hwnd))
+            {
+                nCmdShow = SHOW_WINDOW_CMD.SW_RESTORE;
+            }
+            PInvoke.ShowWindow(hwnd, nCmdShow);
+
+            PInvoke.SetForegroundWindow(hwnd);
         }
 
         public static HMONITOR GetMonitorFromRect(RECT rect)
