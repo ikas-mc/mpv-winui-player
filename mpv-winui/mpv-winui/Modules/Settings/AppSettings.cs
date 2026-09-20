@@ -6,9 +6,14 @@ namespace mpv_winui.Modules.Settings
     {
         private readonly IDataSetting _dataSetting;
 
+        public static IDataSetting CreateDataSetting()
+        {
+            return PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new UnpackageAppDataSetting("app");
+        }
+
         public AppSettings()
         {
-            _dataSetting = PackageHelper.IsPackaged ? new AppDataSetting("app-settings") : new UnpackageAppDataSetting("app");
+            _dataSetting = CreateDataSetting();
         }
 
         public const string ThemeType_Auto = "Auto";
@@ -141,6 +146,12 @@ namespace mpv_winui.Modules.Settings
         {
             get => _dataSetting.GetValue(nameof(IsFirstRun), true);
             set => _dataSetting.SetValue(nameof(IsFirstRun), value);
+        }
+
+        public bool SingleAppInstance
+        {
+            get => _dataSetting.GetValue(nameof(SingleAppInstance), true);
+            set => _dataSetting.SetValue(nameof(SingleAppInstance), value);
         }
     }
 }

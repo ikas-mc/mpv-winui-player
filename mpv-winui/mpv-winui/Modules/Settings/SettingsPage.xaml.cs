@@ -193,6 +193,19 @@ public sealed partial class SettingsPage : Page
 
             new Option
             {
+                Key =  nameof(AppContext.AppSetting.SingleAppInstance),
+                Label = "Single App Instance",
+                Description = "Enable single app instance. Restart required.",
+                Icon = "\uECAA",
+                GroupKey="App",
+                GroupLabel="App",
+                Type = OptionType.Boolean,
+                Getter = () => AppContext.AppSetting.SingleAppInstance,
+                Setter = v => AppContext.AppSetting.SingleAppInstance = (bool)v!
+            },
+
+            new Option
+            {
                 Key =  nameof(AppContext.AppSetting.EnableDebugLog),
                 Label = "Debug Log",
                 Description = "Enable app and mpv debug log. Restart required.",

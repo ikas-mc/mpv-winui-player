@@ -40,7 +40,7 @@ namespace mpv_winui
                 mainWindow?.Refresh(args);
             }
 
-            Window?.ShowWindow();
+            Window?.ShowAndForegroundWindow();
         }
     }
 }
