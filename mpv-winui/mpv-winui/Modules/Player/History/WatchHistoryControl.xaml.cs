@@ -1,16 +1,19 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.FileSystem;
 using NLog;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace mpv_winui.Modules.Player.History
 {
     public sealed partial class WatchHistoryControl : UserControl
     {
-        private string? _path;
+        private string? _filePath;
         private bool _saveWatchHistoryEnabled;
         private Action<Exception>? _onException;
         private Logger? _logger;
@@ -27,7 +30,7 @@ namespace mpv_winui.Modules.Player.History
 
         public void Initialize(string? path, bool saveWatchHistoryEnabled, Action<Exception>? onException, Logger logger)
         {
-            _path = path;
+            _filePath = path;
             _saveWatchHistoryEnabled = saveWatchHistoryEnabled;
             _onException = onException;
             _logger = logger;
@@ -40,7 +43,7 @@ namespace mpv_winui.Modules.Player.History
 
         public async Task LoadAsync()
         {
-            var items = await Task.Run(() => WatchHistoryParser.Parse(_path));
+            var items = await Task.Run(() => WatchHistoryParser.Parse(_filePath));
 
             DispatcherQueue.RunAsync(() =>
             {
@@ -66,7 +69,7 @@ namespace mpv_winui.Modules.Player.History
                 HistoryListView.Visibility = Visibility.Collapsed;
                 EmptyTextBlock.Visibility = Visibility.Visible;
 
-                if (string.IsNullOrEmpty(_path) || !System.IO.File.Exists(_path))
+                if (string.IsNullOrEmpty(_filePath) || !System.IO.File.Exists(_filePath))
                 {
                     if (_saveWatchHistoryEnabled)
                     {
@@ -102,6 +105,34 @@ namespace mpv_winui.Modules.Player.History
             LoadAsync().FireAndForget(_onException);
         }
 
+        private async void OpenFileLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_filePath))
+            {
+                return;
+            }
+
+            try
+            {
+                if (File.Exists(_filePath))
+                {
+                    await FileLauncher.ShellLaunchFileAsync(Path.GetFullPath(_filePath));
+                    return;
+                }
+
+                var parent = Path.GetDirectoryName(_filePath);
+                if (Directory.Exists(parent))
+                {
+                    var folder = await StorageFolder.GetFolderFromPathAsync(parent);
+                    await FileLauncher.LaunchFolderAsync(folder);
+                }
+            }
+            catch (Exception ex)
+            {
+                _onException?.Invoke(ex);
+            }
+        }
+
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             ClearTeachingTip.IsOpen = true;
@@ -124,11 +155,20 @@ namespace mpv_winui.Modules.Player.History
 
         private async ValueTask DeleteHistoryAsync()
         {
-            if (!string.IsNullOrEmpty(_path) && System.IO.File.Exists(_path))
+            if (string.IsNullOrEmpty(_filePath))
             {
-                await Task.Run(() => System.IO.File.Delete(_path));
+                return;
             }
-        }
 
+            await Task.Run(() =>
+            {
+                if (!File.Exists(_filePath))
+                {
+                    return;
+                }
+
+                File.Delete(_filePath);
+            });
+        }
     }
 }

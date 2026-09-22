@@ -18,6 +18,15 @@
             DefaultLabelPosition="Right"
             IsDynamicOverflowEnabled="False">
             <AppBarButton
+                x:Name="ClearButton"
+                Click="ClearButton_Click"
+                Icon="Delete"
+                Label="Clear" />
+            <AppBarButton
+                Click="OpenFolderButton_Click"
+                Icon="OpenLocal"
+                Label="Open Folder" />
+            <AppBarButton
                 Click="RefreshButton_Click"
                 Icon="Refresh"
                 Label="Refresh" />
@@ -89,5 +98,15 @@
             TextAlignment="Center"
             TextWrapping="Wrap"
             Visibility="Collapsed" />
+
+        <TeachingTip
+            x:Name="ClearTeachingTip"
+            Title="Clear watch later"
+            ActionButtonClick="ClearTeachingTip_ActionButtonClick"
+            ActionButtonContent="Yes"
+            CloseButtonContent="No"
+            IsLightDismissEnabled="True"
+            Subtitle="Are you sure you want to clear the watch later files?"
+            Target="{x:Bind ClearButton}" />
     </Grid>
 </UserControl>

@@ -1,16 +1,19 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.Common.Utils;
+using mpv_winui.Modules.FileSystem;
 using NLog;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace mpv_winui.Modules.Player.History
 {
     public sealed partial class WatchLaterControl : UserControl
     {
-        private string? _directory;
+        private string? _directoryPath;
         private Action<Exception>? _onException;
         private Logger? _logger;
 
@@ -26,7 +29,7 @@ namespace mpv_winui.Modules.Player.History
 
         public void Initialize(string? directory, Action<Exception>? onException, Logger logger)
         {
-            _directory = directory;
+            _directoryPath = directory;
             _onException = onException;
             _logger = logger;
         }
@@ -38,7 +41,7 @@ namespace mpv_winui.Modules.Player.History
 
         public async Task LoadAsync()
         {
-            var items = await Task.Run(() => WatchLaterParser.Parse(_directory));
+            var items = await Task.Run(() => WatchLaterParser.Parse(_directoryPath));
 
             DispatcherQueue.RunAsync(() =>
             {
@@ -64,7 +67,7 @@ namespace mpv_winui.Modules.Player.History
                 WatchLaterListView.Visibility = Visibility.Collapsed;
                 EmptyTextBlock.Visibility = Visibility.Visible;
 
-                if (string.IsNullOrEmpty(_directory) || !System.IO.Directory.Exists(_directory))
+                if (string.IsNullOrEmpty(_directoryPath) || !Directory.Exists(_directoryPath))
                 {
                     EmptyTextBlock.Text = "No watch later files found.";
                 }
@@ -91,6 +94,77 @@ namespace mpv_winui.Modules.Player.History
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             LoadAsync().FireAndForget(_onException);
+        }
+
+        private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_directoryPath))
+            {
+                return;
+            }
+
+            try
+            {
+                var path = Path.GetFullPath(_directoryPath);
+                if (!Directory.Exists(path))
+                {
+                    return;
+                }
+
+                var folder = await StorageFolder.GetFolderFromPathAsync(path);
+                await FileLauncher.LaunchFolderAsync(folder);
+            }
+            catch (Exception ex)
+            {
+                _onException?.Invoke(ex);
+            }
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearTeachingTip.IsOpen = true;
+        }
+
+        private async void ClearTeachingTip_ActionButtonClick(TeachingTip sender, object args)
+        {
+            sender.IsOpen = false;
+
+            try
+            {
+                await DeleteWatchLaterAsync();
+                await LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                _onException?.Invoke(ex);
+            }
+        }
+
+        private async ValueTask DeleteWatchLaterAsync()
+        {
+            if (string.IsNullOrEmpty(_directoryPath))
+            {
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                if (!Directory.Exists(_directoryPath))
+                {
+                    return;
+                }
+
+                foreach (var file in Directory.EnumerateFiles(_directoryPath))
+                {
+                    var name = Path.GetFileName(file);
+                    if (string.IsNullOrEmpty(name) || name.Length != 32 || name.Contains('.'))
+                    {
+                        continue;
+                    }
+
+                    File.Delete(file);
+                }
+            });
         }
     }
 }
