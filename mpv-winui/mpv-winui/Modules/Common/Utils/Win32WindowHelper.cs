@@ -41,6 +41,45 @@ namespace mpv_winui.Modules.Common.Utils
             PInvoke.SetForegroundWindow(hwnd);
         }
 
+        public static unsafe (int x, int y, int w, int h, bool maximized) GetRestoredPlacement(Window window)
+        {
+            var hwnd = new HWND(GetHwnd(window));
+            WINDOWPLACEMENT placement = new()
+            {
+                length = (uint)sizeof(WINDOWPLACEMENT)
+            };
+
+            if (!PInvoke.GetWindowPlacement(hwnd, ref placement))
+            {
+                return (0, 0, 0, 0, false);
+            }
+
+            var maximized = placement.showCmd == SHOW_WINDOW_CMD.SW_SHOWMAXIMIZED;
+            if (placement.showCmd == SHOW_WINDOW_CMD.SW_SHOWMINIMIZED && (placement.flags & WINDOWPLACEMENT_FLAGS.WPF_RESTORETOMAXIMIZED) != 0)
+            {
+                maximized = true;
+            }
+
+            var r = placement.rcNormalPosition;
+            return (r.left, r.top, r.right - r.left, r.bottom - r.top, maximized);
+        }
+
+        public static unsafe void SetRestoredPlacement(Window window, int x, int y, int w, int h, bool maximized)
+        {
+            var hwnd = new HWND(GetHwnd(window));
+            WINDOWPLACEMENT placement = new()
+            {
+                length = (uint)sizeof(WINDOWPLACEMENT),
+                flags = 0,
+                showCmd = maximized ? SHOW_WINDOW_CMD.SW_SHOWMAXIMIZED : SHOW_WINDOW_CMD.SW_SHOWNORMAL,
+                ptMinPosition = new System.Drawing.Point(-1, -1),
+                ptMaxPosition = new System.Drawing.Point(-1, -1),
+                rcNormalPosition = new RECT { left = x, top = y, right = x + w, bottom = y + h }
+            };
+
+            PInvoke.SetWindowPlacement(hwnd, placement);
+        }
+
         public static HMONITOR GetMonitorFromRect(RECT rect)
         {
             return PInvoke.MonitorFromRect(rect, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);

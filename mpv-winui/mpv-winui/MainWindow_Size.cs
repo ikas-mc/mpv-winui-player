@@ -1,9 +1,9 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using mpv_winui.Modules.Common.Utils;
 using mpv_winui.Modules.Common.View;
 using System;
-using Windows.Graphics;
-using WinRT;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace mpv_winui
 {
@@ -12,110 +12,82 @@ namespace mpv_winui
         public const int MIN_LOGICAL_WIDTH = 250;
         public const int MIN_LOGICAL_HEIGHT = 250;
 
-        private int _x;
-        private int _y;
-        private int _w;
-        private int _h;
-
         private void SetupWindowSize()
+        {
+            RestoreWindowPositionAndSize();
+
+            Body.Loaded += Body_Loaded;
+            Body.Unloaded += Body_Unloaded;
+
+            Closed += Size_Window_Closed;
+        }
+
+        private void Size_Window_Closed(object sender, WindowEventArgs args)
+        {
+            Closed -= Size_Window_Closed;
+            SaveWindowPositionAndSize();
+        }
+
+        private void RestoreWindowPositionAndSize()
         {
             var lastRect = string.Empty;
             try
             {
                 lastRect = AppContext.AppSetting.WindowPositionAndSize;
+                if (string.IsNullOrEmpty(lastRect))
+                {
+                    return;
+                }
+
                 if (AppContext.AppLogger.IsDebugEnabled)
                 {
                     AppContext.AppLogger.Debug("restore window position and size: lastRect={}", lastRect);
                 }
 
-                if (!string.IsNullOrEmpty(lastRect))
+                var v = Array.ConvertAll(lastRect.Split(','), int.Parse);
+                if (v.Length >= 4 && v[2] > 0 && v[3] > 0)
                 {
-                    int[] v = Array.ConvertAll(lastRect.Split(','), int.Parse);
-                    if (v.Length == 4)
+                    var x = v[0];
+                    var y = v[1];
+                    var w = Math.Max(100, v[2]);
+                    var h = Math.Max(100, v[3]);
+                    var maximized = v.Length >= 5 && v[4] == (int)SHOW_WINDOW_CMD.SW_SHOWMAXIMIZED;
+
+                    if (AppContext.AppLogger.IsDebugEnabled)
                     {
-                        _x = v[0];
-                        _y = v[1];
-                        _w = v[2];
-                        _h = v[3];
-
-                        if (AppContext.AppLogger.IsDebugEnabled)
-                        {
-                            AppContext.AppLogger.Debug("restore window position and size: x={},y={},w={},h={}.", _x, _y, _w, _h);
-                        }
-
-                        if (_x > 0 && _y > 0 && _w > 0 && _h > 0)
-                        {
-                            AppWindow.MoveAndResize(new RectInt32(_x, _y, Math.Max(100, _w), Math.Max(100, _h)));
-                        }
-                        else if (_w > 0 && _h > 0)
-                        {
-                            AppWindow.Resize(new SizeInt32(Math.Max(100, _w), Math.Max(100, _h)));
-                        }
+                        AppContext.AppLogger.Debug("restore window position and size: x={},y={},w={},h={},maximized={}.", x, y, w, h, maximized);
                     }
+
+                    Win32WindowHelper.SetRestoredPlacement(this, x, y, w, h, maximized);
                 }
             }
             catch (Exception ex)
             {
                 AppContext.AppLogger.Error(ex, "restore window position and size failed, saved={}", lastRect);
             }
-
-            this.Body.Loaded += Body_Loaded;
-            this.Body.Unloaded += Body_Unloaded;
-
-            AppWindow.Changed += Size_AppWindow_Changed;
-            Closed += Size_Window_Closed;
-        }
-
-        private void Size_AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
-        {
-            if (!args.DidSizeChange && !args.DidPositionChange)
-            {
-                return;
-            }
-
-            if (sender.Presenter.Kind is AppWindowPresenterKind.Overlapped)
-            {
-                var overlappedPresenter = AppWindow.Presenter.As<OverlappedPresenter>();
-                if (overlappedPresenter != null)
-                {
-                    if (overlappedPresenter.State is OverlappedPresenterState.Restored)
-                    {
-                        if (sender.Position.X > 0)
-                        {
-                            _x = sender.Position.X;
-                        }
-                        if (sender.Position.Y > 0)
-                        {
-                            _y = sender.Position.Y;
-                        }
-                        _w = sender.Size.Width;
-                        _h = sender.Size.Height;
-                    }
-                }
-            }
-
-            if (AppContext.AppLogger.IsTraceEnabled)
-            {
-                AppContext.AppLogger.Debug("window last rect: x={},y={},w={},h={}.", _x, _y, _w, _h);
-            }
-        }
-
-        private void Size_Window_Closed(object sender, WindowEventArgs args)
-        {
-            Closed -= Size_Window_Closed;
-            AppWindow.Changed -= Size_AppWindow_Changed;
-
-            SaveWindowPositionAndSize();
         }
 
         public void SaveWindowPositionAndSize()
         {
             try
             {
-                AppContext.AppSetting.WindowPositionAndSize = $"{_x},{_y},{_w},{_h}";
+                if (AppWindow?.Presenter.Kind is not AppWindowPresenterKind.Overlapped)
+                {
+                    return;
+                }
+
+                var (x, y, w, h, maximized) = Win32WindowHelper.GetRestoredPlacement(this);
+                if (w <= 0 || h <= 0)
+                {
+                    return;
+                }
+
+                var showCmd = maximized ? (int)SHOW_WINDOW_CMD.SW_SHOWMAXIMIZED : (int)SHOW_WINDOW_CMD.SW_SHOWNORMAL;
+                AppContext.AppSetting.WindowPositionAndSize = $"{x},{y},{w},{h},{showCmd}";
+
                 if (AppContext.AppLogger.IsDebugEnabled)
                 {
-                    AppContext.AppLogger.Debug("save window position and size: x={},y={},w={},h={}.", _x, _y, _w, _h);
+                    AppContext.AppLogger.Debug("save window position and size: x={},y={},w={},h={},maximized={}.", x, y, w, h, maximized);
                 }
             }
             catch (Exception ex)
