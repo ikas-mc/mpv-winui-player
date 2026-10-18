@@ -105,17 +105,18 @@ public sealed partial class AppConfDataImportDialogControl : UserControl
             return;
         }
 
-        var selectedPaths = CollectSelectedPaths();
-        if (selectedPaths.Count == 0)
-        {
-            SetStatus("No files selected.");
-            return;
-        }
-
         ApplyButton.IsEnabled = false;
         SetBusy(true);
         try
         {
+            var selectedNodes = ConfDataTree.SelectedItems.OfType<AppConfDataNode>().ToList();
+            var selectedPaths = await AppConfDataImportService.Instance.CollectSelectedPathsAsync(selectedNodes);
+            if (selectedPaths.Count == 0)
+            {
+                SetStatus("No files selected.");
+                return;
+            }
+
             var overwrite = ForceOverwriteCheckBox.IsChecked == true;
             var count = await AppConfDataImportService.Instance.ImportAsync(_archivePath, selectedPaths, overwrite);
             await Task.Delay(1000);
@@ -142,41 +143,6 @@ public sealed partial class AppConfDataImportDialogControl : UserControl
     private void SetStatus(string message)
     {
         StatusText.Text = message;
-    }
-
-    private List<string> CollectSelectedPaths()
-    {
-        var paths = new List<string>();
-        foreach (var item in ConfDataTree.SelectedItems)
-        {
-            if (item is AppConfDataNode node)
-            {
-                if (node.IsDirectory)
-                {
-                    CollectFilePaths(node, paths);
-                }
-                else
-                {
-                    paths.Add(node.RelativePath);
-                }
-            }
-        }
-
-        return paths.Distinct().ToList();
-    }
-
-    private void CollectFilePaths(AppConfDataNode node, List<string> paths)
-    {
-        if (!node.IsDirectory)
-        {
-            paths.Add(node.RelativePath);
-            return;
-        }
-
-        foreach (var child in node.Children)
-        {
-            CollectFilePaths(child, paths);
-        }
     }
 
     private void ToggleSelectButton_Click(object sender, RoutedEventArgs e)
@@ -214,10 +180,16 @@ public sealed partial class AppConfDataImportDialogControl : UserControl
 
     private void CollectAllNodes(IEnumerable<TreeViewNode> nodes, List<TreeViewNode> all)
     {
-        foreach (var node in nodes)
+        var pending = new Stack<TreeViewNode>(nodes);
+        while (pending.Count > 0)
         {
+            var node = pending.Pop();
             all.Add(node);
-            CollectAllNodes(node.Children, all);
+
+            foreach (var child in node.Children)
+            {
+                pending.Push(child);
+            }
         }
     }
 

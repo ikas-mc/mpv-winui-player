@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -37,44 +38,76 @@ namespace mpv_winui.Modules.AppConfData
             {
                 var targetRoot = await AppData.Current.OpenLocalDataFolderAsync();
 
-                var entries = new List<(string Path, bool IsDirectory)>();
-                using (var archive = ZipFile.OpenRead(archivePath))
+                var entries = ReadArchiveEntries(archivePath);
+                return BuildTree(entries, targetRoot.Path);
+            }).ConfigureAwait(false);
+        }
+
+        private static List<(string Path, bool IsDirectory)> ReadArchiveEntries(string archivePath)
+        {
+            var entries = new List<(string Path, bool IsDirectory)>();
+
+            using (var archive = ZipFile.OpenRead(archivePath))
+            {
+                foreach (var entry in archive.Entries)
                 {
-                    foreach (var entry in archive.Entries)
+                    var fullName = entry.FullName;
+                    if (string.IsNullOrEmpty(fullName) || fullName.Contains(".."))
                     {
-                        var fullName = entry.FullName;
-                        if (string.IsNullOrEmpty(fullName))
-                        {
-                            continue;
-                        }
-
-                        if (fullName.Contains(".."))
-                        {
-                            continue;
-                        }
-
-                        if (Path.EndsInDirectorySeparator(fullName))
-                        {
-                            entries.Add((Path.TrimEndingDirectorySeparator(fullName).Replace("/", "\\"), true));
-                            continue;
-                        }
-
-                        entries.Add((fullName.Replace("/", "\\"), false));
+                        continue;
                     }
+
+                    var isDirectory = Path.EndsInDirectorySeparator(fullName);
+                    var path = (isDirectory ? Path.TrimEndingDirectorySeparator(fullName) : fullName).Replace('/', '\\');
+                    if (path.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    entries.Add((path, isDirectory));
+                }
+            }
+
+            return entries;
+        }
+
+        private static List<AppConfDataNode> BuildTree(List<(string Path, bool IsDirectory)> entries, string targetRootPath)
+        {
+            var nodes = new Dictionary<string, AppConfDataNode>(StringComparer.Ordinal);
+            var roots = new List<AppConfDataNode>();
+
+            AppConfDataNode GetOrAddNode(string path, bool isDirectory)
+            {
+                if (nodes.TryGetValue(path, out var existing))
+                {
+                    return existing;
                 }
 
-                var nodes = new Dictionary<string, AppConfDataNode>(StringComparer.Ordinal);
-                foreach (var (path, isDirectory) in entries)
+                var missing = new List<(string Path, bool IsDirectory)>();
+                var current = path;
+                var currentIsDirectory = isDirectory;
+                while (!nodes.ContainsKey(current))
                 {
-                    var exists = isDirectory ? Directory.Exists(Path.Combine(targetRoot.Path, path)) : File.Exists(Path.Combine(targetRoot.Path, path));
-                    nodes[path] = new AppConfDataNode(Path.GetFileName(path), path, isDirectory, exists);
+                    missing.Add((current, currentIsDirectory));
+                    currentIsDirectory = true;
+
+                    var parentPath = Path.GetDirectoryName(current);
+                    if (string.IsNullOrEmpty(parentPath))
+                    {
+                        break;
+                    }
+
+                    current = parentPath;
                 }
 
-                var roots = new List<AppConfDataNode>();
-                foreach (var node in nodes.Values)
+                for (var i = missing.Count - 1; i >= 0; i--)
                 {
-                    var parentPath = Path.GetDirectoryName(node.RelativePath) ?? string.Empty;
-                    if (parentPath.Length > 0 && nodes.TryGetValue(parentPath, out var parent))
+                    var (nodePath, nodeIsDirectory) = missing[i];
+                    var node = new AppConfDataNode(Path.GetFileName(nodePath), nodePath, nodeIsDirectory, TargetExists(targetRootPath, nodePath, nodeIsDirectory));
+                    nodes.Add(nodePath, node);
+
+                    var parentPath = Path.GetDirectoryName(nodePath);
+                    if (!string.IsNullOrEmpty(parentPath) && nodes.TryGetValue(parentPath, out var parent))
                     {
                         parent.Children.Add(node);
                     }
@@ -84,8 +117,51 @@ namespace mpv_winui.Modules.AppConfData
                     }
                 }
 
-                return roots;
-            }).ConfigureAwait(false);
+                return nodes[path];
+            }
+
+            foreach (var (path, isDirectory) in entries)
+            {
+                GetOrAddNode(path, isDirectory);
+            }
+
+            return roots;
+        }
+
+        private static bool TargetExists(string targetRootPath, string relativePath, bool isDirectory)
+        {
+            var fullPath = Path.Combine(targetRootPath, relativePath);
+            return isDirectory ? Directory.Exists(fullPath) : File.Exists(fullPath);
+        }
+
+        public async Task<List<string>> CollectSelectedPathsAsync(IReadOnlyList<AppConfDataNode> selectedNodes)
+        {
+            return await Task.Run(() =>
+            {
+                var paths = new List<string>();
+                var pending = new Stack<AppConfDataNode>();
+                for (var i = selectedNodes.Count - 1; i >= 0; i--)
+                {
+                    pending.Push(selectedNodes[i]);
+                }
+
+                while (pending.Count > 0)
+                {
+                    var node = pending.Pop();
+                    if (!node.IsDirectory)
+                    {
+                        paths.Add(node.RelativePath);
+                        continue;
+                    }
+
+                    for (var i = node.Children.Count - 1; i >= 0; i--)
+                    {
+                        pending.Push(node.Children[i]);
+                    }
+                }
+
+                return paths.Distinct().ToList();
+            });
         }
 
         public async Task<int> ImportAsync(string archivePath, IReadOnlyList<string> selectedPaths, bool overwrite)
