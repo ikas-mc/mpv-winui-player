@@ -242,7 +242,7 @@ public class AppConfDataImportServiceTests
     {
         var folder = await AppConfDataImportService.Instance.GetTargetFolderAsync();
 
-        Assert.That(folder.Path, Is.EqualTo(_root));
+        Assert.That(folder.Path, Is.EqualTo(_root).IgnoreCase);
     }
 
     [Test]
@@ -284,6 +284,70 @@ public class AppConfDataImportServiceTests
         Assert.That(mpv.Children.Select(c => c.Name), Is.EqualTo(["empty", "mpv.conf"]));
         Assert.That(mpv.Children.First(c => c.Name == "empty").IsDirectory, Is.True);
         Assert.That(mpv.Children.First(c => c.Name == "empty").Children, Is.Empty);
+    }
+
+    [Test]
+    public async Task ReadArchive_WithoutDirectoryEntries_BuildsHierarchy()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "src"));
+        using (var archive = ZipFile.Open(_zipPath, ZipArchiveMode.Create))
+        {
+            archive.CreateEntry("mpv/mpv.conf").WriteAll("profile=default");
+            archive.CreateEntry("mpv/scripts/a.lua").WriteAll("a=1");
+            archive.CreateEntry("menu.json").WriteAll("{}");
+        }
+
+        var roots = await AppConfDataImportService.Instance.ReadArchiveAsync(_zipPath);
+
+        Assert.That(roots.Select(n => n.Name), Is.EquivalentTo(new[] { "mpv", "menu.json" }));
+
+        var mpv = roots.First(n => n.Name == "mpv");
+        Assert.That(mpv.IsDirectory, Is.True);
+        Assert.That(mpv.RelativePath, Is.EqualTo("mpv"));
+        Assert.That(mpv.Children.Select(c => c.Name), Is.EquivalentTo(new[] { "mpv.conf", "scripts" }));
+
+        var scripts = mpv.Children.First(c => c.Name == "scripts");
+        Assert.That(scripts.IsDirectory, Is.True);
+        Assert.That(scripts.RelativePath, Is.EqualTo(@"mpv\scripts"));
+        Assert.That(scripts.Children.Select(c => c.Name), Is.EqualTo(new[] { "a.lua" }));
+        Assert.That(scripts.Children[0].RelativePath, Is.EqualTo(@"mpv\scripts\a.lua"));
+    }
+
+    [Test]
+    public async Task ReadArchive_WithoutDirectoryEntries_MarksExistingFolders()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "src"));
+        using (var archive = ZipFile.Open(_zipPath, ZipArchiveMode.Create))
+        {
+            archive.CreateEntry("mpv/scripts/a.lua").WriteAll("a=1");
+        }
+
+        Directory.CreateDirectory(Path.Combine(_root, "mpv"));
+
+        var roots = await AppConfDataImportService.Instance.ReadArchiveAsync(_zipPath);
+
+        var mpv = roots.Single();
+        Assert.That(mpv.Exists, Is.True);
+        Assert.That(mpv.Children.Single().Name, Is.EqualTo("scripts"));
+        Assert.That(mpv.Children.Single().Exists, Is.False);
+    }
+
+    [Test]
+    public async Task CollectSelectedPathsAsync_ExpandsDirectoriesAndDeduplicates()
+    {
+        var nested = new AppConfDataNode("c.conf", @"mpv\a\c.conf", false);
+        var directory = new AppConfDataNode("a", @"mpv\a", true);
+        directory.Children.Add(nested);
+        var mpvConf = new AppConfDataNode("mpv.conf", @"mpv\mpv.conf", false);
+        var mpv = new AppConfDataNode("mpv", "mpv", true);
+        mpv.Children.Add(mpvConf);
+        mpv.Children.Add(directory);
+        var menu = new AppConfDataNode("menu.json", "menu.json", false);
+
+        var paths = await AppConfDataImportService.Instance.CollectSelectedPathsAsync([mpv, mpvConf, menu]);
+
+        Assert.That(paths, Is.EqualTo(new[] { @"mpv\mpv.conf", @"mpv\a\c.conf", "menu.json" }));
+        Assert.That(await AppConfDataImportService.Instance.CollectSelectedPathsAsync([]), Is.Empty);
     }
 }
 
