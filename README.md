@@ -69,4 +69,8 @@ https://github.com/ikas-mc/mpv-winui-player/wiki/Mpv-Conf-Editor
 
 ## License
 
-LGPL-2.1 — see [LICENSE.txt](LICENSE.txt).
+GPL-3.0 — see [LICENSE.txt](LICENSE.txt)
+
+This app copied some code from [mpv](https://github.com/mpv-player/mpv)
+
+The built-in mpv dll is compiled with GPL enabled [mpv-windows-builder](https://github.com/ikas-mc/mpv-windows-builder)

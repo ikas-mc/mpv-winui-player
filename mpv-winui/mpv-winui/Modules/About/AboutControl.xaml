@@ -7,30 +7,34 @@
     mc:Ignorable="d">
     <StackPanel
         MinWidth="400"
-        Spacing="12">
+        Spacing="8">
         <TextBlock
             x:Name="AppNameTextBlock"
             FontSize="20"
             FontWeight="SemiBold" />
-        <TextBlock
-            x:Name="AppVersionTextBlock"
-            TextWrapping="Wrap" />
+        <TextBlock x:Name="AppVersionTextBlock" />
 
         <TextBlock
-            Text="mpvw (mpv-winui-player)"
-            TextWrapping="Wrap" />
+            Margin="0,4,0,0"
+            Text="mpvw" />
         <HyperlinkButton
+            Padding="0"
             HorizontalAlignment="Left"
-            Content="github.com/ikas-mc/mpv-winui-player"
+            Content="https://github.com/ikas-mc/mpv-winui-player"
             NavigateUri="https://github.com/ikas-mc/mpv-winui-player" />
 
-        <TextBlock
-            x:Name="MpvVersionTextBlock"
-            TextWrapping="Wrap" />
+        <TextBlock x:Name="MpvVersionTextBlock" />
         <HyperlinkButton
+            Padding="0"
             HorizontalAlignment="Left"
-            Content="github.com/mpv-player/mpv"
+            Content="https://github.com/mpv-player/mpv"
             NavigateUri="https://github.com/mpv-player/mpv" />
 
+        <HyperlinkButton
+            Margin="0,4,0,0"
+            Padding="0"
+            HorizontalAlignment="Right"
+            Content="Licensed under the GPLv3"
+            NavigateUri="https://github.com/ikas-mc/mpv-winui-player#license" />
     </StackPanel>
 </UserControl>
