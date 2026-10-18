@@ -34,3 +34,7 @@ SetThreadExecutionState
 EXECUTION_STATE
 IsZoomed
 IsIconic
+GetWindowPlacement
+SetWindowPlacement
+WINDOWPLACEMENT
+WINDOWPLACEMENT_FLAGS
