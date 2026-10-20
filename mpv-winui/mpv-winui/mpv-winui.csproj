@@ -51,22 +51,18 @@
         <ProjectCapability Include="Msix" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321">
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.366">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
-        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
-        <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.260610101">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
         <PackageReference Include="Microsoft.WindowsAppSDK.Base" Version="2.0.4" />
-        <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="2.3.9" />
-        <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.6" />
-        <PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.4.0" />
-        <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.3.6" />
-        <PackageReference Include="NLog" Version="6.2.0" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="2.3.12" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.9" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.5.1" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.3.9" />
+        <PackageReference Include="NLog" Version="6.2.2" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\mpv-winrt\mpv-winrt.vcxproj" />
@@ -112,7 +108,7 @@
         <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
         <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
         <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
-        <PackageCertificateThumbprint>103E497FCC93E634D6CF01D48A6779F3788332CD</PackageCertificateThumbprint>
+        <PackageCertificateThumbprint>3EE6DF9E109FF207BFEC066E66061CF5F719B2EE</PackageCertificateThumbprint>
         <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
         <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
         <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
