@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Package
         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
@@ -12,7 +12,7 @@
     <Identity
             Name="mpv-winui-dev"
             Publisher="CN=ikas-mc-dev"
-            Version="1.0.16.0"/>
+            Version="1.1.28.0"/>
 
     <mp:PhoneIdentity PhoneProductId="821b3dd9-0d1c-4899-b276-d23d6b8718a9"
                       PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
