@@ -19,6 +19,7 @@
 #include "VolumeChangedEventArgs.h"
 #include "WindowChangedEventArgs.h"
 #include <vector>
+#include <format>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
 #include <microsoft.ui.xaml.media.dxinterop.h>
@@ -2180,16 +2181,53 @@ namespace winrt::mpv_winrt::implementation
         switch (colorKind)
         {
             case winrt::mpv_winrt::DisplayColorKind::HDR:
+                {
+                    SetOption("d3d11-output-format", "rgb10_a2");
+                    SetOption("d3d11-output-csp", "pq");
+                }
                 cs = "HDR";
                 break;
             case winrt::mpv_winrt::DisplayColorKind::WCG:
                 cs = "WCG";
+                {
+                    SetOption("d3d11-output-format", "rgb10_a2");
+                    SetOption("d3d11-output-csp", "srgb");
+                }
                 break;
             default:
                 cs = "SDR";
+                {
+                    SetOption("d3d11-output-format", "rgba8");
+                    SetOption("d3d11-output-csp", "srgb");
+                }
                 break;
         }
         SetStringProperty("user-data/mpvw/color-kind", cs);
+    }
+
+    void MpvPlayer::UpdateDisplayColorOptions(hstring const& prim, hstring const& trc, double gamutRedX, double gamutRedY, double gamutGreenX, double gamutGreenY, double gamutBlueX, double gamutBlueY, double gamutWhiteX, double gamutWhiteY, double maxLuma, double minLuma, double maxFall, double sdrWhite)
+    {
+        if (!m_mpv)
+        {
+            return;
+        }
+
+        auto primStr = to_string(prim);
+        auto trcStr = to_string(trc);
+        auto gamutStr = std::format("{},{},{},{},{},{},{},{}",
+            gamutRedX, gamutRedY, gamutGreenX, gamutGreenY, gamutBlueX, gamutBlueY, gamutWhiteX, gamutWhiteY);
+
+        const char* primValue = primStr.c_str();
+        const char* trcValue = trcStr.c_str();
+        const char* gamutValue = gamutStr.c_str();
+
+        mpv_set_option(m_mpv, "d3d11-composition-prim", MPV_FORMAT_STRING, &primValue);
+        mpv_set_option(m_mpv, "d3d11-composition-gamut", MPV_FORMAT_STRING, &gamutValue);
+        mpv_set_option(m_mpv, "d3d11-composition-trc", MPV_FORMAT_STRING, &trcValue);
+        mpv_set_option(m_mpv, "d3d11-composition-max-luma", MPV_FORMAT_DOUBLE, &maxLuma);
+        mpv_set_option(m_mpv, "d3d11-composition-min-luma", MPV_FORMAT_DOUBLE, &minLuma);
+        mpv_set_option(m_mpv, "d3d11-composition-max-fall", MPV_FORMAT_DOUBLE, &maxFall);
+        mpv_set_option(m_mpv, "d3d11-composition-sdr-white", MPV_FORMAT_DOUBLE, &sdrWhite);
     }
 
     void MpvPlayer::UpdateDisplayRefreshRate(int32_t refreshRate)
@@ -2199,7 +2237,7 @@ namespace winrt::mpv_winrt::implementation
             return;
         }
 
-        SetOption("override-display-fps", std::to_string(refreshRate));
+        SetOption("display-fps-override", std::to_string(refreshRate));
         SetInt64Property("user-data/mpvw/refresh-rate", refreshRate);
     }
 } // namespace winrt::mpv_winrt::implementation
