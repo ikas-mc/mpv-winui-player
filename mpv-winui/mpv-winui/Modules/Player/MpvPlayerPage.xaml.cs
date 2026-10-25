@@ -125,6 +125,8 @@ namespace mpv_winui.Modules.Player
             await _mediaPlayer.InitializeAsync(configFolder.Path, AppContext.AppSetting.LastVideoVolume, _lastColorKind, (int)_lastRefreshRate);
 
             _isPlayerInitialized = true;
+
+            UpdateDisplayColorOptions();
         }
 
         private void MpvPlayerPage_VolumeChanged(VolumeChangedEventArgs args)

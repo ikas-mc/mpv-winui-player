@@ -115,6 +115,57 @@ namespace mpv_winui.Modules.Player
             return DefaultRefreshRate;
         }
 
+        private void UpdateDisplayColorOptions()
+        {
+            try
+            {
+                var colorInfo = _displayInfo?.GetAdvancedColorInfo();
+                if (colorInfo is null)
+                {
+                    return;
+                }
+
+                string prim, trc;
+                // https://learn.microsoft.com/en-us/windows/win32/direct3darticles/high-dynamic-range
+                switch (colorInfo.CurrentAdvancedColorKind)
+                {
+                    case DisplayAdvancedColorKind.HighDynamicRange:
+                        prim = "bt.2020";
+                        trc = "pq";
+                        break;
+                    case DisplayAdvancedColorKind.WideColorGamut:
+                        prim = "bt.709";
+                        trc = "scrgb";
+                        break;
+                    default:
+                        prim = "bt.709";
+                        trc = "srgb";
+                        break;
+                }
+
+                var red = colorInfo.RedPrimary;
+                var green = colorInfo.GreenPrimary;
+                var blue = colorInfo.BluePrimary;
+                var white = colorInfo.WhitePoint;
+
+                _mediaPlayer.UpdateDisplayColorOptions(
+                    prim,
+                    trc,
+                    red.X, red.Y,
+                    green.X, green.Y,
+                    blue.X, blue.Y,
+                    white.X, white.Y,
+                    colorInfo.MaxLuminanceInNits,
+                    colorInfo.MinLuminanceInNits,
+                    colorInfo.MaxAverageFullFrameLuminanceInNits,
+                    colorInfo.SdrWhiteLevelInNits);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
         private void OnAdvancedColorInfoChanged(DisplayInformation sender, object args)
         {
             var newKind = ReadColorKind();
@@ -123,6 +174,9 @@ namespace mpv_winui.Modules.Player
                 _lastColorKind = newKind;
                 _mediaPlayer?.UpdateDisplayColorInfo(newKind);
             }
+
+            //TODO 
+            UpdateDisplayColorOptions();
         }
 
         private void OnDisplayAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
