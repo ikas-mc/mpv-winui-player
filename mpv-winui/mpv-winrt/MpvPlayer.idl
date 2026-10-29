@@ -59,7 +59,7 @@ namespace mpv_winrt
 		void AttachSwapChain(Microsoft.UI.Xaml.Controls.SwapChainPanel panel);
 		void UpdateSwapChainScale(Single scaleX, Single scaleY);
 		void UpdateDisplayColorInfo(DisplayColorKind colorKind);
-		void UpdateDisplayColorOptions(String prim, String trc, Double gamutRedX, Double gamutRedY, Double gamutGreenX, Double gamutGreenY, Double gamutBlueX, Double gamutBlueY, Double gamutWhiteX, Double gamutWhiteY, Double maxLuma, Double minLuma, Double maxFall, Double sdrWhite);
+		void UpdateDisplayColorOptions(String format, String csp, String prim, String trc, Double maxLuma, Double minLuma, Double maxFall, Double sdrWhite, Double gamutRedX, Double gamutRedY, Double gamutGreenX, Double gamutGreenY, Double gamutBlueX, Double gamutBlueY, Double gamutWhiteX, Double gamutWhiteY);
 		void UpdateDisplayRefreshRate(Int32 refreshRate);
 
 		void Play();
