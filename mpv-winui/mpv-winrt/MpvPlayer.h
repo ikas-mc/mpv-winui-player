@@ -59,7 +59,7 @@ namespace winrt::mpv_winrt::implementation
         void UpdateSwapChainScale(float scaleX, float scaleY);
         void UpdateSize(uint32_t width, uint32_t height);
         void UpdateDisplayColorInfo(winrt::mpv_winrt::DisplayColorKind colorKind);
-        void UpdateDisplayColorOptions(hstring const& prim, hstring const& trc, double gamutRedX, double gamutRedY, double gamutGreenX, double gamutGreenY, double gamutBlueX, double gamutBlueY, double gamutWhiteX, double gamutWhiteY, double maxLuma, double minLuma, double maxFall, double sdrWhite);
+        void UpdateDisplayColorOptions(hstring const& format, hstring const& csp, hstring const& prim, hstring const& trc, double maxLuma, double minLuma, double maxFall, double sdrWhite, double gamutRedX, double gamutRedY, double gamutGreenX, double gamutGreenY, double gamutBlueX, double gamutBlueY, double gamutWhiteX, double gamutWhiteY);
         void UpdateDisplayRefreshRate(int32_t refreshRate);
         void LoadFile(hstring const& url, double position);
         void LoadList(hstring const& url);

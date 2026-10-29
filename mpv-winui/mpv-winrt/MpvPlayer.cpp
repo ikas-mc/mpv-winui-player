@@ -2177,57 +2177,58 @@ namespace winrt::mpv_winrt::implementation
             return;
         }
 
-        const char* cs;
         switch (colorKind)
         {
             case winrt::mpv_winrt::DisplayColorKind::HDR:
                 {
-                    SetOption("d3d11-output-format", "rgb10_a2");
-                    SetOption("d3d11-output-csp", "pq");
+                    const char* value = "HDR";
+                    mpv_set_property(m_mpv, "user-data/mpvw/color-kind", MPV_FORMAT_STRING, &value);
+                    break;
                 }
-                cs = "HDR";
-                break;
             case winrt::mpv_winrt::DisplayColorKind::WCG:
-                cs = "WCG";
                 {
-                    SetOption("d3d11-output-format", "rgb10_a2");
-                    SetOption("d3d11-output-csp", "srgb");
+                    const char* value = "WCG";
+                    mpv_set_property(m_mpv, "user-data/mpvw/color-kind", MPV_FORMAT_STRING, &value);
+                    break;
                 }
-                break;
             default:
-                cs = "SDR";
                 {
-                    SetOption("d3d11-output-format", "rgba8");
-                    SetOption("d3d11-output-csp", "srgb");
+                    const char* value = "SDR";
+                    mpv_set_property(m_mpv, "user-data/mpvw/color-kind", MPV_FORMAT_STRING, &value);
+                    break;
                 }
-                break;
         }
-        SetStringProperty("user-data/mpvw/color-kind", cs);
     }
 
-    void MpvPlayer::UpdateDisplayColorOptions(hstring const& prim, hstring const& trc, double gamutRedX, double gamutRedY, double gamutGreenX, double gamutGreenY, double gamutBlueX, double gamutBlueY, double gamutWhiteX, double gamutWhiteY, double maxLuma, double minLuma, double maxFall, double sdrWhite)
+    void MpvPlayer::UpdateDisplayColorOptions(hstring const& format, hstring const& csp, hstring const& prim, hstring const& trc, double maxLuma, double minLuma, double maxFall, double sdrWhite, double gamutRedX, double gamutRedY, double gamutGreenX, double gamutGreenY, double gamutBlueX, double gamutBlueY, double gamutWhiteX, double gamutWhiteY)
     {
         if (!m_mpv)
         {
             return;
         }
 
+        auto formatStr = to_string(format);
+        auto cspStr = to_string(csp);
         auto primStr = to_string(prim);
         auto trcStr = to_string(trc);
         auto gamutStr = std::format("{},{},{},{},{},{},{},{}",
             gamutRedX, gamutRedY, gamutGreenX, gamutGreenY, gamutBlueX, gamutBlueY, gamutWhiteX, gamutWhiteY);
 
+        const char* formatValue = formatStr.c_str();
+        const char* cspValue = cspStr.c_str();
         const char* primValue = primStr.c_str();
         const char* trcValue = trcStr.c_str();
         const char* gamutValue = gamutStr.c_str();
 
+        mpv_set_option(m_mpv, "d3d11-composition-format", MPV_FORMAT_STRING, &formatValue);
+        mpv_set_option(m_mpv, "d3d11-composition-csp", MPV_FORMAT_STRING, &cspValue);
         mpv_set_option(m_mpv, "d3d11-composition-prim", MPV_FORMAT_STRING, &primValue);
-        mpv_set_option(m_mpv, "d3d11-composition-gamut", MPV_FORMAT_STRING, &gamutValue);
         mpv_set_option(m_mpv, "d3d11-composition-trc", MPV_FORMAT_STRING, &trcValue);
         mpv_set_option(m_mpv, "d3d11-composition-max-luma", MPV_FORMAT_DOUBLE, &maxLuma);
         mpv_set_option(m_mpv, "d3d11-composition-min-luma", MPV_FORMAT_DOUBLE, &minLuma);
         mpv_set_option(m_mpv, "d3d11-composition-max-fall", MPV_FORMAT_DOUBLE, &maxFall);
         mpv_set_option(m_mpv, "d3d11-composition-sdr-white", MPV_FORMAT_DOUBLE, &sdrWhite);
+        mpv_set_option(m_mpv, "d3d11-composition-gamut", MPV_FORMAT_STRING, &gamutValue);
     }
 
     void MpvPlayer::UpdateDisplayRefreshRate(int32_t refreshRate)

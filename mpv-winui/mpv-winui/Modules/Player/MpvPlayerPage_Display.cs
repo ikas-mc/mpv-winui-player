@@ -125,21 +125,24 @@ namespace mpv_winui.Modules.Player
                     return;
                 }
 
-                string prim, trc;
+                string prim, trc, csp;
                 // https://learn.microsoft.com/en-us/windows/win32/direct3darticles/high-dynamic-range
                 switch (colorInfo.CurrentAdvancedColorKind)
                 {
                     case DisplayAdvancedColorKind.HighDynamicRange:
                         prim = "bt.2020";
                         trc = "pq";
+                        csp = "pq";
                         break;
                     case DisplayAdvancedColorKind.WideColorGamut:
                         prim = "bt.709";
                         trc = "scrgb";
+                        csp = "srgb";
                         break;
                     default:
                         prim = "bt.709";
                         trc = "srgb";
+                        csp = "srgb";
                         break;
                 }
 
@@ -149,16 +152,18 @@ namespace mpv_winui.Modules.Player
                 var white = colorInfo.WhitePoint;
 
                 _mediaPlayer.UpdateDisplayColorOptions(
+                    "rgb10_a2",
+                    csp,
                     prim,
                     trc,
-                    red.X, red.Y,
-                    green.X, green.Y,
-                    blue.X, blue.Y,
-                    white.X, white.Y,
                     colorInfo.MaxLuminanceInNits,
                     colorInfo.MinLuminanceInNits,
                     colorInfo.MaxAverageFullFrameLuminanceInNits,
-                    colorInfo.SdrWhiteLevelInNits);
+                    colorInfo.SdrWhiteLevelInNits,
+                    red.X, red.Y,
+                    green.X, green.Y,
+                    blue.X, blue.Y,
+                    white.X, white.Y);
             }
             catch (Exception ex)
             {
