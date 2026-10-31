@@ -238,10 +238,10 @@ namespace mpv_winui.Modules.Player
                             AppQuit();
                             break;
                         case "fullwindow":
-                            PlayerControl.ToggleFullWindow();
+                            ToggleFullWindow();
                             break;
                         case "fullscreen":
-                            PlayerControl.ToggleFullScreen();
+                            ToggleFullScreen();
                             break;
                         case "ontop":
                             ToggleAlwaysOnTop();

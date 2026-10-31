@@ -27,7 +27,7 @@ namespace mpv_winui.Modules.Player
                             SetWindowMaximized(args.Value);
                             break;
                         case 205:
-                            SetFullWindow(args.Value);
+                            SetFullWindow(!args.Value);
                             break;
                         case 206:
                             SetWindowBorder(args.Value);
@@ -39,12 +39,6 @@ namespace mpv_winui.Modules.Player
                     OnException(ex);
                 }
             });
-        }
-
-        private void SetFullScreen(bool fullscreen)
-        {
-            //TODO force
-            PlayerControl.ToggleFullScreen();
         }
 
         private void SetAlwaysOnTop(bool enable)
@@ -91,12 +85,6 @@ namespace mpv_winui.Modules.Player
                     presenter.Restore();
                 }
             }
-        }
-
-        private void SetFullWindow(bool showTitleBar)
-        {
-            //TODO force
-            PlayerControl.ToggleFullWindow();
         }
 
         private void SetWindowBorder(bool hasBorder)

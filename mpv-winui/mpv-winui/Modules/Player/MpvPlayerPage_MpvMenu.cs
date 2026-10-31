@@ -221,12 +221,12 @@ namespace mpv_winui.Modules.Player
                         }
                         case "fullscreen":
                         {
-                            PlayerControl.ToggleFullScreen();
+                            ToggleFullScreen();
                             break;
                         }
                         case "fullwindow":
                         {
-                            PlayerControl.ToggleFullWindow();
+                            ToggleFullWindow();
                             break;
                         }
                         case "ontop":
