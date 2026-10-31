@@ -51,8 +51,12 @@ namespace mpv_winui.Modules.Player
             }
 
             _isFullScreen = isFullScreen;
-            SetFullWindow(isFullScreen);
             PlayerControl.UpdateFullScreenState(isFullScreen);
+
+            //TODO force FullWindow = FullScreen
+            ChangeFullWindow(isFullScreen);
+
+            UpdatePlayControl();
         }
 
         public void SetFullWindow(bool isFullWindow)
@@ -62,6 +66,13 @@ namespace mpv_winui.Modules.Player
                 return;
             }
 
+            ChangeFullWindow(isFullWindow);
+
+            UpdatePlayControl();
+        }
+
+        private void ChangeFullWindow(bool isFullWindow)
+        {
             _isFullWindow = isFullWindow;
             VisualStateManager.GoToState(this, isFullWindow ? "FullWindow" : "NormalWindow", true);
             if (App.Window is MainWindow window)

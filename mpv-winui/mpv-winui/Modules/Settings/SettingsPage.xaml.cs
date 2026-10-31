@@ -168,14 +168,43 @@ public sealed partial class SettingsPage : Page
             {
                 Key = nameof(AppContext.AppSetting.PlayerControlToggleButton),
                 Label = "Player Control Toggle Button",
-                Description = "Mouse buttons to toggle player control. L: left, M: middle, D: double-click.",
+                Description = "Mouse buttons to toggle player control, Ignored while auto hide is enabled.\nL: left, M: middle, D: double-click. ",
                 Icon = "\uE961",
-                GroupKey = "Input",
-                GroupLabel = "Input",
+                GroupKey = "PlayerControl",
+                GroupLabel = "Player Control",
                 Type = OptionType.StringList,
                 Options = [AppSettings.PlayerControlToggleButton_LeftMiddle, AppSettings.PlayerControlToggleButton_Middle, AppSettings.PlayerControlToggleButton_LeftDouble, AppSettings.PlayerControlToggleButton_LeftDoubleMiddle],
                 Getter = () => AppContext.AppSetting.PlayerControlToggleButton,
                 Setter = v => AppContext.AppSetting.PlayerControlToggleButton = (string)v
+            },
+
+            new Option
+            {
+                Key = nameof(AppContext.AppSetting.EnablePlayerControlAutoHide),
+                Label = "Auto Hide Player Control",
+                Description = "Auto hide the player control, Disables the manual toggle. Restart required.",
+                Icon = "\uE917",
+                GroupKey = "PlayerControl",
+                GroupLabel = "Player Control",
+                Type = OptionType.Boolean,
+                Getter = () => AppContext.AppSetting.EnablePlayerControlAutoHide,
+                Setter = v => AppContext.AppSetting.EnablePlayerControlAutoHide = (bool)v!
+            },
+
+            new Option
+            {
+                Key = nameof(AppContext.AppSetting.PlayerControlAutoHideDelay),
+                Label = "Auto Hide Delay (ms)",
+                Description = "Idle time before the player control hide. Restart required.",
+                Icon = "\uE917",
+                GroupKey = "PlayerControl",
+                GroupLabel = "Player Control",
+                Type = OptionType.Integer,
+                Min = 200,
+                Max = 60000,
+                Step = 100,
+                Getter = () => AppContext.AppSetting.PlayerControlAutoHideDelay,
+                Setter = v => AppContext.AppSetting.PlayerControlAutoHideDelay = (int)v!
             },
 
             new Option

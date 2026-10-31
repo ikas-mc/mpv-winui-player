@@ -1,6 +1,4 @@
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using mpv_winui.Modules.Settings;
 
 namespace mpv_winui.Modules.Player
@@ -12,92 +10,33 @@ namespace mpv_winui.Modules.Player
             UpdatePlayControlStyle();
 
             PlayerControl.MediaPlayer = _mediaPlayer;
-            PlayerView.PointerPressed += PlayerView_PointerPressed2;
-            PlayerView.DoubleTapped += PlayerView_DoubleTapped;
+
+            if (AppContext.AppSetting.EnablePlayerControlAutoHide)
+            {
+                SetupPlayControlAutoHide();
+            }
+            else
+            {
+                SetupPlayControlHide();
+            }
         }
 
         private void CleanupPlayControl()
         {
-            PlayerView.PointerPressed -= PlayerView_PointerPressed2;
-            PlayerView.DoubleTapped -= PlayerView_DoubleTapped;
+            CleanupPlayControlAutoHide();
+            CleanupPlayControlHide();
+
             PlayerControl.MediaPlayer = null;
         }
 
-        private void PlayerView_PointerPressed2(object sender, PointerRoutedEventArgs e)
+        private void UpdatePlayControl()
         {
-            var kind = e.GetCurrentPoint(PlayerView).Properties.PointerUpdateKind;
+            PlayerControl.ShowControlPanel();
 
-            if (kind != PointerUpdateKind.LeftButtonPressed && kind != PointerUpdateKind.MiddleButtonPressed)
+            if (_playerControlAutoHideEnabled)
             {
-                return;
+                UpdatePlayControlAutoHide();
             }
-
-            var mode = AppContext.AppSetting.PlayerControlToggleButton;
-
-            switch (mode)
-            {
-                case AppSettings.PlayerControlToggleButton_Middle:
-                {
-                    if (kind == PointerUpdateKind.MiddleButtonPressed)
-                    {
-                        TogglePlayerControl();
-                    }
-
-                    break;
-                }
-
-                case AppSettings.PlayerControlToggleButton_LeftDouble:
-                {
-                    break;
-                }
-
-                case AppSettings.PlayerControlToggleButton_LeftDoubleMiddle:
-                {
-                    if (kind == PointerUpdateKind.MiddleButtonPressed)
-                    {
-                        TogglePlayerControl();
-                    }
-
-                    break;
-                }
-
-                case AppSettings.PlayerControlToggleButton_LeftMiddle:
-                default:
-                {
-                    if (_discMenuActive && kind == PointerUpdateKind.LeftButtonPressed)
-                    {
-                        break;
-                    }
-
-                    TogglePlayerControl();
-                    break;
-                }
-            }
-        }
-
-        private void PlayerView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            var mode = AppContext.AppSetting.PlayerControlToggleButton;
-
-            switch (mode)
-            {
-                case AppSettings.PlayerControlToggleButton_LeftDouble:
-                case AppSettings.PlayerControlToggleButton_LeftDoubleMiddle:
-                {
-                    TogglePlayerControl();
-                    break;
-                }
-
-                default:
-                {
-                    break;
-                }
-            }
-        }
-
-        private void TogglePlayerControl()
-        {
-            PlayerControl.ToggleControlPanel();
         }
 
         public void UpdatePlayControlStyle()
