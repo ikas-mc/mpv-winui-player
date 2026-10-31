@@ -57,6 +57,7 @@ namespace mpv_winui.Modules.Player
             {
                 SetupPlayerView();
                 SetupPlayControl();
+                SetupFullScreen();
 
                 _mediaPlayer.PlaylistChanged += MpvPlayerPage_PlaylistChanged;
                 _mediaPlayer.VolumeChanged += MpvPlayerPage_VolumeChanged;
@@ -107,6 +108,7 @@ namespace mpv_winui.Modules.Player
             CleanupMouseInput();
             CleanupPreview();
             CleanupPlayControl();
+            CleanupFullScreen();
             CleanupBuiltInPreview();
             _mediaPlayer.Destroy();
         }

@@ -1,5 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using System;
 
 namespace mpv_winui.Modules.Player
 {
@@ -8,64 +9,66 @@ namespace mpv_winui.Modules.Player
         private bool _isFullScreen;
         private bool _isFullWindow;
 
-        private bool PlayerControl_OnFullScreenRequest()
+        private void SetupFullScreen()
         {
-            bool isFullScreen;
+            CleanupFullScreen();
+            PlayerControl.FullScreenClick += PlayerControl_FullScreenClick;
+            PlayerControl.FullWindowClick += PlayerControl_FullWindowClick;
+        }
 
-            if (_appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
-            {
-                _appWindow.SetPresenter(AppWindowPresenterKind.Default);
-            }
-            else
-            {
-                _appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
-            }
+        private void CleanupFullScreen()
+        {
+            PlayerControl.FullScreenClick -= PlayerControl_FullScreenClick;
+            PlayerControl.FullWindowClick -= PlayerControl_FullWindowClick;
+        }
 
-            isFullScreen = _appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen;
+        private void PlayerControl_FullScreenClick(object? sender, EventArgs e)
+        {
+            ToggleFullScreen();
+        }
 
-            if (isFullScreen)
+        private void PlayerControl_FullWindowClick(object? sender, EventArgs e)
+        {
+            ToggleFullWindow();
+        }
+
+        public void ToggleFullScreen()
+        {
+            SetFullScreen(!_isFullScreen);
+        }
+
+        public void ToggleFullWindow()
+        {
+            SetFullWindow(!_isFullWindow);
+        }
+
+        public void SetFullScreen(bool isFullScreen)
+        {
+            var presenterKind = isFullScreen ? AppWindowPresenterKind.FullScreen : AppWindowPresenterKind.Default;
+            if (_appWindow.Presenter.Kind != presenterKind)
             {
-                if (!_isFullWindow)
-                {
-                    PlayerControl.ToggleFullWindow();
-                }
-            }
-            else
-            {
-                if (_isFullWindow)
-                {
-                    PlayerControl.ToggleFullWindow();
-                }
+                _appWindow.SetPresenter(presenterKind);
             }
 
             _isFullScreen = isFullScreen;
-            PlayerControl.UpdateFullScreen(isFullScreen);
-
-            return isFullScreen;
+            SetFullWindow(isFullScreen);
+            PlayerControl.UpdateFullScreenState(isFullScreen);
         }
 
-        private bool PlayerControl_OnFullWindowRequest()
+        public void SetFullWindow(bool isFullWindow)
         {
-            bool isFullWindow = _isFullWindow;
-
-            if (isFullWindow)
+            if (_isFullWindow == isFullWindow)
             {
-                isFullWindow = !VisualStateManager.GoToState(this, "NormalWindow", true);
-            }
-            else
-            {
-                isFullWindow = VisualStateManager.GoToState(this, "FullWindow", true);
+                return;
             }
 
-            //TODO 
+            _isFullWindow = isFullWindow;
+            VisualStateManager.GoToState(this, isFullWindow ? "FullWindow" : "NormalWindow", true);
             if (App.Window is MainWindow window)
             {
                 window.ChangeFullWindow(isFullWindow);
             }
-
-            _isFullWindow = isFullWindow;
-
-            return isFullWindow;
+            PlayerControl.UpdateFullWindowState(isFullWindow);
         }
     }
 }

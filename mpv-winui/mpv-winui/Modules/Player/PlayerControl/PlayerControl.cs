@@ -49,13 +49,11 @@ namespace mpv_winui.Modules.Player.PlayerControl;
 [TemplatePart(Name = "MoreZoom", Type = typeof(MenuFlyoutSubItem))]
 public sealed partial class PlayerControl : Control
 {
-    public delegate bool FullScreenRequestHandler();
-    public delegate bool FullWindowRequestHandler();
     public delegate void OnPanelVisibleChangedHandler(bool hide);
     public delegate void OnPositionChangedHandler();
 
-    public event FullScreenRequestHandler? OnFullScreenRequest;
-    public event FullWindowRequestHandler? OnFullWindowRequest;
+    public event EventHandler? FullScreenClick;
+    public event EventHandler? FullWindowClick;
     public event OnPanelVisibleChangedHandler? OnPanelVisibleChanged;
     public event OnPositionChangedHandler? OnPositionChanged;
 
@@ -893,44 +891,24 @@ public sealed partial class PlayerControl : Control
 
     private void FullWindowButton_Click(object sender, RoutedEventArgs e)
     {
-        ToggleFullWindow();
-    }
-
-    public bool ToggleFullWindow()
-    {
-        var full = OnFullWindowRequest?.Invoke();
-        if (null != full)
-        {
-            _isFullWindow = full.Value;
-            UpdateFullWindowUI(full.Value);
-            return full.Value;
-        }
-
-        return false;
+        FullWindowClick?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnFullScreenClick(object sender, RoutedEventArgs e)
     {
-        ToggleFullScreen();
+        FullScreenClick?.Invoke(this, EventArgs.Empty);
     }
 
-    public bool ToggleFullScreen()
+    public void UpdateFullScreenState(bool isFullScreen)
     {
-        var full = OnFullScreenRequest?.Invoke();
-        if (null != full)
-        {
-            _isFullScreen = full.Value;
-            UpdateFullScreenUI(full.Value);
-            return full.Value;
-        }
-
-        return false;
+        _isFullScreen = isFullScreen;
+        UpdateFullScreenUI(isFullScreen);
     }
 
-    public void UpdateFullScreen(bool enabled)
+    public void UpdateFullWindowState(bool isFullWindow)
     {
-        _isFullScreen = enabled;
-        UpdateFullScreenUI(enabled);
+        _isFullWindow = isFullWindow;
+        UpdateFullWindowUI(isFullWindow);
     }
 
     private void OnRepeatClick(object sender, RoutedEventArgs e)
