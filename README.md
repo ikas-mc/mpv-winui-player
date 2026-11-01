@@ -26,26 +26,39 @@ Default configuration files, needs to be copied to the application's AppData dir
 
 Some commands aren't supported, like quit and window related cmd...
 
+
 ### vo
 
-The player uses the `d3d11-output-mode=composition` mode, mpv can't get display information.
+The player uses the `d3d11-output-mode=composition` mode, ~~mpv can't get display information~~.
 
-Use these custom properties as a workaround
+The new version now supports getting monitor color info, but you have to use the built-in mpv.dll.  
 
-```
-user-data/mpvw/color-kind : SDR, WCG, HDR
-user-data/mpvw/refresh-rate : 60
-```
+The app registers a custom property to mpv: `"user-data/mpvw/color-kind"`, which supports the following values:  
 
-example:
+`SDR`:  
+`HDR`: HDR Enabled  
+`WCG`: Auto Color Management (ACM) Enabled
 
-```
+Sample:
+
+```ini
+[mpvw-hdr]
+profile-cond=p["user-data/mpvw/color-kind"] == "HDR"
+profile-restore=copy
+target-colorspace-hint=yes
+target-colorspace-hint-mode=source
+
+[mpvw-wcg]
+profile-cond=p["user-data/mpvw/color-kind"] == "WCG"
+profile-restore=copy
+target-colorspace-hint=yes
+target-colorspace-hint-mode=source
+
 [mpvw-sdr]
 profile-cond=p["user-data/mpvw/color-kind"] == "SDR"
 profile-restore=copy
-d3d11-output-csp=srgb
-d3d11-output-format=rgb10_a2
 ```
+
 ## Thumbnail Preview
 
 * Built-in preview
