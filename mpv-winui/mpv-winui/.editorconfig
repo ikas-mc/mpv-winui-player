@@ -6,7 +6,7 @@ indent_style = space
 tab_width = 4
 
 end_of_line = crlf
-insert_final_newline = false
+insert_final_newline = true
 
 dotnet_hide_advanced_members = false
 dotnet_member_insertion_location = with_other_members_of_the_same_kind

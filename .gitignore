@@ -369,3 +369,6 @@ FodyWeavers.xsd
 /mpv-winui/libs
 /plan.txt
 /update-ms.ps1
+/MS
+/.o*
+/.w*

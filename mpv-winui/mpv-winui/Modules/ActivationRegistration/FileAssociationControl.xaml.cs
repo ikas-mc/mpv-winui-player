@@ -12,9 +12,9 @@ public sealed partial class FileAssociationControl : UserControl
 {
     private static readonly Logger _logger = LogManager.GetLogger("FileAssociation");
 
-private static readonly string[] VideoExtensions =
-    [
-        ".3g2", ".3gp", ".amv", ".asf", ".avi", ".dav", ".f4v", ".flv", ".ivf", ".m4v",
+    private static readonly string[] VideoExtensions =
+        [
+            ".3g2", ".3gp", ".amv", ".asf", ".avi", ".dav", ".f4v", ".flv", ".ivf", ".m4v",
         ".mj2", ".mkv", ".mov", ".mp2", ".mp4", ".mp4v", ".mpeg", ".mpg", ".mts", ".rm",
         ".rmvb", ".ts", ".vob", ".webm", ".wmv",
     ];
