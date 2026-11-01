@@ -5,5 +5,3 @@ public enum MenuType
     Menubar,
     ContextMenu,
 }
-
-

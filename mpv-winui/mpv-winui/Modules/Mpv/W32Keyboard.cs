@@ -15,8 +15,8 @@
  * License along with mpv.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using static mpv.WinUser;
 using static mpv.Keycodes;
+using static mpv.WinUser;
 
 namespace mpv
 {
