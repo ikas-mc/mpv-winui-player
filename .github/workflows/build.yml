@@ -25,7 +25,7 @@ jobs:
 
     - name: Download deps
       run: |
-        curl -L -o mpv-libs.zip "https://github.com/ikas-mc/mpv-windows-builder/releases/download/20260731/mpv-2.dll.zip"
+        curl -L -o mpv-libs.zip "https://github.com/ikas-mc/mpv-windows-builder/releases/download/20261114/mpv-2.dll.zip"
         Expand-Archive -Path mpv-libs.zip -DestinationPath "${{github.workspace}}\mpv-winui\libs" -Force
         Remove-Item -Path mpv-libs.zip -Force
         curl -L -o mediainfo.zip "https://github.com/ikas-mc/MediaInfoLib-builder/releases/download/0.1.0/mediainfo.dll.zip"
