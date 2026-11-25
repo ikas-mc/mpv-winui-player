@@ -1,0 +1,13 @@
+[
+  {
+    "name": "media-controls",
+    "group": "Miscellaneous",
+    "desc": "(Windows only) Enable integration of media control interface SystemMediaTransportControls. Windows may display \"Unknown app\" or show a missing mpv icon in the media control panel. To fully support it, you need to register mpv using the --register command. Default: yes (except for libmpv)",
+    "link": "https://mpv.io/manual/master/#options-media-controls",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  }
+]

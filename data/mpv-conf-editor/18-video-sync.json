@@ -1,0 +1,49 @@
+[
+  {
+    "name": "video-sync",
+    "group": "Video Sync",
+    "desc": "How the player synchronizes audio and video. If you use this option, you usually want to set it to display-resample to enable a timing mode that tries to not skip or repeat frames when for example playing 24fps video on a 24Hz screen. The modes starting with display- try to output video frames completely synchronously to the display, using the detected display vertical refresh rate as a hint how fast frames will be displayed on average. These modes change video speed slightly to match the display. See --video-sync-... options for fine tuning. The robustness of this mode is further reduced by making a some idealized assumptions, which may not always apply in reality. Behavior can depend on the VO and the system's video and audio drivers. Media files must use constant framerate. Section-wise VFR might work as well with some container formats (but not e.g. mkv). Under some circumstances, the player automatically reverts to audio mode for some time or permanently. This can happen on very low framerate video, or if the framerate cannot be detected. Also in display-sync modes it can happen that interruptions to video playback (such as toggling fullscreen mode, or simply resizing the window) will skip the video frames that should have been displayed, while audio mode will display them after the renderer has resumed (typically resulting in a short A/V desync and the video \"catching up\"). These modes also require a vsync blocked presentation mode. For OpenGL, this translates to --opengl-swapinterval=1. For Vulkan, it translates to --vulkan-swap-mode=fifo (or fifo-relaxed). The modes with desync in their names do not attempt to keep audio/video in sync. They will slowly (or quickly) desync, until e.g. the next seek happens. These modes are meant for testing, not serious use. :audio: Time video frames to audio. This is the most robust mode, because the player doesn't have to assume anything about how the display behaves. The disadvantage is that it can lead to occasional frame drops or repeats. If audio is disabled, this uses the system clock. This is the default mode. :display-resample: Resample audio to match the video. This mode will also try to adjust audio speed to compensate for other drift. (This means it will play the audio at a different speed every once in a while to reduce the A/V difference.) :display-resample-vdrop: Resample audio to match the video. Drop video frames to compensate for drift. :display-resample-desync: Like the previous mode, but no A/V compensation. :display-tempo: Same as display-resample, but apply audio speed changes to audio filters instead of resampling to avoid the change in pitch. Beware that some audio filters don't do well with a speed close to 1. It is recommend to use a conditional profile to automatically switch to display-resample when speed gets too close to 1 for your filter setup. Use (speed * video_speed_correction) to get the actual playback speed in the condition. See Conditional auto profiles for details. :display-vdrop: Drop or repeat video frames to compensate desyncing video. (Although it should have the same effects as audio, the implementation is very different.) :display-adrop: Drop or repeat audio data to compensate desyncing video. This mode will cause severe audio artifacts if the real monitor refresh rate is too different from the reported or forced rate. This acts on entire audio frames, instead of single samples. :display-desync: Sync video to display, and let audio play on its own. May desync with audio by an arbitrary amount, until it is manually fixed with a seek. :desync: Sync video according to system clock, and let audio play on its own.",
+    "link": "https://mpv.io/manual/master/#options-video-sync",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "audio",
+            "desc": "Sync to audio clock (default)"
+          },
+          {
+            "value": "display-resample",
+            "desc": "Resample video to display refresh rate"
+          },
+          {
+            "value": "display-resample-vdrop",
+            "desc": "Resample with frame dropping"
+          },
+          {
+            "value": "display-resample-desync",
+            "desc": "Resample without sync"
+          },
+          {
+            "value": "display-tempo"
+          },
+          {
+            "value": "display-adrop",
+            "desc": "Drop/duplicate audio to match display"
+          },
+          {
+            "value": "display-vdrop",
+            "desc": "Drop/duplicate frames to match display"
+          },
+          {
+            "value": "display-desync"
+          },
+          {
+            "value": "desync",
+            "desc": "No sync, run at display rate"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,242 @@
+[
+  {
+    "name": "sub-scale",
+    "group": "Subtitles",
+    "desc": "Factor for the text subtitle font size (default: 1). This affects ASS subtitles as well, and may lead to incorrect subtitle rendering. Use with care, or use --sub-font-size instead.",
+    "link": "https://mpv.io/manual/master/#options-sub-scale",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 0.0,
+        "maximum": 100.0
+      }
+    ]
+  },
+  {
+    "name": "secondary-sub-scale",
+    "group": "Subtitles",
+    "desc": "Factor for the secondary subtitle font size. This is similar to ``--sub-scale`` but for secondary subtitles (default: 1).",
+    "link": "https://mpv.io/manual/master/#options-secondary-sub-scale",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 100
+      }
+    ]
+  },
+  {
+    "name": "sub-scale-by-window",
+    "group": "Subtitles",
+    "desc": "Whether to scale subtitles with the window size (default: yes). If this is disabled while --sub-scale-with-window is set to yes, changing the window size won't change the subtitle font size. Affects plain text subtitles only (or ASS if --sub-ass-override is set high enough).",
+    "link": "https://mpv.io/manual/master/#options-sub-scale-by-window",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "sub-scale-with-window",
+    "group": "Subtitles",
+    "desc": "Make the subtitle font size relative to the window (default: yes). If this is disabled while --sub-scale-by-window is set to yes, the subtitle font size is scaled relative to the video size instead. Affects plain text subtitles only (or ASS if --sub-ass-override is set high enough). By default, the subtitle font size is scaled with the window size. To make the font size constant, set only --sub-scale-by-window to no. To make the font size scale with video size instead, set only --sub-scale-with-window to no. It's not meaningful to set both options to no.",
+    "link": "https://mpv.io/manual/master/#options-sub-scale-with-window",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "embeddedfonts",
+    "group": "Subtitles",
+    "desc": "Use fonts embedded in Matroska container files and ASS scripts (default: yes). These fonts can be used for SSA/ASS subtitle rendering.",
+    "link": "https://mpv.io/manual/master/#options-embeddedfonts",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "sub-hdr-peak",
+    "group": "Subtitles",
+    "desc": "Controls the text subtitle and OSD diffuse white level in cd/m² (nits) for HDR output (default: sdr). sdr is 203 cd/m² for standard SDR white. (--vo=gpu-next only) This also affects text subtitle brightness in HDR tone mapping with --blend-subtitles=<yes|video>.",
+    "link": "https://mpv.io/manual/master/#options-sub-hdr-peak",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "sdr",
+            "desc": "SDR peak (203 nits, default)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sub-auto",
+    "group": "Subtitles",
+    "desc": "Load additional subtitle files matching the video filename. The parameter specifies how external subtitle files are matched. exact is enabled by default.",
+    "link": "https://mpv.io/manual/master/#options-sub-auto",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Don't load external subtitle files"
+          },
+          {
+            "value": "exact",
+            "desc": "Load subtitle files with exact name match (default)"
+          },
+          {
+            "value": "fuzzy",
+            "desc": "Load subtitle files with fuzzy name match"
+          },
+          {
+            "value": "all",
+            "desc": "Load all matching subtitle files"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sub-fps",
+    "group": "Subtitles",
+    "desc": "Specify the framerate of the subtitle file (default: video fps). Affects text subtitles only. <rate> > video fps speeds the subtitles up for frame-based subtitle files and slows them down for time-based ones. See also: --sub-speed.",
+    "link": "https://mpv.io/manual/master/#options-sub-fps",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "sub-font",
+    "group": "Subtitles",
+    "desc": "Specify font to use for subtitles that do not themselves specify a particular font. The default is ``sans-serif``. .. admonition:: Examples - ``--sub-font='Bitstream Vera Sans'`` - ``--sub-font='Comic Sans MS'`` .. note:: The ``--sub-font`` option (and many other style related ``--sub-`` options) are ignored when ASS-subtitles are rendered, unless ``--sub-ass=no`` is specified.",
+    "link": "https://mpv.io/manual/master/#options-sub-font",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "sub-font-size",
+    "group": "Subtitles",
+    "desc": "Specify the sub font size. The unit is the size in scaled pixels at a window height of 720. The actual pixel size is scaled with the window height: if the window height is larger or smaller than 720, the actual size of the text increases or decreases as well. Default: 38",
+    "link": "https://mpv.io/manual/master/#options-sub-font-size",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "sub-blur",
+    "group": "Subtitles",
+    "desc": "Gaussian blur factor applied to the sub font border. 0 means no blur applied (default).",
+    "link": "https://mpv.io/manual/master/#options-sub-blur",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "sub-bold",
+    "group": "Subtitles",
+    "desc": "Format text on bold.",
+    "link": "https://mpv.io/manual/master/#options-sub-bold",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "sub-italic",
+    "group": "Subtitles",
+    "desc": "Format text on italic.",
+    "link": "https://mpv.io/manual/master/#options-sub-italic",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "sub-outline-color",
+    "group": "Subtitles",
+    "desc": "See ``--sub-color``. Color used for the sub font outline. ``--sub-border-color`` is an alias for ``--sub-outline-color``.",
+    "link": "https://mpv.io/manual/master/#options-sub-outline-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "sub-back-color",
+    "group": "Subtitles",
+    "desc": "See ``--sub-color``. Color used for sub text background. ``--sub-shadow-color`` is an alias for ``--sub-back-color``.",
+    "link": "https://mpv.io/manual/master/#options-sub-back-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "sub-outline-size",
+    "group": "Subtitles",
+    "desc": "Size of the sub font outline in scaled pixels (see ``--sub-font-size`` for details). A value of 0 disables outlines. ``--sub-border-size`` is an alias for ``--sub-outline-size``. Default: 1.65",
+    "link": "https://mpv.io/manual/master/#options-sub-outline-size",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "sub-border-style",
+    "group": "Subtitles",
+    "desc": "The style of the border. - ``outline-and-shadow``: draw outline and shadow. The size of the outline is determined by ``--sub-outline-size``, and the offset of the shadow is determined by ``--sub-shadow-offset``. The outline is colored by ``--sub-outline-color``, and the shadow is colored by ``--sub-back-color``. This corresponds to ``BorderStyle=1`` in the ASS spec. - ``opaque-box``: draw outline and shadow as opaque boxes that tightly wrap each lines of text. The margin of the outline opaque box is determined by ``--sub-outline-size``, and the offset of the shadow opaque box is determined by ``--sub-shadow-offset``. The outline opaque box is colored by ``--sub-outline-color``, and the shadow opaque box is colored by ``--sub-back-color``. Despite its name, the opaque box can be semi-transparent. This corresponds to ``BorderStyle=3`` in the ASS spec. - ``background-box``: draw a background box that bounds all lines of text. The background box is colored by ``--sub-back-color``, and the margin of the background box is determined by ``--sub-shadow-offset``. The behavior of the outline is the same as the ``outline-and-shadow`` style. This corresponds to ``BorderStyle=4``, which is a libass-specific extension. Default: ``outline-and-shadow``. Predefined profiles are available to enable optimized ``background-box`` style for OSD and subtitles. .. admonition:: Profiles - ``--profile=sub-box`` applies the ``background-box`` style to subtitles - ``--profile=osd-box`` applies the ``background-box`` style to the OSD, including stats and console - ``--profile=box`` applies the ``background-box`` style to both subtitles and OSD",
+    "link": "https://mpv.io/manual/master/#options-sub-border-style",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "outline-and-shadow",
+            "desc": "Outline and shadow (default)"
+          },
+          {
+            "value": "opaque-box",
+            "desc": "Opaque box"
+          },
+          {
+            "value": "background-box",
+            "desc": "Background box"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sub-color",
+    "group": "Subtitles",
+    "desc": "Specify the color used for unstyled text subtitles. The color is specified in the form ``r/g/b``, where each color component is specified as number in the range 0.0 to 1.0. It's also possible to specify the transparency by using ``r/g/b/a``, where the alpha value 0 means fully transparent, and 1.0 means opaque. If the alpha component is not given, the color is 100% opaque. Passing a single number to the option sets the sub to gray, and the form ``gray/a`` lets you specify alpha additionally. .. admonition:: Examples - ``--sub-color=1.0/0.0/0.0`` set sub to opaque red - ``--sub-color=1.0/0.0/0.0/0.75`` set sub to opaque red with 75% alpha - ``--sub-color=0.5/0.75`` set sub to 50% gray with 75% alpha Alternatively, the color can be specified as a RGB hex triplet in the form ``#RRGGBB``, where each 2-digit group expresses a color value in the range 0 (``00``) to 255 (``FF``). For example, ``#FF0000`` is red. Alpha is given with ``#AARRGGBB``. .. admonition:: Examples - ``--sub-color='#FF0000'`` set sub to opaque red - ``--sub-color='#C0808080'`` set sub to 50% gray with 75% alpha",
+    "link": "https://mpv.io/manual/master/#options-sub-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  }
+]

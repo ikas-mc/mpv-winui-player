@@ -1,0 +1,46 @@
+[
+  {
+    "name": "save-position-on-quit",
+    "group": "Watch Later",
+    "desc": "Always save the current playback position on quit, and also when the loadfile command is used to replace the current playlist. When this file is played again later, the player will seek to the old playback position on start. This does not happen if playback of a file is stopped in other ways. For example, going to the next file in the playlist will not save the position, and will start playback at beginning the next time the file is played. This behavior is disabled by default, but is always available when quitting the player with Shift+Q. See RESUMING PLAYBACK.",
+    "link": "https://mpv.io/manual/master/#options-save-position-on-quit",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "resume-playback",
+    "group": "Watch Later",
+    "desc": "Restore playback position from the watch_later configuration subdirectory, usually ~/.config/mpv/watch_later/ (default: yes).",
+    "link": "https://mpv.io/manual/master/#options-resume-playback",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "watch-later-dir",
+    "group": "Watch Later",
+    "desc": "The directory in which to store the \"watch later\" temporary files. --watch-later-directory is an alias for --watch-later-dir. If this option is unset, the files will be stored in a subdirectory named \"watch_later\" underneath the local state directory (usually ~/.local/state/mpv/).",
+    "link": "https://mpv.io/manual/master/#options-watch-later-dir",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "write-filename-in-watch-later-config",
+    "group": "Watch Later",
+    "desc": "Prepend the watch later config files with the name of the file they refer to. This is simply written as comment on the top of the file. This option may expose privacy-sensitive information and is thus disabled by default.",
+    "link": "https://mpv.io/manual/master/#options-write-filename-in-watch-later-config",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  }
+]

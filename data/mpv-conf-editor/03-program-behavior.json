@@ -1,0 +1,90 @@
+[
+  {
+    "name": "log-file",
+    "group": "Program Behavior",
+    "desc": "Opens the given path for writing, and print log messages to it. Existing files will be truncated. The log level is at least -v -v, but can be raised via --msg-level (the option cannot lower it below the forced minimum log level). A special case is the macOS bundle, it will create a log file at ~/Library/Logs/mpv.log by default.",
+    "link": "https://mpv.io/manual/master/#options-log-file",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "include",
+    "group": "Program Behavior",
+    "desc": "Specify configuration file to be parsed after the default ones.",
+    "link": "https://mpv.io/manual/master/#options-include",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "load-scripts",
+    "group": "Program Behavior",
+    "desc": "If set to no, don't auto-load scripts from the scripts configuration subdirectory (usually ~/.config/mpv/scripts/). (Default: yes)",
+    "link": "https://mpv.io/manual/master/#options-load-scripts",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "script-opt",
+    "group": "Program Behavior",
+    "desc": "Set options for scripts. A script can query an option by key. If an option is used and what semantics the option value has depends entirely on the loaded scripts. Values not claimed by any scripts are ignored. Each use of the ``--script-opt`` option will add another option to the internal list, while ``--script-opts`` takes a list of options at once, and overwrites the internal list with it. The latter is a key/value list option. See `List Options`_ for details.",
+    "link": "https://mpv.io/manual/master/#options-script-opt",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "reset-on-next-file",
+    "group": "Program Behavior",
+    "desc": "Normally, mpv will try to keep all settings when playing the next file on the playlist, even if they were changed by the user during playback. (This behavior is the opposite of MPlayer's, which tries to reset all settings when starting next file.) Default: Do not reset anything. This can be changed with this option. It accepts a list of options, and mpv will reset the value of these options on playback start to the initial value. The initial value is either the default value, or as set by the config file or command line. The special name all resets as many options as possible. This is a string list option. See List Options for details. Examples - --reset-on-next-file=pause Reset pause mode when switching to the next file. - --reset-on-next-file=fullscreen,speed Reset fullscreen and playback speed settings if they were changed during playback. - --reset-on-next-file=all Try to reset all settings that were changed during playback.",
+    "link": "https://mpv.io/manual/master/#options-reset-on-next-file",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "ytdl",
+    "group": "Program Behavior",
+    "desc": "Enable the youtube-dl hook-script. It will look at the input URL, and will play the video located on the website. This works with many streaming sites, not just the one that the script is named after. This requires a recent version of youtube-dl to be installed on the system (default: yes). If the script can't do anything with an URL, it will do nothing. This accepts a set of options, which can be passed to it with the --script-opts option (using ytdl_hook- as prefix): try_ytdl_first=<yes|no> If 'yes' will try parsing the URL with youtube-dl first, instead of the default where it's only after mpv failed to open it. This mostly depends on whether most of your URLs need youtube-dl parsing. exclude=<URL1|URL2|... A |-separated list of URL patterns which mpv should not use with youtube-dl. The patterns are matched after the http(s):// part of the URL. ^ matches the beginning of the URL, $ matches its end, and you should use % before any of the characters ^$()%|,.[]*+-? to match that character. URLs are converted to lower case before matching. Examples - --script-opts=ytdl_hook-exclude='^youtube%.com' will exclude any URL that starts with http://youtube.com or https://youtube.com. - --script-opts=ytdl_hook-exclude='%.mkv$|%.mp4$' will exclude any URL that ends with .mkv or .mp4. See more lua patterns here: https://www.lua.org/manual/5.1/manual.html#5.4.1 include=<URL1|URL2|... A |-separated list of URL patterns which mpv should try to parse with youtube-dl first when try_ytdl_first is no. The patterns are matched in the same way as exclude. Default: ^%w+%.youtube%.com/|^youtube%.com/|^youtu%.be/|^%w+%.twitch%.tv/|^twitch%.tv/ all_formats=<yes|no> If 'yes' will attempt to add all formats found reported by youtube-dl (default: no). Each format is added as a separate track. In addition, they are delay-loaded, and actually opened only when a track is selected (this should keep load times as low as without this option). It adds average bitrate metadata, if available, which means you can use --hls-bitrate to decide which track to select. (HLS used to be the only format whose alternative quality streams were exposed in a similar way, thus the option name.) Tracks which represent formats that were selected by youtube-dl as default will have the default flag set. This means mpv should generally still select formats chosen with --ytdl-format by default. Although this mechanism makes it possible to switch streams at runtime, it's not suitable for this purpose for various technical reasons. (It's slow, which can't be really fixed.) In general, this option is not useful, and was only added to show that it's possible. There are two cases that must be considered when doing quality/bandwidth selection: 1. Completely separate audio and video streams (DASH-like). Each of these streams contain either only audio or video, so you can mix and combine audio/video bandwidths without restriction. This intuitively matches best with the concept of selecting quality by track (what all_formats is supposed to do). 2. Separate sets of muxed audio and video streams. Each version of the media contains both an audio and video stream, and they are interleaved. In order not to waste bandwidth, you should only select one of these versions (if, for example, you select an audio stream, then video will be downloaded, even if you selected video from a different stream). mpv will still represent them as separate tracks, but will set the title of each track to muxed-N, where N is replaced with the youtube-dl format ID of the originating stream. Some sites will mix 1. and 2., but we assume that they do so for compatibility reasons, and there is no reason to use them at all. force_all_formats=<yes|no> If set to 'yes', and all_formats is also set to 'yes', this will try to represent all youtube-dl reported formats as tracks, even if mpv would normally use the direct URL reported by it (default: yes). It appears this normally makes a difference if youtube-dl works on a master HLS playlist. If this is set to 'no', this specific kind of stream is treated like all_formats is set to 'no', and the stream selection as done by youtube-dl (via --ytdl-format) is used. thumbnails=<all|best|none> Add thumbnails as video tracks (default: none). Thumbnails get downloaded when they are added as tracks, so 'all' can have a noticeable impact on how long it takes to open the video when there are a lot of thumbnails. use_manifests=<yes|no> Make mpv use the master manifest URL for formats like HLS and DASH, if available, allowing for video/audio selection in runtime (default: no). It's disabled (\"no\") by default for performance reasons. ytdl_path=youtube-dl Configure paths to youtube-dl's executable or a compatible fork's. The paths should be separated by : on Unix and ; on Windows. mpv looks in order for the configured paths in PATH and in mpv's config directory. The defaults are \"yt-dlp\", \"yt-dlp_x86\" and \"youtube-dl\". On Windows the suffix extension is not necessary, but only \".exe\" is acceptable. Why do the option names mix _ and -? I have no idea.",
+    "link": "https://mpv.io/manual/master/#options-ytdl",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "ytdl-format",
+    "group": "Program Behavior",
+    "desc": "Format selection string that is directly passed to youtube-dl. The possible values are specific to the website and the video, for a given URL the available formats can be found with the command youtube-dl -F URL. See youtube-dl's documentation for available aliases. (Default: empty) An empty value or ytdl does not pass a --format option to youtube-dl at all, and thus uses its default format selection behavior.",
+    "link": "https://mpv.io/manual/master/#options-ytdl-format",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "ytdl-raw-options",
+    "group": "Program Behavior",
+    "desc": "Pass arbitrary options to youtube-dl. Parameter and argument should be passed as a key-value pair. Options without argument must include =. There is no sanity checking so it's possible to break things (i.e. passing invalid parameters to youtube-dl). A proxy URL can be passed for youtube-dl to use it in parsing the website. This is useful for geo-restricted URLs. After youtube-dl parsing, some URLs also require a proxy for playback, so this can pass that proxy information to mpv. Take note that SOCKS proxies aren't supported and https URLs also bypass the proxy. This is a limitation in FFmpeg. This is a key/value list option. See List Options for details. Example - --ytdl-raw-options=username=user,password=pass - --ytdl-raw-options=force-ipv6= - --ytdl-raw-options=proxy=[http://127.0.0.1:3128] - --ytdl-raw-options-append=proxy=http://127.0.0.1:3128",
+    "link": "https://mpv.io/manual/master/#options-ytdl-raw-options",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  }
+]

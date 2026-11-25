@@ -1,0 +1,136 @@
+[
+  {
+    "name": "audio-device",
+    "group": "Audio",
+    "desc": "Use the given audio device. This consists of the audio output name, e.g. alsa, followed by /, followed by the audio output specific device name. The default value for this option is auto, which tries every audio output in preference order with the default device. You can list audio devices with --audio-device=help. This outputs the device name in quotes, followed by a description. The device name is what you have to pass to the --audio-device option. The list of audio devices can be retrieved by API by using the audio-device-list property. While the option normally takes one of the strings as indicated by the methods above, you can also force the device for most AOs by building it manually. For example name/foobar forces the AO name to use the device foobar. However, the --ao option will strictly force a specific AO. To avoid confusion, don't use --ao and --audio-device together. Example for ALSA MPlayer and mplayer2 required you to replace any ',' with '.' and any ':' with '=' in the ALSA device name. For example, to use the device named dmix:default, you had to do: -ao alsa:device=dmix=default In mpv you could instead use: --audio-device=alsa/dmix:default",
+    "link": "https://mpv.io/manual/master/#options-audio-device",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "audio-exclusive",
+    "group": "Audio",
+    "desc": "Enable exclusive output mode. In this mode, the system is usually locked out, and only mpv will be able to output audio. This only works for some audio outputs, such as wasapi, coreaudio, pipewire and audiounit. Other audio outputs silently ignore this option. They either have no concept of exclusive mode, or the mpv side of the implementation is missing.",
+    "link": "https://mpv.io/manual/master/#options-audio-exclusive",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "ao",
+    "group": "Audio",
+    "desc": "Specify a priority list of audio output drivers to be used.",
+    "link": "https://mpv.io/manual/master/#options-ao",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "ad-lavc-threads",
+    "group": "Audio",
+    "desc": "Number of threads to use for decoding. Whether threading is actually supported depends on codec. As of this writing, it's supported for some lossless codecs only. 0 means autodetect number of cores on the machine and use that, up to the maximum of 16 (default: 1).",
+    "link": "https://mpv.io/manual/master/#options-ad-lavc-threads",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 16
+      }
+    ]
+  },
+  {
+    "name": "audio-channels",
+    "group": "Audio",
+    "desc": "Control which audio channels are output (e.g. surround vs. stereo). There are the following possibilities: - --audio-channels=auto-safe Use the system's preferred channel layout. If there is none (such as when accessing a hardware device instead of the system mixer), force stereo. Some audio outputs might simply accept any layout and do downmixing on their own. This is the default. - --audio-channels=auto Send the audio device whatever it accepts, preferring the audio's original channel layout. Can cause issues with HDMI (see the warning below). - --audio-channels=layout1,layout2,... List of ,-separated channel layouts which should be allowed. Technically, this only adjusts the filter chain output to the best matching layout in the list, and passes the result to the audio API. It's possible that the audio API will select a different channel layout. Using this mode is recommended for direct hardware output, especially over HDMI (see HDMI warning below). - --audio-channels=<stereo|mono> Force a downmix to stereo or mono. These are special-cases of the previous item. (See paragraphs below for implications.) If a list of layouts is given, each item can be either an explicit channel layout name (like 5.1), or a channel number. Channel numbers refer to default layouts, e.g. 2 channels refer to stereo, 6 refers to 5.1. See --audio-channels=help output for defined default layouts. This also lists speaker names, which can be used to express arbitrary channel layouts (e.g. fl-fr-lfe is 2.1). If the list of channel layouts has only 1 item, the decoder is asked to produce according output. This sometimes triggers decoder-downmix, which might be different from the normal mpv downmix. (Only some decoders support remixing audio, like AC-3, AAC or DTS. You can use --ad-lavc-downmix=no to make the decoder always output its native layout.) One consequence is that --audio-channels=stereo triggers decoder downmix, while auto or auto-safe never will, even if they end up selecting stereo. This happens because the decision whether to use decoder downmix happens long before the audio device is opened. If the channel layout of the media file (i.e. the decoder) and the AO's channel layout don't match, mpv will attempt to insert a conversion filter. You may need to change the channel layout of the system mixer to achieve your desired output as mpv does not have control over it. Another work-around for this on some AOs is to use --audio-exclusive=yes to circumvent the system mixer entirely. Using auto can cause issues when using audio over HDMI. The OS will typically report all channel layouts that _can_ go over HDMI, even if the receiver does not support them. If a receiver gets an unsupported channel layout, random things can happen, such as dropping the additional channels, or adding noise. You are recommended to set an explicit whitelist of the layouts you want. For example, most A/V receivers connected via HDMI and that can do 7.1 would be served by: --audio-channels=7.1,5.1,stereo",
+    "link": "https://mpv.io/manual/master/#options-audio-channels",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "audio-display",
+    "group": "Audio",
+    "desc": "Determines whether to display cover art when playing audio files and with what priority. It will display the first image found, and additional images are available as video tracks. :no: Disable display of video entirely when playing audio files. :embedded-first: Display embedded images and external cover art, giving priority to embedded images (default). :external-first: Display embedded images and external cover art, giving priority to external files. This option has no influence on files with normal video tracks.",
+    "link": "https://mpv.io/manual/master/#options-audio-display",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Disable video display when playing audio files"
+          },
+          {
+            "value": "embedded-first",
+            "desc": "Display cover art, prefer embedded images (default)"
+          },
+          {
+            "value": "external-first",
+            "desc": "Display cover art, prefer external files"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "audio-format",
+    "group": "Audio",
+    "desc": "Select the sample format used for output from the audio filter layer to the sound card. The values that <format> can adopt are listed below in the description of the format audio filter.",
+    "link": "https://mpv.io/manual/master/#options-audio-format",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "audio-samplerate",
+    "group": "Audio",
+    "desc": "Select the output sample rate to be used (of course sound cards have limits on this). If the sample frequency selected is different from that of the current media, the internal swresample audio filter will be inserted into the audio filter layer to compensate for the difference.",
+    "link": "https://mpv.io/manual/master/#options-audio-samplerate",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0
+      }
+    ]
+  },
+  {
+    "name": "audio-file-auto",
+    "group": "Audio",
+    "desc": "Load additional audio files matching the video filename. The parameter specifies how external audio files are matched.",
+    "link": "https://mpv.io/manual/master/#options-audio-file-auto",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Don't load external audio files"
+          },
+          {
+            "value": "exact",
+            "desc": "Load audio files with exact name match"
+          },
+          {
+            "value": "fuzzy",
+            "desc": "Load audio files with fuzzy name match"
+          },
+          {
+            "value": "all",
+            "desc": "Load all matching audio files"
+          }
+        ]
+      }
+    ]
+  }
+]
