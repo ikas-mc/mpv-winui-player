@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player.History"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -21,15 +22,15 @@
                 x:Name="ClearButton"
                 Click="ClearButton_Click"
                 Icon="Delete"
-                Label="Clear" />
+                Label="{x:Bind r:AppContext.AppLang.Clear}" />
             <AppBarButton
                 Click="OpenFolderButton_Click"
                 Icon="OpenLocal"
-                Label="Open Folder" />
+                Label="{x:Bind r:AppContext.AppLang.OpenFolder}" />
             <AppBarButton
                 Click="RefreshButton_Click"
                 Icon="Refresh"
-                Label="Refresh" />
+                Label="{x:Bind r:AppContext.AppLang.Refresh}" />
         </CommandBar>
 
         <ListView
@@ -101,12 +102,12 @@
 
         <TeachingTip
             x:Name="ClearTeachingTip"
-            Title="Clear watch later"
+            Title="{x:Bind r:AppContext.AppLang.PlayerClearWatchLater}"
             ActionButtonClick="ClearTeachingTip_ActionButtonClick"
-            ActionButtonContent="Yes"
-            CloseButtonContent="No"
+            ActionButtonContent="{x:Bind r:AppContext.AppLang.Yes}"
+            CloseButtonContent="{x:Bind r:AppContext.AppLang.No}"
             IsLightDismissEnabled="True"
-            Subtitle="Are you sure you want to clear the watch later files?"
+            Subtitle="{x:Bind r:AppContext.AppLang.PlayerClearWatchLaterConfirm}"
             Target="{x:Bind ClearButton}" />
     </Grid>
 </UserControl>

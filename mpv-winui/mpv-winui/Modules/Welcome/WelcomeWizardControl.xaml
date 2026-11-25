@@ -4,29 +4,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
     <StackPanel Spacing="12">
         <TextBlock
-            Text="Thanks for using mpvw"
+            Text="{x:Bind r:AppContext.AppLang.WelcomeThanks}"
             TextWrapping="Wrap" />
         <HyperlinkButton
             Padding="0"
             HorizontalAlignment="Left"
-            Content="Project Wiki"
+            Content="{x:Bind r:AppContext.AppLang.WelcomeProjectWiki}"
             NavigateUri="https://github.com/ikas-mc/mpv-winui-player/wiki" />
         <HyperlinkButton
             Padding="0"
             HorizontalAlignment="Left"
-            Content="Project Source"
+            Content="{x:Bind r:AppContext.AppLang.WelcomeProjectSource}"
             NavigateUri="https://github.com/ikas-mc/mpv-winui-player" />
         <TextBlock
-            Text="Download and import app configuration data to get started quickly or you can also do it later from the Help menu."
+            Text="{x:Bind r:AppContext.AppLang.WelcomeQuickStart}"
             TextWrapping="Wrap" />
         <Button
             x:Name="ImportSampleDataButton"
             HorizontalAlignment="Stretch"
             Click="ImportSampleDataButton_Click"
-            Content="Import App Conf Data"
+            Content="{x:Bind r:AppContext.AppLang.WelcomeImportAppConfData}"
             Style="{StaticResource AccentButtonStyle}" />
     </StackPanel>
 </UserControl>

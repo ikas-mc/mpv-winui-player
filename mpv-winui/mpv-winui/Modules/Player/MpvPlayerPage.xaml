@@ -9,13 +9,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pc="using:mpv_winui.Modules.Player.PlayerControl"
     xmlns:preview="using:mpv_winui.Modules.Player.BuiltInPreview"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
     <Page.Resources>
-        <MenuFlyout x:Key="PlaylistContextMenu">
+        <MenuFlyout
+            x:Key="PlaylistContextMenu"
+            x:Name="PlaylistContextMenu">
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="play"
-                Text="Play">
+                Text="{x:Bind r:AppContext.AppLang.Play}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE768;" />
                 </MenuFlyoutItem.Icon>
@@ -24,7 +27,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="move-top"
-                Text="Move to Top">
+                Text="{x:Bind r:AppContext.AppLang.PlayerMoveToTop}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xF090;" />
                 </MenuFlyoutItem.Icon>
@@ -32,7 +35,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="move-up"
-                Text="Move Up">
+                Text="{x:Bind r:AppContext.AppLang.PlayerMoveUp}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE70E;" />
                 </MenuFlyoutItem.Icon>
@@ -40,7 +43,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="move-down"
-                Text="Move Down">
+                Text="{x:Bind r:AppContext.AppLang.PlayerMoveDown}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE70D;" />
                 </MenuFlyoutItem.Icon>
@@ -49,7 +52,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="move-bottom"
-                Text="Move to Bottom">
+                Text="{x:Bind r:AppContext.AppLang.PlayerMoveToBottom}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xF08E;" />
                 </MenuFlyoutItem.Icon>
@@ -58,7 +61,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="remove"
-                Text="Remove">
+                Text="{x:Bind r:AppContext.AppLang.Remove}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE74D;" />
                 </MenuFlyoutItem.Icon>
@@ -67,7 +70,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="copy-title"
-                Text="Copy Title">
+                Text="{x:Bind r:AppContext.AppLang.PlayerCopyTitle}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE8C8;" />
                 </MenuFlyoutItem.Icon>
@@ -75,7 +78,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="copy-path"
-                Text="Copy File Path">
+                Text="{x:Bind r:AppContext.AppLang.PlayerCopyFilePath}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE62F;" />
                 </MenuFlyoutItem.Icon>
@@ -83,7 +86,7 @@
             <MenuFlyoutItem
                 Click="PlaylistMenu_Click"
                 Tag="open-location"
-                Text="Open File Location">
+                Text="{x:Bind r:AppContext.AppLang.PlayerOpenFileLocation}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE838;" />
                 </MenuFlyoutItem.Icon>
@@ -113,141 +116,146 @@
             Grid.Row="0"
             Grid.ColumnSpan="1">
             <MenuBarItem
-                Title="File"
+                Title="{x:Bind r:AppContext.AppLang.File}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open"
-                    Text="Open File" />
+                    Text="{x:Bind r:AppContext.AppLang.OpenFile}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-folder"
-                    Text="Open Folder" />
+                    Text="{x:Bind r:AppContext.AppLang.OpenFolder}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-url"
-                    Text="Open URL" />
+                    Text="{x:Bind r:AppContext.AppLang.OpenUrl}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-clipboard"
-                    Text="Open from Clipboard" />
+                    Text="{x:Bind r:AppContext.AppLang.OpenFromClipboard}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-dvd"
-                    Text="Open DVD" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenDvd}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-bd"
-                    Text="Open Blu-ray" />
-                <MenuFlyoutSubItem Text="Open Disc">
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenBluRay}" />
+                <MenuFlyoutSubItem Text="{x:Bind r:AppContext.AppLang.OpenDisc}">
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-cdda"
-                        Text="Open CD" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenCd}" />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-dvda"
-                        Text="Open DVDA" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenDvda}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-cd-img"
-                        Text="Open CD Img" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenCdImage}" />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-dvd-img"
-                        Text="Open DVD Img" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenDvdImage}" />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-dvda-img"
-                        Text="Open DVDA Img" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenDvdaImage}" />
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-bd-img"
-                        Text="Open BD Img" />
+                        Text="{x:Bind r:AppContext.AppLang.PlayerOpenBdImage}" />
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-watch-history"
-                    Text="Open Watch History" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenWatchHistory}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="open-watch-later"
-                    Text="Open Watch Later" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenWatchLater}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="load-subtitle"
-                    Text="Add Subtitle" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerAddSubtitle}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="screenshot"
-                    Text="Screenshot" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerScreenshot}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="screenshot-no-sub"
-                    Text="Screenshot (No Subtitles)" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerScreenshotNoSubtitle}" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem
+                    Click="MenuFlyoutItem_Click"
+                    Tag="media-info"
+                    Text="{x:Bind r:AppContext.AppLang.MediaInfo}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="restart"
-                    Text="Restart" />
+                    Text="{x:Bind r:AppContext.AppLang.Restart}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="quit"
-                    Text="Quit" />
+                    Text="{x:Bind r:AppContext.AppLang.Quit}" />
             </MenuBarItem>
 
             <MenuBarItem
-                Title="View"
+                Title="{x:Bind r:AppContext.AppLang.View}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="playlist"
-                    Text="Playlist" />
+                    Text="{x:Bind r:AppContext.AppLang.Playlist}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="fullwindow"
-                    Text="Full Window" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerFullWindow}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="fullscreen"
-                    Text="Full Screen" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerFullScreen}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="ontop"
-                    Text="Always On Top" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerAlwaysOnTop}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="options"
-                    Text="Options" />
+                    Text="{x:Bind r:AppContext.AppLang.Options}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-edit"
-                    Text="Mpv Conf Editor" />
+                    Text="{x:Bind r:AppContext.AppLang.MpvConfEditor}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="edit-menu-mpv"
-                    Text="Mpv Menu Editor" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMpvMenuEditor}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="edit-menu-menubar"
-                    Text="Menu Bar Editor" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMenuBarEditor}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="conf-folder"
-                    Text="Open App Data Folder" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenAppDataFolder}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="mpv-folder"
-                    Text="Open Mpv Config Folder" />
-                <MenuFlyoutSubItem Text="Open">
+                    Text="{x:Bind r:AppContext.AppLang.PlayerOpenMpvConfigFolder}" />
+                <MenuFlyoutSubItem Text="{x:Bind r:AppContext.AppLang.Open}">
                     <MenuFlyoutItem
                         Click="MenuFlyoutItem_Click"
                         Tag="open-mpv-conf"
@@ -277,40 +285,40 @@
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
-                    Tag="media-info"
-                    Text="Media Info" />
+                    Tag="language"
+                    Text="{x:Bind r:AppContext.AppLang.Language}" />
             </MenuBarItem>
 
             <MenuBarItem
-                Title="Help"
+                Title="{x:Bind r:AppContext.AppLang.Help}"
                 IsTabStop="False">
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="about"
-                    Text="About" />
+                    Text="{x:Bind r:AppContext.AppLang.About}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="link-mpv-wiki"
-                    Text="Mpv Wiki" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMpvWiki}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="link-mpv-manual"
-                    Text="Mpv Manual" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMpvManual}" />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="link-mpv-manual-stable"
-                    Text="Mpv Manual(Stable)" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMpvManualStable}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="link-mpvw-wiki"
-                    Text="Mpvw Wiki" />
+                    Text="{x:Bind r:AppContext.AppLang.PlayerMpvwWiki}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem
                     Click="MenuFlyoutItem_Click"
                     Tag="import-conf-data"
-                    Text="Import Data" />
+                    Text="{x:Bind r:AppContext.AppLang.ImportData}" />
             </MenuBarItem>
         </MenuBar>
 

@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using mpv_winui.Modules.Common.View;
+using mpv_winui.Modules.Language;
 
 namespace mpv_winui.Modules.Settings;
 
@@ -9,7 +10,7 @@ public sealed partial class SettingsWindow : BaseWindow
     {
         InitializeComponent();
 
-        AppWindow.Title = "Settings";
+        AppWindow.Title = AppContext.AppLang.Settings;
         AppWindow.SetIcon("App.ico");
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 

@@ -47,6 +47,7 @@ namespace mpv_winui.Modules.Player.PlayerControl;
 [TemplatePart(Name = "MoreFullScreen", Type = typeof(MenuFlyoutItem))]
 [TemplatePart(Name = "MorePlaybackRate", Type = typeof(MenuFlyoutSubItem))]
 [TemplatePart(Name = "MoreZoom", Type = typeof(MenuFlyoutSubItem))]
+[TemplatePart(Name = "MoreZoomAuto", Type = typeof(MenuFlyoutItem))]
 public sealed partial class PlayerControl : Control
 {
     public delegate void OnPanelVisibleChangedHandler(bool hide);
@@ -99,6 +100,7 @@ public sealed partial class PlayerControl : Control
     private MenuFlyoutItem? _moreFullScreen;
     private MenuFlyoutSubItem? _morePlaybackRate;
     private MenuFlyoutSubItem? _moreZoom;
+    private MenuFlyoutItem? _moreZoomAuto;
 
     private bool _controlPanelIsVisible = true;
 
@@ -243,6 +245,7 @@ public sealed partial class PlayerControl : Control
 
         UnhookPartEvents();
         ResolveParts();
+        ApplyLocalizedText();
         ApplyButtonVisibilityStates();
         HookPartEvents();
 
@@ -309,11 +312,72 @@ public sealed partial class PlayerControl : Control
         _moreFullScreen = GetPart<MenuFlyoutItem>("MoreFullScreen");
         _morePlaybackRate = GetPart<MenuFlyoutSubItem>("MorePlaybackRate");
         _moreZoom = GetPart<MenuFlyoutSubItem>("MoreZoom");
+        _moreZoomAuto = GetPart<MenuFlyoutItem>("MoreZoomAuto");
     }
 
     private T? GetPart<T>(string name) where T : DependencyObject
     {
         return GetTemplateChild(name) as T;
+    }
+
+    private void ApplyLocalizedText()
+    {
+        var lang = AppContext.AppLang;
+
+        if (_moreSkipBackward is { } moreSkipBackward)
+        {
+            moreSkipBackward.Text = lang.PlayerSkipBackward;
+        }
+
+        if (_moreSkipForward is { } moreSkipForward)
+        {
+            moreSkipForward.Text = lang.PlayerSkipForward;
+        }
+
+        if (_moreShuffle is { } moreShuffle)
+        {
+            moreShuffle.Text = lang.PlayerShuffle;
+        }
+
+        if (_moreRepeat is { } moreRepeat)
+        {
+            moreRepeat.Text = lang.PlayerRepeat;
+        }
+
+        if (_morePlaybackRate is { } morePlaybackRate)
+        {
+            morePlaybackRate.Text = lang.PlayerPlaybackRate;
+        }
+
+        if (_morePreviousTrack is { } morePreviousTrack)
+        {
+            morePreviousTrack.Text = lang.PlayerPreviousTrack;
+        }
+
+        if (_moreNextTrack is { } moreNextTrack)
+        {
+            moreNextTrack.Text = lang.PlayerNextTrack;
+        }
+
+        if (_moreZoom is { } moreZoom)
+        {
+            moreZoom.Text = lang.PlayerZoom;
+        }
+
+        if (_moreZoomAuto is { } moreZoomAuto)
+        {
+            moreZoomAuto.Text = lang.PlayerZoomAuto;
+        }
+
+        if (_moreFullWindow is { } moreFullWindow)
+        {
+            moreFullWindow.Text = lang.PlayerFullWindow;
+        }
+
+        if (_moreFullScreen is { } moreFullScreen)
+        {
+            moreFullScreen.Text = lang.PlayerFullScreen;
+        }
     }
 
     private void ApplyButtonVisibilityStates()
@@ -549,7 +613,7 @@ public sealed partial class PlayerControl : Control
             //TODO
             flyout.Items.Clear();
 
-            var item = new MenuFlyoutItem() { Text = "Auto", Tag = "no", };
+            var item = new MenuFlyoutItem() { Text = AppContext.AppLang.PlayerZoomAuto, Tag = "no", };
             item.Click += ZoomSelectionMenu_Click;
             flyout.Items.Add(item);
 

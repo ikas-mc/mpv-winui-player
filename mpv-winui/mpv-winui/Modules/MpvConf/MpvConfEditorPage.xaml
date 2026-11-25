@@ -6,6 +6,7 @@
     xmlns:local="using:mpv_winui.Modules.MpvConf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:option="using:mpv_winui.Modules.MpvConf.Option"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -37,11 +38,13 @@
                 ValueChangeRequested="OnOptionValueChangeRequested" />
         </DataTemplate>
 
-        <MenuFlyout x:Key="ProfileContextMenu">
+        <MenuFlyout
+            x:Key="ProfileContextMenu"
+            x:Name="ProfileContextMenu">
             <MenuFlyoutItem
                 Click="ProfileMenu_Click"
                 Tag="rename"
-                Text="Rename">
+                Text="{x:Bind r:AppContext.AppLang.Rename}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE8AC;" />
                 </MenuFlyoutItem.Icon>
@@ -49,7 +52,7 @@
             <MenuFlyoutItem
                 Click="ProfileMenu_Click"
                 Tag="delete"
-                Text="Delete">
+                Text="{x:Bind r:AppContext.AppLang.Delete}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE74D;" />
                 </MenuFlyoutItem.Icon>
@@ -58,7 +61,7 @@
             <MenuFlyoutItem
                 Click="ProfileMenu_Click"
                 Tag="restore"
-                Text="Restore">
+                Text="{x:Bind r:AppContext.AppLang.Restore}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE7A7;" />
                 </MenuFlyoutItem.Icon>
@@ -88,7 +91,7 @@
                 x:Name="SearchBox"
                 Grid.Column="0"
                 VerticalAlignment="Center"
-                PlaceholderText="Search options"
+                PlaceholderText="{x:Bind r:AppContext.AppLang.MpvConfSearchOptions}"
                 TextChanged="SearchBox_TextChanged" />
 
             <CommandBar
@@ -103,17 +106,17 @@
                         Padding="8"
                         SelectionChanged="SourceFilter_SelectionChanged">
                         <ComboBoxItem
-                            Content="All"
+                            Content="{x:Bind r:AppContext.AppLang.All}"
                             IsSelected="True"
                             Tag="All" />
                         <ComboBoxItem
-                            Content="Conf"
+                            Content="{x:Bind r:AppContext.AppLang.MpvConfConf}"
                             Tag="FromConfFile" />
                         <ComboBoxItem
-                            Content="Enabled"
+                            Content="{x:Bind r:AppContext.AppLang.Enabled}"
                             Tag="Enabled" />
                         <ComboBoxItem
-                            Content="Modified"
+                            Content="{x:Bind r:AppContext.AppLang.Modified}"
                             Tag="Modified" />
                     </ComboBox>
                 </AppBarElementContainer>
@@ -122,8 +125,8 @@
                     Grid.Column="4"
                     Width="40"
                     Click="AddButton_Click"
-                    Label="Add"
-                    ToolTipService.ToolTip="Add">
+                    Label="{x:Bind r:AppContext.AppLang.Add}"
+                    ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Add}">
                     <AppBarButton.Icon>
                         <FontIcon
                             FontSize="14"
@@ -136,8 +139,8 @@
                     Width="40"
                     Click="SaveButton_Click"
                     IsEnabled="False"
-                    Label="Save"
-                    ToolTipService.ToolTip="Save">
+                    Label="{x:Bind r:AppContext.AppLang.Save}"
+                    ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Save}">
                     <AppBarButton.Icon>
                         <FontIcon
                             FontSize="14"
@@ -151,8 +154,8 @@
                     Width="40"
                     Click="ReloadButton_Click"
                     IsEnabled="False"
-                    Label="Reload"
-                    ToolTipService.ToolTip="Reload">
+                    Label="{x:Bind r:AppContext.AppLang.Reload}"
+                    ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Reload}">
                     <AppBarButton.Icon>
                         <FontIcon
                             FontSize="14"
@@ -181,7 +184,7 @@
                     Margin="4,0,0,4"
                     FontWeight="SemiBold"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="Profile" />
+                    Text="{x:Bind r:AppContext.AppLang.Profile}" />
                 <ListView
                     x:Name="ProfileList"
                     Grid.Row="1"
@@ -211,7 +214,7 @@
                     Margin="4,0,0,4"
                     FontWeight="SemiBold"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="Group" />
+                    Text="{x:Bind r:AppContext.AppLang.Group}" />
                 <ListView
                     x:Name="GroupList"
                     Grid.Row="1"

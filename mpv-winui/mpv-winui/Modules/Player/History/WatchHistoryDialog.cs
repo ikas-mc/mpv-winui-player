@@ -19,9 +19,9 @@ public static class WatchHistoryDialog
 
         var dialog = new ContentDialog
         {
-            Title = "Watch History",
+            Title = AppContext.AppLang.PlayerWatchHistory,
             Content = control,
-            CloseButtonText = "Close",
+            CloseButtonText = AppContext.AppLang.Close,
             XamlRoot = xamlRoot,
         };
         dialog.Resources["ContentDialogMaxWidth"] = 900;

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Menu.MenuEditor"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -16,11 +17,13 @@
             <Setter Property="Padding" Value="8" />
         </Style>
 
-        <MenuFlyout x:Key="TreeContextMenu">
+        <MenuFlyout
+            x:Key="TreeContextMenu"
+            x:Name="TreeContextMenu">
             <MenuFlyoutItem
                 Click="TreeContextMenu_Click"
                 Tag="edit"
-                Text="Edit">
+                Text="{x:Bind r:AppContext.AppLang.Edit}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE70F;" />
                 </MenuFlyoutItem.Icon>
@@ -28,7 +31,7 @@
             <MenuFlyoutItem
                 Click="TreeContextMenu_Click"
                 Tag="execute"
-                Text="Execute">
+                Text="{x:Bind r:AppContext.AppLang.Execute}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE768;" />
                 </MenuFlyoutItem.Icon>
@@ -36,7 +39,7 @@
             <MenuFlyoutItem
                 Click="TreeContextMenu_Click"
                 Tag="delete"
-                Text="Delete">
+                Text="{x:Bind r:AppContext.AppLang.Delete}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE74D;" />
                 </MenuFlyoutItem.Icon>
@@ -45,7 +48,7 @@
             <MenuFlyoutItem
                 Click="TreeContextMenu_Click"
                 Tag="delete-children"
-                Text="Delete children">
+                Text="{x:Bind r:AppContext.AppLang.MenuEditorDeleteChildren}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE711;" />
                 </MenuFlyoutItem.Icon>
@@ -53,7 +56,7 @@
             <MenuFlyoutItem
                 Click="TreeContextMenu_Click"
                 Tag="add-child"
-                Text="Add child">
+                Text="{x:Bind r:AppContext.AppLang.MenuEditorAddChild}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE710;" />
                 </MenuFlyoutItem.Icon>
@@ -89,9 +92,9 @@
             <AppBarButton
                 x:Name="SaveButton"
                 Click="SaveButton_Click"
-                Label="Save"
+                Label="{x:Bind r:AppContext.AppLang.Save}"
                 Style="{StaticResource SquareAppBarButtonStyle}"
-                ToolTipService.ToolTip="Save">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Save}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE74E;" />
                 </AppBarButton.Icon>
@@ -99,18 +102,18 @@
             <AppBarButton
                 x:Name="ReloadButton"
                 Click="ReloadButton_Click"
-                Label="Reload"
+                Label="{x:Bind r:AppContext.AppLang.Reload}"
                 Style="{StaticResource SquareAppBarButtonStyle}"
-                ToolTipService.ToolTip="Reload">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Reload}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE72C;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
                 Click="PreviewButton_Click"
-                Label="Preview"
+                Label="{x:Bind r:AppContext.AppLang.MenuEditorPreview}"
                 Style="{StaticResource SquareAppBarButtonStyle}"
-                ToolTipService.ToolTip="Rebuild preview menu">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuEditorPreviewRebuild}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE890;" />
                 </AppBarButton.Icon>
@@ -127,9 +130,9 @@
             <AppBarButton
                 HorizontalAlignment="Left"
                 Click="AddRootButton_Click"
-                Label="Add root"
+                Label="{x:Bind r:AppContext.AppLang.MenuEditorAddRoot}"
                 Style="{StaticResource SquareAppBarButtonStyle}"
-                ToolTipService.ToolTip="Add root node">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuEditorAddRootNode}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE710;" />
                 </AppBarButton.Icon>
@@ -179,17 +182,17 @@
             <RadioButton
                 x:Name="KindSubmenuRadio"
                 Checked="KindRadio_Checked"
-                Content="Menu (sub)"
+                Content="{x:Bind r:AppContext.AppLang.MenuEditorMenuSub}"
                 GroupName="NodeKind" />
             <RadioButton
                 x:Name="KindMenuItemRadio"
                 Checked="KindRadio_Checked"
-                Content="Menu (cmd)"
+                Content="{x:Bind r:AppContext.AppLang.MenuEditorMenuCmd}"
                 GroupName="NodeKind" />
             <RadioButton
                 x:Name="KindSeparatorRadio"
                 Checked="KindRadio_Checked"
-                Content="Separator"
+                Content="{x:Bind r:AppContext.AppLang.MenuEditorSeparator}"
                 GroupName="NodeKind" />
         </StackPanel>
 
@@ -203,7 +206,7 @@
                     Style="{StaticResource EditorRowStyle}">
                     <TextBox
                         x:Name="NameBox"
-                        Header="Name"
+                        Header="{x:Bind r:AppContext.AppLang.Name}"
                         TextChanged="NameBox_TextChanged" />
                 </Border>
 
@@ -212,8 +215,8 @@
                     Style="{StaticResource EditorRowStyle}">
                     <TextBox
                         x:Name="CommandBox"
-                        Header="Command"
-                        PlaceholderText="mpv command"
+                        Header="{x:Bind r:AppContext.AppLang.Command}"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuEditorCommand}"
                         TextChanged="CommandBox_TextChanged" />
                 </Border>
 
@@ -222,8 +225,8 @@
                     Style="{StaticResource EditorRowStyle}">
                     <TextBox
                         x:Name="HiddenBox"
-                        Header="hidden"
-                        PlaceholderText="expression"
+                        Header="{x:Bind r:AppContext.AppLang.MenuEditorHidden}"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuEditorExpression}"
                         TextChanged="StateBox_TextChanged" />
                 </Border>
 
@@ -232,8 +235,8 @@
                     Style="{StaticResource EditorRowStyle}">
                     <TextBox
                         x:Name="DisabledBox"
-                        Header="disabled"
-                        PlaceholderText="expression"
+                        Header="{x:Bind r:AppContext.AppLang.MenuEditorDisabled}"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuEditorExpression}"
                         TextChanged="StateBox_TextChanged" />
                 </Border>
 
@@ -242,8 +245,8 @@
                     Style="{StaticResource EditorRowStyle}">
                     <TextBox
                         x:Name="CheckedBox"
-                        Header="checked"
-                        PlaceholderText="expression"
+                        Header="{x:Bind r:AppContext.AppLang.MenuEditorChecked}"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuEditorExpression}"
                         TextChanged="StateBox_TextChanged" />
                 </Border>
 
@@ -264,7 +267,7 @@
                 x:Name="PreviewMenuButton"
                 HorizontalAlignment="Right"
                 Click="PreviewMenuButton_Click"
-                Content="Right-click menu preview" />
+                Content="{x:Bind r:AppContext.AppLang.MenuEditorPreviewRightClick}" />
         </Grid>
 
         <Border

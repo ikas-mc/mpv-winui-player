@@ -43,10 +43,10 @@ namespace mpv_winui.Modules.Player
             };
             var urlDialog = new ContentDialog
             {
-                Title = "Open URL",
+                Title = AppContext.AppLang.OpenUrl,
                 Content = urlBox,
-                PrimaryButtonText = "Open",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = AppContext.AppLang.Open,
+                CloseButtonText = AppContext.AppLang.Cancel,
                 XamlRoot = XamlRoot
             };
 

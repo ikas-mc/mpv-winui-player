@@ -32,52 +32,55 @@ namespace mpv_winui.Modules.Player
 
         private void AddOpenHeaderItems(IList<MenuFlyoutItemBase> target)
         {
-            var openSub = new MenuFlyoutSubItem { Text = "File" };
+            var lang = AppContext.AppLang;
+            var openSub = new MenuFlyoutSubItem { Text = lang.File };
             target.Add(openSub);
 
-            var item = new MenuFlyoutItem { Text = "Open File", Tag = "open" };
+            var item = new MenuFlyoutItem { Text = lang.OpenFile, Tag = "open" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
-            item = new MenuFlyoutItem { Text = "Open Folder", Tag = "open-folder" };
+            item = new MenuFlyoutItem { Text = lang.OpenFolder, Tag = "open-folder" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
-            item = new MenuFlyoutItem { Text = "Open URL", Tag = "open-url" };
+            item = new MenuFlyoutItem { Text = lang.OpenUrl, Tag = "open-url" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
-            item = new MenuFlyoutItem { Text = "Open from Clipboard", Tag = "open-clipboard" };
+            item = new MenuFlyoutItem { Text = lang.OpenFromClipboard, Tag = "open-clipboard" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
             openSub.Items.Add(new MenuFlyoutSeparator());
 
-            item = new MenuFlyoutItem { Text = "Open Watch History", Tag = "open-watch-history" };
+            item = new MenuFlyoutItem { Text = lang.PlayerOpenWatchHistory, Tag = "open-watch-history" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
-            item = new MenuFlyoutItem { Text = "Open Watch Later", Tag = "open-watch-later" };
+            item = new MenuFlyoutItem { Text = lang.PlayerOpenWatchLater, Tag = "open-watch-later" };
             item.Click += Item_Click;
             openSub.Items.Add(item);
 
-            item = new MenuFlyoutItem { Text = "Playlist", Tag = "playlist" };
+            item = new MenuFlyoutItem { Text = lang.Playlist, Tag = "playlist" };
             item.Click += Item_Click;
             target.Add(item);
         }
 
         private void AddCustomFooterItems(IList<MenuFlyoutItemBase> target)
         {
+            var lang = AppContext.AppLang;
+
             var subItem = new MenuFlyoutSubItem
             {
-                Text = "Window",
+                Text = lang.PlayerWindowMenu,
                 MinWidth = 200
             };
             target.Add(subItem);
 
             var item = new MenuFlyoutItem
             {
-                Text = "Toggle Playlist",
+                Text = lang.PlayerTogglePlaylist,
                 Tag = "playlist"
             };
             item.Click += Item_Click;
@@ -85,7 +88,7 @@ namespace mpv_winui.Modules.Player
 
             item = new MenuFlyoutItem
             {
-                Text = "Toggle Full Screen",
+                Text = lang.PlayerToggleFullScreen,
                 Tag = "fullscreen"
             };
             item.Click += Item_Click;
@@ -93,7 +96,7 @@ namespace mpv_winui.Modules.Player
 
             item = new MenuFlyoutItem
             {
-                Text = "Toggle Full Window",
+                Text = lang.PlayerToggleFullWindow,
                 Tag = "fullwindow"
             };
             item.Click += Item_Click;
@@ -101,7 +104,7 @@ namespace mpv_winui.Modules.Player
 
             item = new MenuFlyoutItem
             {
-                Text = "Always On Top",
+                Text = lang.PlayerAlwaysOnTop,
                 Tag = "ontop"
             };
             item.Click += Item_Click;
@@ -109,7 +112,7 @@ namespace mpv_winui.Modules.Player
 
             item = new MenuFlyoutItem
             {
-                Text = "Quit",
+                Text = lang.Quit,
                 Tag = "quit"
             };
             item.Click += Item_Click;

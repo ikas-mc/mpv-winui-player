@@ -17,9 +17,9 @@ public static class AppConfDataImportDialog
 
         var dialog = new ContentDialog
         {
-            Title = "Import App Configuration Data",
+            Title = AppContext.AppLang.AppConfDataImport,
             Content = control,
-            CloseButtonText = "Close",
+            CloseButtonText = AppContext.AppLang.Close,
             XamlRoot = xamlRoot,
         };
         dialog.Resources["ContentDialogMaxWidth"] = 900;

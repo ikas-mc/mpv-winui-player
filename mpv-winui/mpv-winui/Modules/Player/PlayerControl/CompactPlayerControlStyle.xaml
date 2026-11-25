@@ -274,6 +274,7 @@
                                                 <FontIcon Glyph="&#xE799;" />
                                             </MenuFlyoutSubItem.Icon>
                                             <MenuFlyoutItem
+                                                x:Name="MoreZoomAuto"
                                                 Tag="no"
                                                 Text="Auto" />
                                             <MenuFlyoutItem

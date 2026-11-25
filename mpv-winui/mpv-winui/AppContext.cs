@@ -11,7 +11,7 @@ namespace mpv_winui
     {
         public static readonly Logger AppLogger = LogManager.GetLogger("App");
 
-        public static AppLang AppLang { get; } = new();
+        public static AppLang AppLang { get; private set; } = new();
 
         public static AppSettings AppSetting { get; } = new();
 
@@ -19,11 +19,17 @@ namespace mpv_winui
 
         public static void Init()
         {
+            LoggerHelper.SetupLogger();
             _task = Task.WhenAll([
-                Task.Run(LoggerHelper.SetupLogger),
+                LoadAppLangAsync(),
                 AppData.Current.OpenLocalDataFolderAsync(),
                 AppBootstrap.RunAsync()
             ]);
+        }
+
+        private static async Task LoadAppLangAsync()
+        {
+            AppLang = await AppLanguageService.Instance.LoadAsync();
         }
 
         public static async Task WaitAll()

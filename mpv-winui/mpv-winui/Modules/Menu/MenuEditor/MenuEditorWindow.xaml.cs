@@ -16,7 +16,7 @@ public sealed partial class MenuEditorWindow : BaseWindow
         _filePath = filePath;
         _type = type;
 
-        AppWindow.Title = "Menu Editor";
+        AppWindow.Title = AppContext.AppLang.MenuEditor;
         AppWindow.SetIcon("App.ico");
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 

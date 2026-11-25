@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.Common.View;
 using mpv_winui.Modules.FileSystem;
+using mpv_winui.Modules.Language;
 
 namespace mpv_winui.Modules.MpvConf;
 
@@ -11,7 +12,7 @@ public sealed partial class MpvConfEditorWindow : BaseWindow
     {
         InitializeComponent();
 
-        AppWindow.Title = "Mpv Conf Editor";
+        AppWindow.Title = AppContext.AppLang.MpvConfEditor;
         AppWindow.SetIcon("App.ico");
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 

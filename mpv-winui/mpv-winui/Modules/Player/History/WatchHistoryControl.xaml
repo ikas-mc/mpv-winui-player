@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.Player.History"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -21,15 +22,15 @@
                 x:Name="ClearButton"
                 Click="ClearButton_Click"
                 Icon="Delete"
-                Label="Clear" />
+                Label="{x:Bind r:AppContext.AppLang.Clear}" />
             <AppBarButton
                 Click="OpenFileLocationButton_Click"
                 Icon="OpenLocal"
-                Label="Open File Location" />
+                Label="{x:Bind r:AppContext.AppLang.PlayerOpenFileLocation}" />
             <AppBarButton
                 Click="RefreshButton_Click"
                 Icon="Refresh"
-                Label="Refresh" />
+                Label="{x:Bind r:AppContext.AppLang.Refresh}" />
         </CommandBar>
 
         <ListView
@@ -110,12 +111,12 @@
 
         <TeachingTip
             x:Name="ClearTeachingTip"
-            Title="Clear history"
+            Title="{x:Bind r:AppContext.AppLang.PlayerClearHistory}"
             ActionButtonClick="ClearTeachingTip_ActionButtonClick"
-            ActionButtonContent="Yes"
-            CloseButtonContent="No"
+            ActionButtonContent="{x:Bind r:AppContext.AppLang.Yes}"
+            CloseButtonContent="{x:Bind r:AppContext.AppLang.No}"
             IsLightDismissEnabled="True"
-            Subtitle="Are you sure you want to clear the history?"
+            Subtitle="{x:Bind r:AppContext.AppLang.PlayerClearHistoryConfirm}"
             Target="{x:Bind ClearButton}" />
     </Grid>
 </UserControl>

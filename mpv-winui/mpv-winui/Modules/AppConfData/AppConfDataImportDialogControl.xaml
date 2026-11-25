@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.AppConfData"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     d:DesignWidth="480"
     mc:Ignorable="d">
 
@@ -33,12 +34,12 @@
             Grid.Row="0"
             Grid.Column="0"
             Click="ImportButton_Click"
-            Content="Import" />
+            Content="{x:Bind r:AppContext.AppLang.Import}" />
         <HyperlinkButton
             Grid.Row="0"
             Grid.Column="1"
             HorizontalAlignment="Left"
-            Content="Download"
+            Content="{x:Bind r:AppContext.AppLang.Download}"
             NavigateUri="https://github.com/ikas-mc/mpv-winui-player/wiki/App-Data-Sample" />
         <Button
             x:Name="ToggleSelectButton"
@@ -87,7 +88,7 @@
                                 Grid.Column="2"
                                 VerticalAlignment="Center"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Text="exists"
+                                Text="{x:Bind r:AppContext.AppLang.AppConfDataExists}"
                                 Visibility="{x:Bind Exists}" />
                         </Grid>
                     </TreeViewItem>
@@ -100,14 +101,14 @@
             Grid.Column="0"
             Grid.ColumnSpan="3"
             VerticalAlignment="Center"
-            Content="Force overwrite existing files" />
+            Content="{x:Bind r:AppContext.AppLang.AppConfDataForceOverwrite}" />
         <Button
             x:Name="ApplyButton"
             Grid.Row="2"
             Grid.Column="2"
             HorizontalAlignment="Right"
             Click="ApplyButton_Click"
-            Content="Apply"
+            Content="{x:Bind r:AppContext.AppLang.Apply}"
             IsEnabled="False"
             Style="{StaticResource AccentButtonStyle}" />
 
@@ -117,7 +118,7 @@
             Grid.Column="3"
             HorizontalAlignment="Right"
             Click="RestartButton_Click"
-            Content="Restart" />
+            Content="{x:Bind r:AppContext.AppLang.Restart}" />
 
         <Button
             x:Name="OpenTargetFolderButton"
@@ -125,7 +126,7 @@
             Grid.Column="4"
             HorizontalAlignment="Right"
             Click="OpenTargetFolderButton_Click"
-            ToolTipService.ToolTip="Open App Data Folder">
+            ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.AppConfDataOpenFolder}">
             <FontIcon Glyph="&#xE8DA;" />
         </Button>
 
