@@ -1,0 +1,125 @@
+[
+  {
+    "name": "demuxer-seekable-cache",
+    "group": "Demuxer",
+    "desc": "Debugging option to control whether seeking can use the demuxer cache (default: auto). Normally you don't ever need to set this; the default auto does the right thing and enables cache seeking it if --cache is set to yes (or is implied yes if --cache=auto). If enabled, short seek offsets will not trigger a low level demuxer seek (which means for example that slow network round trips or FFmpeg seek bugs can be avoided). If a seek cannot happen within the cached range, a low level seek will be triggered. Seeking outside of the cache will start a new cached range, but can discard the old cache range if the demuxer exhibits certain unsupported behavior. The special value auto means yes in the same situation as --cache-secs is used (i.e. when the stream appears to be a network stream or the stream cache is enabled).",
+    "link": "https://mpv.io/manual/master/#options-demuxer-seekable-cache",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "Enable cache seeking for network streams (default)"
+          },
+          {
+            "value": "no",
+            "desc": "Disable cache seeking"
+          },
+          {
+            "value": "yes",
+            "desc": "Always enable cache seeking"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "demuxer-thread",
+    "group": "Demuxer",
+    "desc": "Run the demuxer in a separate thread, and let it prefetch a certain amount of packets (default: yes). Having this enabled leads to smoother playback, enables features like prefetching, and prevents that stuck network freezes the player. On the other hand, it can add overhead, or the background prefetching can hog CPU resources. Disabling this option is not recommended. Use it for debugging only.",
+    "link": "https://mpv.io/manual/master/#options-demuxer-thread",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "force-seekable",
+    "group": "Demuxer",
+    "desc": "If the player thinks that the media is not seekable (e.g. playing from a pipe, or it's an http stream with a server that doesn't support range requests), seeking will be disabled. This option can forcibly enable it. For seeks within the cache, there's a good chance of success.",
+    "link": "https://mpv.io/manual/master/#options-force-seekable",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "prefetch-playlist",
+    "group": "Demuxer",
+    "desc": "Prefetch next playlist entry while playback of the current entry is ending (default: no). This merely opens the URL of the next playlist entry as soon as the current URL is fully read. This does **not** work with URLs resolved by the youtube-dl wrapper, and it won't. This does not affect HLS streams (.m3u8 URLs). Such stream by itself is internally a playlist of data segments, but is treated as a single media item by mpv. HLS prefetching depends on the demuxer cache settings and is on by default. This can occasionally make wrong prefetching decisions. For example, it can't predict whether you go backwards in the playlist, and assumes you won't edit the playlist.",
+    "link": "https://mpv.io/manual/master/#options-prefetch-playlist",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "directory-mode",
+    "group": "Demuxer",
+    "desc": "When opening a directory, open subdirectories lazily, recursively or not at all. The default is auto, which behaves like recursive with --shuffle, and like lazy otherwise.",
+    "link": "https://mpv.io/manual/master/#options-directory-mode",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "Recursive with --shuffle, lazy otherwise (default)"
+          },
+          {
+            "value": "lazy",
+            "desc": "Open subdirectories only when entered"
+          },
+          {
+            "value": "recursive",
+            "desc": "Open all subdirectories recursively"
+          },
+          {
+            "value": "ignore",
+            "desc": "Don't open subdirectories"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "directory-filter-types",
+    "group": "Demuxer",
+    "desc": "Media file types to filter when opening directory. To have all files added to the playlist, clear the list using --directory-filter-types-clr. (Default: video,audio,image,archive,playlist) This is a string list option. See List Options for details.",
+    "link": "https://mpv.io/manual/master/#options-directory-filter-types",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "autocreate-playlist",
+    "group": "Demuxer",
+    "desc": "When opening a local regular file, act as if the parent directory is opened and create a playlist automatically. :no: Load a single file (default). :filter: Create a playlist from the parent directory with files matching --directory-filter-types. :same: Create a playlist from the parent directory with files matching the same category as the currently loaded file. One of the *-exts is selected based on the input file and only files with matching extensions are added to the playlist. If the input file itself is not matched to any extension list, the playlist is not autogenerated.",
+    "link": "https://mpv.io/manual/master/#options-autocreate-playlist",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Load single file only (default)"
+          },
+          {
+            "value": "filter",
+            "desc": "Create playlist from parent dir matching --directory-filter-types"
+          },
+          {
+            "value": "same",
+            "desc": "Create playlist from parent dir matching file category"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,301 @@
+[
+  {
+    "name": "osd-on-seek",
+    "group": "Osd",
+    "desc": "Set what is displayed on the OSD during seeks. The default is bar. You can configure this on a per-command basis in input.conf using osd- prefixes, see Input Command Prefixes.",
+    "link": "https://mpv.io/manual/master/#options-osd-on-seek",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Don't show OSD on seek"
+          },
+          {
+            "value": "bar",
+            "desc": "Show seek bar (default)"
+          },
+          {
+            "value": "msg",
+            "desc": "Show seek message only"
+          },
+          {
+            "value": "msg-bar",
+            "desc": "Show both message and bar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osd-duration",
+    "group": "Osd",
+    "desc": "Set the duration of the OSD messages in ms (default: 1000).",
+    "link": "https://mpv.io/manual/master/#options-osd-duration",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 3600000
+      }
+    ]
+  },
+  {
+    "name": "osd-font",
+    "group": "Osd",
+    "desc": "Specify font to use for OSD. The default is ``sans-serif``. .. admonition:: Examples - ``--osd-font='Bitstream Vera Sans'`` - ``--osd-font='Comic Sans MS'``",
+    "link": "https://mpv.io/manual/master/#options-osd-font",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-font-size",
+    "group": "Osd",
+    "desc": "Specify the OSD font size. See ``--sub-font-size`` for details. Default: 30",
+    "link": "https://mpv.io/manual/master/#options-osd-font-size",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "osd-msg1",
+    "group": "Osd",
+    "desc": "Show this string as message on OSD with OSD level 1 (visible by default). The message will be visible by default, and as long as no other message covers it, and the OSD level isn't changed (see --osd-level). Expands properties; see Property Expansion.",
+    "link": "https://mpv.io/manual/master/#options-osd-msg1",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-msg2",
+    "group": "Osd",
+    "desc": "Similar to --osd-msg1, but for OSD level 2. If this is an empty string (default), then the playback time is shown.",
+    "link": "https://mpv.io/manual/master/#options-osd-msg2",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-msg3",
+    "group": "Osd",
+    "desc": "Similar to --osd-msg1, but for OSD level 3. If this is an empty string (default), then the playback time, duration, and some more information is shown. This is used for the show-progress command (by default mapped to P), and when seeking if enabled with --osd-on-seek or by osd- prefixes in input.conf (see Input Command Prefixes). --osd-status-msg is a legacy equivalent (but with a minor difference).",
+    "link": "https://mpv.io/manual/master/#options-osd-msg3",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-status-msg",
+    "group": "Osd",
+    "desc": "Show a custom string during playback instead of the standard status text. This overrides the status text used for --osd-level=3, when using the show-progress command (by default mapped to P), and when seeking if enabled with --osd-on-seek or osd- prefixes in input.conf (see Input Command Prefixes). Expands properties. See Property Expansion. This option has been replaced with --osd-msg3. The only difference is that this option implicitly includes ${osd-sym-cc}. This option is ignored if --osd-msg3 is not empty.",
+    "link": "https://mpv.io/manual/master/#options-osd-status-msg",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-playing-msg",
+    "group": "Osd",
+    "desc": "Show a message on OSD when playback starts. The string is expanded for properties, e.g. --osd-playing-msg='file: ${filename}' will show the message file: followed by a space and the currently played filename. See Property Expansion.",
+    "link": "https://mpv.io/manual/master/#options-osd-playing-msg",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-playlist-entry",
+    "group": "Osd",
+    "desc": "Whether to display the media title, filename, or both. If the media-title is not available, it will display only the filename. Default: title.",
+    "link": "https://mpv.io/manual/master/#options-osd-playlist-entry",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "title",
+            "desc": "Display media title, fallback to filename (default)"
+          },
+          {
+            "value": "filename",
+            "desc": "Display filename only"
+          },
+          {
+            "value": "both",
+            "desc": "Display both title and filename"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osd-blur",
+    "group": "Osd",
+    "desc": "Gaussian blur factor applied to the OSD font border. 0 means no blur applied (default).",
+    "link": "https://mpv.io/manual/master/#options-osd-blur",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-bold",
+    "group": "Osd",
+    "desc": "Format text on bold.",
+    "link": "https://mpv.io/manual/master/#options-osd-bold",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "osd-italic",
+    "group": "Osd",
+    "desc": "Format text on italic.",
+    "link": "https://mpv.io/manual/master/#options-osd-italic",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "osd-outline-color",
+    "group": "Osd",
+    "desc": "See ``--sub-color``. Color used for the OSD font outline. ``--osd-border-color`` is an alias for ``--osd-outline-color``.",
+    "link": "https://mpv.io/manual/master/#options-osd-outline-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-back-color",
+    "group": "Osd",
+    "desc": "See ``--sub-color``. Color used for OSD text background. ``--osd-shadow-color`` is an alias for ``--osd-back-color``.",
+    "link": "https://mpv.io/manual/master/#options-osd-back-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-outline-size",
+    "group": "Osd",
+    "desc": "Size of the OSD font outline in scaled pixels (see ``--sub-font-size`` for details). A value of 0 disables outlines. ``--osd-border-size`` is an alias for ``--osd-outline-size``. Default: 1.65",
+    "link": "https://mpv.io/manual/master/#options-osd-outline-size",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "osd-border-style",
+    "group": "Osd",
+    "desc": "See ``--sub-border-style``. Style used for OSD text border.",
+    "link": "https://mpv.io/manual/master/#options-osd-border-style",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "outline-and-shadow",
+            "desc": "Outline and shadow (BorderStyle=1)"
+          },
+          {
+            "value": "opaque-box",
+            "desc": "Opaque boxes (BorderStyle=3)"
+          },
+          {
+            "value": "background-box",
+            "desc": "Background box (BorderStyle=4)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osd-color",
+    "group": "Osd",
+    "desc": "Specify the color used for OSD. See ``--sub-color`` for details.",
+    "link": "https://mpv.io/manual/master/#options-osd-color",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "osd-level",
+    "group": "Osd",
+    "desc": "Specifies which mode the OSD should start in. :0: OSD completely disabled (subtitles only) :1: enabled (shows up only on user interaction) :2: enabled + current time visible by default :3: enabled + --osd-status-msg (current time and status by default)",
+    "link": "https://mpv.io/manual/master/#options-osd-level",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "0",
+            "desc": "OSD completely disabled (subtitles only)"
+          },
+          {
+            "value": "1",
+            "desc": "Enabled, shows on user interaction only"
+          },
+          {
+            "value": "2",
+            "desc": "Enabled + current time visible by default"
+          },
+          {
+            "value": "3",
+            "desc": "Enabled + status message (time and status by default)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osd-scale",
+    "group": "Osd",
+    "desc": "OSD font size multiplier, multiplied with --osd-font-size value.",
+    "link": "https://mpv.io/manual/master/#options-osd-scale",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 0.0,
+        "maximum": 100.0
+      }
+    ]
+  },
+  {
+    "name": "osd-scale-by-window",
+    "group": "Osd",
+    "desc": "Whether to scale the OSD with the window size (default: yes). If this is disabled, --osd-font-size and other OSD options that use scaled pixels are always in actual pixels. The effect is that changing the window size won't change the OSD font size. For scripts which draw user interface elements, it is recommended to respect the value of this option when deciding whether the elements are scaled with window size or not.",
+    "link": "https://mpv.io/manual/master/#options-osd-scale-by-window",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  }
+]

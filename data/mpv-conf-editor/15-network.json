@@ -1,0 +1,79 @@
+[
+  {
+    "name": "user-agent",
+    "group": "Network",
+    "desc": "Use ``<string>`` as user agent for HTTP streaming.",
+    "link": "https://mpv.io/manual/master/#options-user-agent",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "http-header-fields",
+    "group": "Network",
+    "desc": "Set custom HTTP fields when accessing HTTP stream. This is a string list option. See `List Options`_ for details. .. admonition:: Example :: mpv --http-header-fields='Field1: value1','Field2: value2' \\ http://localhost:1234 Will generate HTTP request:: GET / HTTP/1.0 Host: localhost:1234 User-Agent: MPlayer Icy-MetaData: 1 Field1: value1 Field2: value2 Connection: close",
+    "link": "https://mpv.io/manual/master/#options-http-header-fields",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "http-proxy",
+    "group": "Network",
+    "desc": "URL of the HTTP/HTTPS proxy. If this is set, the ``http_proxy`` environment is ignored. The ``no_proxy`` environment variable is still respected. This option is silently ignored if it does not start with ``http://``. Proxies are not used for https URLs. Setting this option does not try to make the ytdl script use the proxy.",
+    "link": "https://mpv.io/manual/master/#options-http-proxy",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "referrer",
+    "group": "Network",
+    "desc": "Specify a referrer path or URL for HTTP requests.",
+    "link": "https://mpv.io/manual/master/#options-referrer",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "tls-verify",
+    "group": "Network",
+    "desc": "Verify peer certificates when using TLS (e.g. with ``https://...``) (default: yes*). Disabling this option allows man-in-the-middle attacks to silently substitute the content of an HTTPS stream and is only recommended as a per-stream override when verification fails for a known-good reason (e.g. an outdated CA bundle, a corporate proxy, a development server with a self-signed certificate). This is disabled by default, if mpv is built without libcurl and libavformat is older than 63.0.100.",
+    "link": "https://mpv.io/manual/master/#options-tls-verify",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "tls-ca-file",
+    "group": "Network",
+    "desc": "Certificate authority database file for use with TLS. (Silently fails with older FFmpeg versions.)",
+    "link": "https://mpv.io/manual/master/#options-tls-ca-file",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "network-timeout",
+    "group": "Network",
+    "desc": "Specify the network timeout in seconds (default: 60 seconds). This affects at least HTTP. The special value 0 uses the FFmpeg defaults. If a protocol is used which does not support timeouts, this option is silently ignored. .. warning:: This breaks the RTSP protocol, because of inconsistent FFmpeg API regarding its internal timeout option. Not only does the RTSP timeout option accept different units (seconds instead of microseconds, causing mpv to pass it huge values), it will also overflow FFmpeg internal calculations. The worst is that merely setting the option will put RTSP into listening mode, which breaks any client uses. At time of this writing, the fix was not made effective yet. For this reason, this option is ignored (or should be ignored) on RTSP URLs. You can still set the timeout option directly with ``--demuxer-lavf-o``.",
+    "link": "https://mpv.io/manual/master/#options-network-timeout",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  }
+]

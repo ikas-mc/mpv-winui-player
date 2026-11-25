@@ -1,0 +1,887 @@
+[
+  {
+    "name": "scale",
+    "group": "GPU Renderer",
+    "desc": "The filter function to use when upscaling video. bilinear Bilinear hardware texture filtering (fastest, very low quality). This is the default when using the fast profile. lanczos Lanczos scaling. Provides good balance between quality and performance. This is the default for scale. The number of taps can be controlled with scale-radius, but is best left unchanged. (This filter is an alias for sinc-windowed sinc) ewa_lanczos Elliptic weighted average Lanczos scaling. Also known as Jinc. Relatively slow, but very good quality. The radius can be controlled with scale-radius. Increasing the radius makes the filter sharper but adds more ringing. (This filter is an alias for jinc-windowed jinc) ewa_lanczossharp A slightly sharpened version of ewa_lanczos. This is the default when using the high-quality profile. Blur value determined by method originally developed by Nicolas Robidoux for Image Magick, see: https://www.imagemagick.org/discourse-server/viewtopic.php?p=89068#p89068 ewa_lanczos4sharpest Very sharp scaler, but also slightly slower than ewa_lanczossharp. Prone to ringing, so it's recommended to combine this with an anti-ringing shader. On --vo=gpu-next, setting this filter enables built-in anti-ringing, so no extra action needs to be taken. For more details, see: https://www.imagemagick.org/discourse-server/viewtopic.php?p=128587#p128587 mitchell Mitchell-Netravali. Piecewise cubic filter with a support of radius 2.0. Provides a balanced compromise of all scaling artifacts. This filter has both B and C set to 1/3. The B and C parameters can be controlled with --scale-param1 and --scale-param2. hermite Hermite spline. Similar to bicubic but with B set to 0.0. This filter has the special property of having a support of radius 1.0, making it very fast in comparison, but prone to blocking. This is the default for --dscale. catmull_rom Catmull-Rom spline. Similar to mitchell, but with B and C set to 0.0 and 0.5 respectively. This filter is sharper than mitchell, but prone to ringing. oversample A version of nearest neighbour that (naively) oversamples pixels, so that pixels overlapping edges get linearly interpolated instead of rounded. This essentially removes the small imperfections and judder artifacts caused by nearest-neighbour interpolation, in exchange for adding some blur. This can also be used for frame mixing, where it is commonly known as \"smoothmotion\" (see --tscale). linear A --tscale filter. There are some more filters, but most are not as useful. For a complete list, pass help as value, e.g.:: mpv --scale=help",
+    "link": "https://mpv.io/manual/master/#options-scale",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "dscale",
+    "group": "GPU Renderer",
+    "desc": "Like --scale, but apply these filters on downscaling instead.",
+    "link": "https://mpv.io/manual/master/#options-dscale",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "tscale",
+    "group": "GPU Renderer",
+    "desc": "The filter used for interpolating the temporal axis (frames). This is only used if --interpolation is enabled. The only valid choices for --tscale are separable convolution filters (use --tscale=help to get a list). The default is oversample. Common --tscale choices include oversample, linear, catmull_rom, mitchell, gaussian, or bicubic. These are listed in increasing order of smoothness/blurriness, with bicubic being the smoothest/blurriest and oversample being the sharpest/least smooth.",
+    "link": "https://mpv.io/manual/master/#options-tscale",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "scaler-resizes-only",
+    "group": "GPU Renderer",
+    "desc": "Disable the scaler if the video image is not resized. In that case, bilinear is used instead of whatever is set with --scale. Bilinear will reproduce the source image perfectly if no scaling is performed. Enabled by default. Note that this option never affects --cscale.",
+    "link": "https://mpv.io/manual/master/#options-scaler-resizes-only",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "correct-downscaling",
+    "group": "GPU Renderer",
+    "desc": "When using convolution based filters, extend the filter size when downscaling. Increases quality, but reduces performance while downscaling. Enabled by default. This will perform slightly sub-optimally for anamorphic video (but still better than without it) since it will extend the size to match only the milder of the scale factors between the axes. Note: this option is ignored when using bilinear downscaling with --vo=gpu.",
+    "link": "https://mpv.io/manual/master/#options-correct-downscaling",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "interpolation",
+    "group": "GPU Renderer",
+    "desc": "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder). This requires setting the --video-sync option to one of the display- modes, or it will be silently disabled. This essentially attempts to interpolate the missing frames by convoluting the video along the temporal axis. The filter used can be controlled using the --tscale setting.",
+    "link": "https://mpv.io/manual/master/#options-interpolation",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "interpolation-threshold",
+    "group": "GPU Renderer",
+    "desc": "Threshold below which frame ratio interpolation gets disabled (default: 0.01). This is calculated as abs(disphz/vfps - 1) < threshold, where vfps is the speed-adjusted video FPS, and disphz the display refresh rate. (The speed-adjusted video FPS is roughly equal to the normal video FPS, but with slowdown and speedup applied. This matters if you use --video-sync=display-resample to make video run synchronously to the display FPS, or if you change the speed property.) The default is intended to enable interpolation in scenarios where retiming with the --video-sync=display-* cannot adjust the speed of the video sufficiently for smooth playback. For example if a video is 60.00 FPS and your display refresh rate is 59.94 Hz, interpolation will never be activated, since the mismatch is within 1% of the refresh rate. The default also handles the scenario when mpv cannot determine the container FPS, such as during certain live streams, and may dynamically toggle interpolation on and off. In this scenario, the default would be to not use interpolation but rather to allow --video-sync=display-* to retime the video to match display refresh rate. See --video-sync-max-video-change for more information about how mpv will retime video. Also note that if you use e.g. --video-sync=display-vdrop, small deviations in the rate can disable interpolation and introduce a discontinuity every other minute. Set this to -1 to disable this logic.",
+    "link": "https://mpv.io/manual/master/#options-interpolation-threshold",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "interpolation-preserve",
+    "group": "GPU Renderer",
+    "desc": "Preserve the previous frames' interpolated results even when renderer parameters are changed - with the exception of options related to cropping and video placement, which always invalidate the cache. Enabling this option makes dynamic updates of renderer settings slightly smoother at the cost of slightly higher latency in response to such changes. Defaults to on. (Only affects --vo=gpu-next, note that --vo=gpu always invalidates interpolated frames)",
+    "link": "https://mpv.io/manual/master/#options-interpolation-preserve",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "dither-depth",
+    "group": "GPU Renderer",
+    "desc": "Set dither target depth to N. Default: auto. no Disable any dithering done by mpv. auto Automatic selection. On --vo=gpu: detected depth or 8 bpc otherwise On --vo=gpu-next: detected depth 8 Dither to 8 bit output. Note that the on-the-wire bit depth cannot be detected except when using gpu-api=d3d11. Explicitly setting the value to your display's bit depth is recommended, as dithering performed by some LCD panels can be of low quality.",
+    "link": "https://mpv.io/manual/master/#options-dither-depth",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Disable dithering"
+          },
+          {
+            "value": "auto",
+            "desc": "Automatic selection based on output (default)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dither-size-fruit",
+    "group": "GPU Renderer",
+    "desc": "Set the size of the dither matrix (default: 6). The actual size of the matrix is (2^N) x (2^N) for an option value of N, so a value of 6 gives a size of 64x64. The matrix is generated at startup time, and a large matrix can take rather long to compute (seconds). Used in --dither=fruit mode only.",
+    "link": "https://mpv.io/manual/master/#options-dither-size-fruit",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 2,
+        "maximum": 8
+      }
+    ]
+  },
+  {
+    "name": "dither",
+    "group": "GPU Renderer",
+    "desc": "Select dithering algorithm (default: fruit). (Normally, the --dither-depth option controls whether dithering is enabled.) The error-diffusion option requires compute shader support. It also requires large amount of shared memory to run, the size of which depends on both the kernel (see --error-diffusion option below) and the height of video window. It will fallback to fruit dithering if there is no enough shared memory to run the shader.",
+    "link": "https://mpv.io/manual/master/#options-dither",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "fruit",
+            "desc": "Fruit dithering (default, good quality)"
+          },
+          {
+            "value": "ordered",
+            "desc": "Ordered dithering (Bayer matrix)"
+          },
+          {
+            "value": "error-diffusion",
+            "desc": "Error diffusion dithering (requires compute shader)"
+          },
+          {
+            "value": "no",
+            "desc": "No dithering"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "error-diffusion",
+    "group": "GPU Renderer",
+    "desc": "The error diffusion kernel to use when --dither=error-diffusion is set. simple Propagate error to only two adjacent pixels. Fastest but low quality. sierra-lite Fast with reasonable quality. This is the default. floyd-steinberg Most notable error diffusion kernel. atkinson Looks different from other kernels because only fraction of errors will be propagated during dithering. A typical use case of this kernel is saving dithered screenshot (in window mode). This kernel produces slightly smaller file, with still reasonable dithering quality. There are other kernels (use --error-diffusion=help to list) but most of them are much slower and demanding even larger amount of shared memory. Among these kernels, burkes achieves a good balance between performance and quality, and probably is the one you want to try first.",
+    "link": "https://mpv.io/manual/master/#options-error-diffusion",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "d3d11-warp",
+    "group": "GPU Renderer",
+    "desc": "Use WARP (Windows Advanced Rasterization Platform) with the D3D11 GPU backend (default: auto). This is a high performance software renderer. By default, it is only used when the system has no hardware adapters that support D3D11. While the extended GPU features will work with WARP, they can be very slow.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-warp",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "Use WARP only if no hardware adapter (default)"
+          },
+          {
+            "value": "no",
+            "desc": "Don't use WARP"
+          },
+          {
+            "value": "yes",
+            "desc": "Force WARP software renderer"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "d3d11-output-mode",
+    "group": "GPU Renderer",
+    "desc": "Use a specific output mode for creating the D3D11 swapchain. \"composition\" will not create a window. If you want to use the D3D11 GPU backend in WinUI applications, you need to set this to \"composition\". \"window\" will create a window and use the DWM to present the video. \"auto\" is the same as \"window\". After creating the swapchain, you can get the swapchain address (int64 type value) by getting the display-swapchain property.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-output-mode",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "Same as window (default)"
+          },
+          {
+            "value": "window",
+            "desc": "Create window, use DWM presentation"
+          },
+          {
+            "value": "composition",
+            "desc": "No window, for WinUI/D3D11 composition"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "d3d11-feature-level",
+    "group": "GPU Renderer",
+    "desc": "Select a specific feature level when using the D3D11 GPU backend. By default, the highest available feature level is used. This option can be used to select a lower feature level, which is mainly useful for debugging. Most extended GPU features will not work at 9_x feature levels.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-feature-level",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "12_1",
+            "desc": "Direct3D 12.1 feature level"
+          },
+          {
+            "value": "12_0",
+            "desc": "Direct3D 12.0 feature level"
+          },
+          {
+            "value": "11_1",
+            "desc": "Direct3D 11.1 feature level"
+          },
+          {
+            "value": "11_0",
+            "desc": "Direct3D 11.0 feature level"
+          },
+          {
+            "value": "10_1",
+            "desc": "Direct3D 10.1 feature level"
+          },
+          {
+            "value": "10_0",
+            "desc": "Direct3D 10.0 feature level"
+          },
+          {
+            "value": "9_3",
+            "desc": "Direct3D 9.3 feature level"
+          },
+          {
+            "value": "9_2",
+            "desc": "Direct3D 9.2 feature level"
+          },
+          {
+            "value": "9_1",
+            "desc": "Direct3D 9.1 feature level"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "d3d11-flip",
+    "group": "GPU Renderer",
+    "desc": "Enable flip-model presentation, which avoids unnecessarily copying the backbuffer by sharing surfaces with the DWM (default: yes). This may cause performance issues with older drivers. If flip-model presentation is not supported (for example, on Windows 7 without the platform update), mpv will automatically fall back to the older bitblt presentation model. flip-model needs presentation needs to be disabled for background transparency to work.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-flip",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "d3d11-sync-interval",
+    "group": "GPU Renderer",
+    "desc": "Schedule each frame to be presented for this number of VBlank intervals. (default: 1) Setting to 1 will enable VSync, setting to 0 will disable it.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-sync-interval",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 4
+      }
+    ]
+  },
+  {
+    "name": "d3d11-adapter",
+    "group": "GPU Renderer",
+    "desc": "Select a specific D3D11 adapter to utilize for D3D11 rendering. Will pick the default adapter if unset. Alternatives are listed when the name \"help\" is given. Checks for matches based on the start of the string, case insensitive. Thus, if the description of the adapter starts with the vendor name, that can be utilized as the selection parameter. Hardware decoders utilizing the D3D11 rendering abstraction's helper functionality to receive a device, such as D3D11VA or DXVA2's DXGI mode, will be affected by this choice.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-adapter",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "d3d11-output-format",
+    "group": "GPU Renderer",
+    "desc": "Select a specific D3D11 output format to utilize for D3D11 rendering. \"auto\" is the default, which will pick either rgba8 or rgb10_a2 depending on the configured desktop bit depth. rgba16f and bgra8 are left out of the autodetection logic, and are available for manual testing. Desktop bit depth querying is only available from an API available from Windows 10. Thus on older systems it will only automatically utilize the rgba8 output format. For --vo=gpu-next, this is used as a best-effort hint and libplacebo has the last say on which format is utilized. For --vo=gpu-next, rgba16f enables scRGB output. Alternatively, --target-trc=scrgb can be used to request scRGB output.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-output-format",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          },
+          {
+            "value": "rgba8"
+          },
+          {
+            "value": "bgra8"
+          },
+          {
+            "value": "rgb10_a2"
+          },
+          {
+            "value": "rgba16f",
+            "desc": "and bgra8 are left out of the autodetection logic, and are available for manual testing"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "d3d11-output-csp",
+    "group": "GPU Renderer",
+    "desc": "Select a specific D3D11 output color space to utilize for D3D11 rendering. \"auto\" is the default, which will select the color space of the desktop on which the swap chain is located. Values other than \"srgb\" and \"pq\" have had issues in testing, so they are mostly available for manual testing. Swap chain color space configuration is only available from an API available from Windows 10. Thus on older systems it will not work.",
+    "link": "https://mpv.io/manual/master/#options-d3d11-output-csp",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          },
+          {
+            "value": "srgb"
+          },
+          {
+            "value": "linear"
+          },
+          {
+            "value": "pq"
+          },
+          {
+            "value": "bt.2020"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "d3d11va-zero-copy",
+    "group": "GPU Renderer",
+    "desc": "By default, when using hardware decoding with --gpu-api=d3d11, the video image will be copied (GPU-to-GPU) from the decoder surface to a shader resource. Set this option to avoid that copy by sampling directly from the decoder image. This may increase performance and reduce power usage, but can cause the image to be sampled incorrectly on the bottom and right edges due to padding, and may invoke driver bugs, since Direct3D 11 technically does not allow sampling from a decoder surface (though most drivers support it.) Currently only relevant for --gpu-api=d3d11.",
+    "link": "https://mpv.io/manual/master/#options-d3d11va-zero-copy",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "deband",
+    "group": "GPU Renderer",
+    "desc": "Enable the debanding algorithm. This greatly reduces the amount of visible banding, blocking and other quantization artifacts, at the expense of very slightly blurring some of the finest details. In practice, it's virtually always an improvement - the only reason to disable it would be for performance.",
+    "link": "https://mpv.io/manual/master/#options-deband",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "deband-iterations",
+    "group": "GPU Renderer",
+    "desc": "The number of debanding steps to perform per sample. Each step reduces a bit more banding, but takes time to compute. Note that the strength of each step falls off very quickly, so high numbers (>4) are practically useless. (Default 1)",
+    "link": "https://mpv.io/manual/master/#options-deband-iterations",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 16
+      }
+    ]
+  },
+  {
+    "name": "deband-threshold",
+    "group": "GPU Renderer",
+    "desc": "The debanding filter's cut-off threshold. Higher numbers increase the debanding strength dramatically but progressively diminish image details. (Default 48)",
+    "link": "https://mpv.io/manual/master/#options-deband-threshold",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 4096
+      }
+    ]
+  },
+  {
+    "name": "deband-range",
+    "group": "GPU Renderer",
+    "desc": "The debanding filter's initial radius. The radius increases linearly for each iteration. A higher radius will find more gradients, but a lower radius will smooth more aggressively. (Default 16) If you increase the ``--deband-iterations``, you should probably decrease this to compensate.",
+    "link": "https://mpv.io/manual/master/#options-deband-range",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 1,
+        "maximum": 64
+      }
+    ]
+  },
+  {
+    "name": "deband-grain",
+    "group": "GPU Renderer",
+    "desc": "Add some extra noise to the image. This significantly helps cover up remaining quantization artifacts. Higher numbers add more noise. (Default 32)",
+    "link": "https://mpv.io/manual/master/#options-deband-grain",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0,
+        "maximum": 4096
+      }
+    ]
+  },
+  {
+    "name": "gpu-context",
+    "group": "GPU Renderer",
+    "desc": "Specify a priority list of the GPU contexts to be used. The value auto (the default) selects the GPU context with the default autoprobe order. You can also pass help to get a complete list of compiled in backends (sorted by the default autoprobe order). Note that the default GPU context is subject to change, and must not be relied upon. If a certain GPU context needs to be used, it must be explicitly specified. auto auto-select (default). Note that this context must be used alone and does not participate in the priority list. win Win32/WGL winvk VK_KHR_win32_surface angle Direct3D11 through the OpenGL ES translation layer ANGLE. This supports almost everything the win backend does (if the ANGLE build is new enough). dxinterop (experimental) Win32, using WGL for rendering and Direct3D 9Ex for presentation. Works on Nvidia and AMD. Newer Intel chips with the latest drivers may also work. d3d11 Win32, with native Direct3D 11 rendering. x11 X11/GLX (deprecated/legacy, EGL is preferred these days) x11vk VK_KHR_xlib_surface wayland Wayland/EGL waylandvk VK_KHR_wayland_surface drm DRM/EGL displayvk VK_KHR_display. This backend is roughly the Vulkan equivalent of DRM/EGL, allowing for direct rendering via Vulkan without a display manager. x11egl X11/EGL android Android/EGL. Requires --wid be set to an android.view.Surface. macvk Vulkan on macOS with a metal surface through a translation layer (experimental) This is an object settings list option. See List Options for details.",
+    "link": "https://mpv.io/manual/master/#options-gpu-context",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "gpu-api",
+    "group": "GPU Renderer",
+    "desc": "Specify a priority list of accepted graphics APIs. auto Use any available API (default). Note that the default GPU API used for this value is subject to change, and must not be relied upon. If a certain GPU API needs to be used, it must be explicitly specified. opengl Allow only OpenGL (requires OpenGL 2.1+ or GLES 2.0+) vulkan Allow only Vulkan (requires a valid/working --spirv-compiler) d3d11 Allow only --gpu-context=d3d11 This is an object settings list option. See List Options for details.",
+    "link": "https://mpv.io/manual/master/#options-gpu-api",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "target-colorspace-hint",
+    "group": "GPU Renderer",
+    "desc": "When enabled, output colorspace metadata will be set on the swapchain depending on the GPU context and platform this may affect compositor/display. This can be used for \"HDR passthrough\" and to set the output colorspace for SDR content. In auto mode, the target colorspace is only set if the current display parameters are known. Currently, this is supported on Wayland, D3D11 and winvk contexts. The yes option will always try to set the colorspace, you may need to adjust the --target-* options to match your display capabilities. Requires a supporting driver and --vo=gpu-next. (Default: auto) Auto detected target colorspace metadata is not guaranteed to be always best choice. It depends on your compositor, driver, and display capabilities. However in most cases auto mode should work fine.",
+    "link": "https://mpv.io/manual/master/#options-target-colorspace-hint",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "(default)"
+          },
+          {
+            "value": "no"
+          },
+          {
+            "value": "yes"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target-colorspace-hint-mode",
+    "group": "GPU Renderer",
+    "desc": "Select which metadata to use for the --target-colorspace-hint. (Only for --vo=gpu-next) target Uses metadata based on the target display's actual capabilities. This mode adapts the source content to the target display before output. Note: HDR primaries are not overridden by the --target-prim option this only affects the enclosing container for the colorspace. --target-gamut can be used to limit the output gamut if needed. source Uses the source content's metadata. This is the traditional \"HDR passthrough\" mode (SDR too), where it is assumed that the compositor and display will handle the colorspace directly and perform any necessary mappings. source-dynamic The same as source, but uses dynamic per-scene metadata instead of static HDR10. This is experimental and depends on the display's ability to react to metadata changes. Note that this does not send full HDR10+ or Dolby Vision metadata, but uses that information to produce HDR10 with per-scene luminance values. Default is target. If target display parameters are not available, this will fall back to source. Note that this is done on individual properties basis, i.e. it will merge source params into target for unknown properties, though not the other way around. --target-* options override the metadata in both modes. The ICC profile always takes precedence over any metadata. It is highly recommended to use --target-colorspace-hint=<auto|yes> to ensure the output colorspace is set correctly. This is crucial for all non-sRGB content, even SDR, to allow the compositor, driver, and display to properly interpret the signal. Unfortunately, it's not as easy as it sounds. While mpv performs high-quality color processing, we cannot guarantee what will happen after the signal leaves mpv. Therefore, you may need to adjust additional settings to ensure proper output. A one-size-fits-all default is not feasible. Now with the backstory out of the way: For HDR output the default of target should work fine, it will automatically infer the best target HDR parameters and surface format. For compatibility, displays are assumed to be in HDR mode, unless it's reported otherwise. (you can override this with --target-trc). This way the HDR metadata is set and hopefully the compositor will handle the rest. If the input is SDR, it will be converted to PQ with primaries set to source values. For SDR output, for targets where mpv cannot determine whether the target is HDR or SDR, you can use source mode. Metadata set will match the input colorspace. In case of HDR input, it will be passthrough as-is. Alternatively, you can use target mode and set --target-trc to a SDR transfer function. This way any input will be converted to SDR. Use the stats display to verify the input and output colorspace settings. TL;DR: Use --target-colorspace-hint=auto and adjust --target-* parameters to match your target display capabilities, until it looks best for you. Use Conditional auto profiles for specific adjustments. Avoid using --target-colorspace-hint=no unless it's sRGB content, but even then it's better to set the colorspace metadata. Additional chatter about the \"HDR passthrough\" mode: There is a belief that this mode should send the source HDR signal as-is to the display, and the display will magically handle it, no matter what. This is not always true. In some cases it is better to send the HDR signal tone-mapped to the target display's capabilities, and the best way to do this is within mpv itself. This is generally handled by either the compositor or the GPU driver. You can probably find HDR \"calibration\" options somewhere in your system. You can choose which metadata to send to the display and manually tweak it using the --target-* options. You can also try --inverse-tone-mapping if you want to make everything appear more HDR-like. Your mileage may vary, this highly depends on the target display, there is no single answer, but try experimenting, you may be surprised.",
+    "link": "https://mpv.io/manual/master/#options-target-colorspace-hint-mode",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "target",
+            "desc": "HDR or SDR"
+          },
+          {
+            "value": "source",
+            "desc": "Uses the source content's metadata"
+          },
+          {
+            "value": "source-dynamic",
+            "desc": "The same as source, but uses dynamic per-scene metadata instead of static HDR10"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target-colorspace-hint-strict",
+    "group": "GPU Renderer",
+    "desc": "When enabled (default), the configured swapchain colorspace (with the hint) will be respected. In this mode, the --target-* options act only as a hint, while the negotiated swapchain format is used for rendering output. This ensures correct results, since downstream processing depends on the signaled colorspace. When disabled, the swapchain colorspace will be overridden to match the --target-* options. (Only for --vo=gpu-next)",
+    "link": "https://mpv.io/manual/master/#options-target-colorspace-hint-strict",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "target-prim",
+    "group": "GPU Renderer",
+    "desc": "Specifies the primaries of the display. Video colors will be adapted to this colorspace when ICC color management is not being used. Valid values are: auto Disable any adaptation, except for atypical color spaces. Specifically, wide/unusual gamuts get automatically adapted to BT.709, while standard gamut (i.e. BT.601 and BT.709) content is not touched. (default) bt.470m ITU-R BT.470 M bt.601-525 ITU-R BT.601 (525-line SD systems, eg. NTSC), SMPTE 170M/240M bt.601-625 ITU-R BT.601 (625-line SD systems, eg. PAL/SECAM), ITU-R BT.470 B/G bt.709 ITU-R BT.709 (HD), IEC 61966-2-4 (sRGB), SMPTE RP177 Annex B bt.2020 ITU-R BT.2020 (UHD) apple Apple RGB adobe Adobe RGB (1998) prophoto ProPhoto RGB (ROMM) cie1931 CIE 1931 RGB (not to be confused with CIE XYZ) dci-p3 DCI-P3 (Digital Cinema Colorspace), SMPTE RP431-2 display-p3 DCI-P3 with a D65 white point v-gamut Panasonic V-Gamut (VARICAM) primaries s-gamut Sony S-Gamut (S-Log) primaries",
+    "link": "https://mpv.io/manual/master/#options-target-prim",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "target-trc",
+    "group": "GPU Renderer",
+    "desc": "Specifies the transfer characteristics (gamma) of the display. Video colors will be adjusted to this curve when ICC color management is not being used. Valid values are: auto Disable any adaptation, except for atypical transfers. Specifically, HDR or linear light source material gets automatically converted to gamma 2.2, while SDR content is not touched. (default) bt.1886 ITU-R BT.1886 curve (assuming infinite contrast) srgb IEC 61966-2-4 (sRGB) linear Linear light output gamma1.8 Pure power curve (gamma 1.8), also used for Apple RGB gamma2.0 Pure power curve (gamma 2.0) gamma2.2 Pure power curve (gamma 2.2) gamma2.4 Pure power curve (gamma 2.4) gamma2.6 Pure power curve (gamma 2.6) gamma2.8 Pure power curve (gamma 2.8), also used for BT.470-BG prophoto ProPhoto RGB (ROMM) pq ITU-R BT.2100 PQ (Perceptual quantizer) curve, aka SMPTE ST2084 hlg ITU-R BT.2100 HLG (Hybrid Log-gamma) curve, aka ARIB STD-B67 v-log Panasonic V-Log (VARICAM) curve s-log1 Sony S-Log1 curve s-log2 Sony S-Log2 curve scrgb scRGB, extended linear light transfer. Supports both HDR and wide color gamut content. The output gamut defaults to BT.709 unless display primaries are reported by the system. You can also use --target-gamut to manually specify a wider gamut. (--vo=gpu-next only) When using HDR output formats, mpv will encode to the specified curve but it will not set any HDMI flags or other signalling that might be required for the target device to correctly display the HDR signal. The user should independently guarantee this before using these signal formats for display.",
+    "link": "https://mpv.io/manual/master/#options-target-trc",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "target-peak",
+    "group": "GPU Renderer",
+    "desc": "Specifies the measured peak brightness of the output display, in cd/m^2 (AKA nits). The interpretation of this brightness depends on the configured --target-trc. In all cases, it imposes a limit on the signal values that will be sent to the display. If the source exceeds this brightness level, a tone mapping filter will be inserted. For HLG, it has the additional effect of parametrizing the inverse OOTF, in order to get colorimetrically consistent results with the mastering display. For SDR, or when using an ICC (profile (--icc-profile), setting this to a value above 203 essentially causes the display to be treated as if it were an HDR display in disguise. (See the note below) In auto mode (the default), the chosen peak is an appropriate value based on the TRC in use. For SDR curves, it uses 203. For HDR curves, it uses 203 * the transfer function's nominal peak. If available, it will use the target display's peak brightness as reported by the display. When using an SDR transfer function, this is normally not needed, and setting it may lead to very unexpected results. The one time it *is* useful is if you want to calibrate a HDR display using traditional transfer functions and calibration equipment. In such cases, you can set your HDR display to a high brightness such as 800 cd/m^2, and then calibrate it to a standard curve like gamma2.8. Setting this value to 800 would then instruct mpv to essentially treat it as an HDR display with the given peak. This may be a good alternative in environments where PQ or HLG input to the display is not possible, and makes it possible to use HDR displays with mpv regardless of operating system support for HDMI HDR metadata. In such a configuration, we highly recommend setting --tone-mapping to mobius or even clip.",
+    "link": "https://mpv.io/manual/master/#options-target-peak",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target-contrast",
+    "group": "GPU Renderer",
+    "desc": "Specifies the measured contrast of the output display. --target-contrast in conjunction with --target-peak value is used to calculate display black point. Used in black point compensation during HDR tone-mapping. auto is the default and assumes 1000:1 contrast as a typical SDR display would have or an infinite contrast when HDR --target-trc is used. If supported by the API, display contrast will be used as reported. inf contrast specifies display with perfect black level, in practice OLED. (Only for --vo=gpu-next)",
+    "link": "https://mpv.io/manual/master/#options-target-contrast",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "is the default and assumes 1000:1 contrast as a typical SDR display would have or an infinite contrast when HDR --target-trc is used"
+          },
+          {
+            "value": "inf"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target-gamut",
+    "group": "GPU Renderer",
+    "desc": "Constrains the gamut of the display. You can use this option to output e.g. DCIP3-in-BT.2020. Set --target-prim to the primaries of the containing colorspace (into which values will be encoded), and --target-gamut to the gamut you want to limit colors to. Accepts either a named primary set (same values as --target-prim) or 8 comma-separated CIE xy chromaticity values specifying custom primaries in the format Rx,Ry,Gx,Gy,Bx,By,Wx,Wy (red, green, blue, white point). All values must be in the range 0.0-1.0. Use --target-gamut=help to list all named primaries. (Only for --vo=gpu-next) If the selected gamut is wider, it will be limited to --target-prim. Additionally, if --target-colorspace-hint is specified, the signaled gamut will be limited to the supported gamut of the swapchain. Which may differ from the requested --target-prim.",
+    "link": "https://mpv.io/manual/master/#options-target-gamut",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "target-lut",
+    "group": "GPU Renderer",
+    "desc": "Specifies a custom LUT file (in Adobe .cube format) to apply to the colors before display on-screen. This LUT is fed values in normalized RGB, after encoding into the target colorspace, so after the application of --target-trc. (Only for --vo=gpu-next)",
+    "link": "https://mpv.io/manual/master/#options-target-lut",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "hdr-reference-white",
+    "group": "GPU Renderer",
+    "desc": "Specifies the assumed peak brightness of the mastering display for SDR content, in cd/m² (nits). This is used as HDR diffuse white level for SDR content. Essentially this is the SDR brightness in HDR container. Default is 203 cd/m². (Only for --vo=gpu-next) This option overrides the --target-peak if is set and the target transfer function is SDR. This way you can control SDR output separately from HDR output.",
+    "link": "https://mpv.io/manual/master/#options-hdr-reference-white",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sdr-adjust-gamma",
+    "group": "GPU Renderer",
+    "desc": "SDR transfer functions are often ambiguous or mismatched. Even if files are tagged with a specific function (e.g. bt.709), the actual content may not match. For example, most screen capture software tags its output as bt.709, but the content is usually a direct sRGB capture. On the target side, \"sRGB\" is also ambiguous, some displays are factory calibrated to a pure power 2.2 gamma, while others may use the sRGB piecewise curve. Both of which are typically configured as \"sRGB\" in the swapchain configuration. Similar inconsistencies exist across compositor implementations of color management, as different platforms handle this in different ways. See also --treat-srgb-as-power22. Additionally, bt.1886 requires display contrast ratio to be known for correct rendering, which is often unavailable. Use--target-contrast to specify it. This option controls whether SDR content should have its gamma adjusted. It only applies to the \"sRGB\" swapchain target configuration, since that is the most common and ambiguous case. If set to no, content tagged as sRGB, gamma2.2 or bt.1886 will be rendered as-is. If set to yes, it will be converted based on the available metadata. auto (default) behaves like no, except when --target-trc is explicitly set, in which case it behaves like yes. Generally it's recommended to enable this option, if you can ensure that both source and target metadata is correct. (Only for --vo=gpu-next)",
+    "link": "https://mpv.io/manual/master/#options-sdr-adjust-gamma",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "(default) behaves like no, except when --target-trc is explicitly set, in which case it behaves like yes"
+          },
+          {
+            "value": "yes"
+          },
+          {
+            "value": "no"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treat-srgb-as-power22",
+    "group": "GPU Renderer",
+    "desc": "When enabled, sRGB is (de)linearized using a pure power 2.2 curve instead of the standard sRGB piecewise transfer function. auto behaves like both, with possible platform-specific adjustments to ensure a consistent appearance. Depending on the platform, the sRGB EOTF used by the system compositor may differ. The default is auto. (Only for --vo=gpu-next)",
+    "link": "https://mpv.io/manual/master/#options-treat-srgb-as-power22",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no"
+          },
+          {
+            "value": "input"
+          },
+          {
+            "value": "output"
+          },
+          {
+            "value": "both"
+          },
+          {
+            "value": "auto",
+            "desc": "behaves like both, with possible platform-specific adjustments to ensure a consistent appearance"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tone-mapping",
+    "group": "GPU Renderer",
+    "desc": "Specifies the algorithm used for tone-mapping images onto the target display. This is relevant for both HDR->SDR conversion as well as gamut reduction (e.g. playing back BT.2020 content on a standard gamut display). Valid values are: auto Maps to bt.2390 when using --vo=gpu, and to spline with --vo=gpu-next. (Default) clip Hard-clip any out-of-range values. Use this when you care about perfect color accuracy for in-range values at the cost of completely distorting out-of-range values. Not generally recommended. mobius Generalization of Reinhard to a Möbius transform with linear section. Smoothly maps out-of-range values while retaining contrast and colors for in-range material as much as possible. Use this when you care about color accuracy more than detail preservation. This is somewhere in between clip and reinhard, depending on the value of --tone-mapping-param. reinhard Reinhard tone mapping algorithm. Very simple continuous curve. Preserves overall image brightness but uses nonlinear contrast, which results in flattening of details and degradation in color accuracy. hable Similar to reinhard but preserves both dark and bright details better (slightly sigmoidal), at the cost of slightly darkening / desaturating everything. Developed by John Hable for use in video games. Use this when you care about detail preservation more than color/brightness accuracy. This is roughly equivalent to --tone-mapping=reinhard --tone-mapping-param=0.24. If possible, you should also enable --hdr-compute-peak for the best results. bt.2390 Perceptual tone mapping curve (EETF) specified in ITU-R Report BT.2390. gamma Fits a logarithmic transfer between the tone curves. linear Linearly stretches the entire reference gamut to (a linear multiple of) the display. spline Perceptually linear single-pivot polynomial. (--vo=gpu-next only) bt.2446a HDR<->SDR mapping specified in ITU-R Report BT.2446, method A. This is the recommended curve for well-mastered content. (--vo=gpu-next only) st2094-40 Dynamic HDR10+ tone-mapping method specified in SMPTE ST2094-40 Annex B. In the absence of metadata, falls back to a fixed spline matched to the input/output average brightness characteristics. (--vo=gpu-next only) st2094-10 Dynamic tone-mapping method specified in SMPTE ST2094-10 Annex B.2. Conceptually simpler than ST2094-40, and generally produces worse results.",
+    "link": "https://mpv.io/manual/master/#options-tone-mapping",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          },
+          {
+            "value": "clip",
+            "desc": "Hard clip (fast, loses highlight detail)"
+          },
+          {
+            "value": "mobius",
+            "desc": "Mobius transform (default, balanced)"
+          },
+          {
+            "value": "reinhard",
+            "desc": "Reinhard tone mapping"
+          },
+          {
+            "value": "hable",
+            "desc": "Hable/Uncharted 2 filmic curve"
+          },
+          {
+            "value": "gamma",
+            "desc": "Gamma curve mapping"
+          },
+          {
+            "value": "linear",
+            "desc": "Linear mapping (no tone mapping)"
+          },
+          {
+            "value": "spline",
+            "desc": "Spline-based tone mapping"
+          },
+          {
+            "value": "bt.2390",
+            "desc": "BT.2390 dynamic tone mapping"
+          },
+          {
+            "value": "bt.2446a",
+            "desc": "BT.2446 method A"
+          },
+          {
+            "value": "st2094-40",
+            "desc": "ST.2094-40 dynamic tone mapping"
+          },
+          {
+            "value": "st2094-10",
+            "desc": "ST.2094-10 dynamic tone mapping"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tone-mapping-param",
+    "group": "GPU Renderer",
+    "desc": "Set tone mapping parameters. By default, this is set to the special string default, which maps to an algorithm-specific default value. Ignored if the tone mapping algorithm is not tunable. This affects the following tone mapping algorithms: clip Specifies an extra linear coefficient to multiply into the signal before clipping. Defaults to 1.0. mobius Specifies the transition point from linear to mobius transform. Every value below this point is guaranteed to be mapped 1:1. The higher the value, the more accurate the result will be, at the cost of losing bright details. Defaults to 0.3, which due to the steep initial slope still preserves in-range colors fairly accurately. reinhard Specifies the local contrast coefficient at the display peak. Defaults to 0.5, which means that in-gamut values will be about half as bright as when clipping. bt.2390 Specifies the offset for the knee point. Defaults to 1.0, which is higher than the value from the original ITU-R specification (0.5). (--vo=gpu-next only) gamma Specifies the exponent of the function. Defaults to 1.8. linear Specifies the scale factor to use while stretching. Defaults to 1.0. spline Specifies the knee point (in PQ space). Defaults to 0.30. st2094-10 Specifies the contrast (slope) at the knee point. Defaults to 1.0.",
+    "link": "https://mpv.io/manual/master/#options-tone-mapping-param",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "inverse-tone-mapping",
+    "group": "GPU Renderer",
+    "desc": "If set, allows inverse tone mapping (expanding dynamic range). Can be used for upscaling SDR content to HDR, or for making HDR content brighter. Not supported by all tone mapping curves. Use with caution. (--vo=gpu-next only)",
+    "link": "https://mpv.io/manual/master/#options-inverse-tone-mapping",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "tone-mapping-max-boost",
+    "group": "GPU Renderer",
+    "desc": "Upper limit for how much the tone mapping algorithm is allowed to boost the average brightness by over-exposing the image. The default value of 1.0 allows no additional brightness boost. A value of 2.0 would allow over-exposing by a factor of 2, and so on. Raising this setting can help reveal details that would otherwise be hidden in dark scenes, but raising it too high will make dark scenes appear unnaturally bright. (--vo=gpu only)",
+    "link": "https://mpv.io/manual/master/#options-tone-mapping-max-boost",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 1.0,
+        "maximum": 10.0
+      }
+    ]
+  },
+  {
+    "name": "tone-mapping-visualize",
+    "group": "GPU Renderer",
+    "desc": "Display a (PQ-PQ) graph of the active tone-mapping LUT. Intended only for debugging purposes. The X axis shows PQ input values, the Y axis shows PQ output values. The tone-mapping curve is shown in green/yellow. Yellow means the brightness has been boosted from the source, dark blue regions show where the brightness has been reduced. The extra colored regions and lines indicate various monitor limits, as well a reference diagonal (neutral tone-mapping) and source scene average brightness information (if available). (--vo=gpu-next only)",
+    "link": "https://mpv.io/manual/master/#options-tone-mapping-visualize",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "gamut-mapping-mode",
+    "group": "GPU Renderer",
+    "desc": "Specifies the algorithm used for reducing the gamut of images for the target display, after any tone mapping is done. auto Choose the best mode automatically. (Default) clip Hard-clip to the gamut (per-channel). Very low quality, but free. perceptual Performs a perceptually balanced gamut mapping using a soft knee function to roll-off clipped regions, and a hue shifting function to preserve saturation. (--vo=gpu-next only) relative Performs relative colorimetric clipping, while maintaining an exponential relationship between brightness and chromaticity. (--vo=gpu-next only) saturation Performs simple RGB->RGB saturation mapping. The input R/G/B channels are mapped directly onto the output R/G/B channels. Will never clip, but will distort all hues and/or result in a faded look. (--vo=gpu-next only) absolute Performs absolute colorimetric clipping. Like relative, but does not adapt the white point. (--vo=gpu-next only) desaturate Performs constant-luminance colorimetric clipping, desaturing colors towards white until they're in-range. darken Uniformly darkens the input slightly to prevent clipping on blown-out highlights, then clamps colorimetrically to the input gamut boundary, biased slightly to preserve chromaticity over luminance. (--vo=gpu-next only) warn Performs no gamut mapping, but simply highlights out-of-gamut pixels. linear Linearly/uniformly desaturates the image in order to bring the entire image into the target gamut. (--vo=gpu-next only)",
+    "link": "https://mpv.io/manual/master/#options-gamut-mapping-mode",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          },
+          {
+            "value": "clip"
+          },
+          {
+            "value": "perceptual"
+          },
+          {
+            "value": "relative"
+          },
+          {
+            "value": "saturation"
+          },
+          {
+            "value": "absolute"
+          },
+          {
+            "value": "desaturate"
+          },
+          {
+            "value": "darken"
+          },
+          {
+            "value": "warn"
+          },
+          {
+            "value": "linear"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hdr-compute-peak",
+    "group": "GPU Renderer",
+    "desc": "Compute the HDR peak and frame average brightness per-frame instead of relying on tagged metadata. These values are averaged over local regions as well as over several frames to prevent the value from jittering around too much. This option basically gives you dynamic, per-scene tone mapping. Requires compute shaders, which is a fairly recent OpenGL feature, and will probably also perform horribly on some drivers, so enable at your own risk. The special value auto (default) will enable HDR peak computation automatically if compute shaders and SSBOs are supported.",
+    "link": "https://mpv.io/manual/master/#options-hdr-compute-peak",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto"
+          },
+          {
+            "value": "yes"
+          },
+          {
+            "value": "no"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "blend-subtitles",
+    "group": "GPU Renderer",
+    "desc": "Blend subtitles directly onto upscaled video frames, before interpolation and/or color management (default: no). Enabling this causes subtitles to be affected by --icc-profile, --target-prim, --target-trc, --interpolation, --gamma-factor and --glsl-shaders. It also increases subtitle performance when using --interpolation. The downside of enabling this is that it restricts subtitles to the visible portion of the video, so you can't have subtitles exist in the black margins below a video (for example). If video is selected, the behavior is similar to yes, but subs are drawn at the video's native resolution, and scaled along with the video. --vo=gpu-next with --blend-subtitles=video will correctly follow --video-rotate if rotated in 90-degree steps. With --vo=gpu-next, the --blend-subtitles=video mode blends the subtitles after scaling the video, similar to --blend-subtitles=yes. The difference is that the subtitles are rendered at the video's native resolution and then scaled separately to blend with the video. This is useful for performance reasons, as it allows subtitles to be rendered at a lower resolution, but it does not have the same effect as hardsubbing, which would require blending before scaling. This may change in the future. This changes the way subtitle colors are handled. Normally, subtitle colors are assumed to be in sRGB and color managed as such. Enabling this makes them treated as being in the video's color space instead. This is good if you want things like softsubbed ASS signs to match the video colors, but may cause SRT subtitles or similar to look slightly off.",
+    "link": "https://mpv.io/manual/master/#options-blend-subtitles",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Don't blend subtitles"
+          },
+          {
+            "value": "yes",
+            "desc": "Blend subtitles into video (default)"
+          },
+          {
+            "value": "video",
+            "desc": "Blend only into video, not black bars"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gpu-shader-cache",
+    "group": "GPU Renderer",
+    "desc": "Store and load compiled GLSL shaders in the cache directory (Default: yes). Normally, shader compilation is very fast, so this is not usually needed. It mostly matters for anything involving GLSL to SPIR-V conversion, that is: D3D11, ANGLE or Vulkan, as well as on some other proprietary drivers. Enabling this can improve startup performance on these platforms. On --vo=gpu-next, files that have not been accessed in the last 24 hours may be cleared if the cache limit (128 MiB) is exceeded. On --vo=gpu, this is not cleaned automatically, so old, unused cache files may stick around indefinitely.",
+    "link": "https://mpv.io/manual/master/#options-gpu-shader-cache",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "gpu-shader-cache-dir",
+    "group": "GPU Renderer",
+    "desc": "The directory where gpu shader cache is stored. Cache is stored in the system's cache directory (usually ~/.cache/mpv) if this is unset.",
+    "link": "https://mpv.io/manual/master/#options-gpu-shader-cache-dir",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "libplacebo-opts",
+    "group": "GPU Renderer",
+    "desc": "Passes extra raw option to the libplacebo rendering backend (used by --vo=gpu-next). May override the effects of any other options set using the normal options system. Requires libplacebo v6.309 or higher. Included for debugging purposes only. For more information, see: https://libplacebo.org/options/",
+    "link": "https://mpv.io/manual/master/#options-libplacebo-opts",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  }
+]

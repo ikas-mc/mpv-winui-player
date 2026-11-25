@@ -1,0 +1,154 @@
+[
+  {
+    "name": "vo",
+    "group": "Video",
+    "desc": "Specify a priority list of video output drivers to be used.",
+    "link": "https://mpv.io/manual/master/#options-vo",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "display-fps-override",
+    "group": "Video",
+    "desc": "Set the display FPS used with the --video-sync=display-* modes. By default, a detected value is used. Keep in mind that setting an incorrect value (even if slightly incorrect) can ruin video playback. On multi-monitor systems, there is a chance that the detected value is from the wrong monitor. Set this option only if you have reason to believe the automatically determined value is wrong.",
+    "link": "https://mpv.io/manual/master/#options-display-fps-override",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 0.0
+      }
+    ]
+  },
+  {
+    "name": "hwdec",
+    "group": "Video",
+    "desc": "Specify the hardware video decoding API that should be used if possible. Whether hardware decoding is actually done depends on the video codec. If hardware decoding is not possible, mpv will fall back on software decoding. Hardware decoding is not enabled by default, to keep the out-of-the-box configuration as reliable as possible. However, when using modern hardware, hardware video decoding should work correctly, offering reduced CPU usage, and possibly lower power consumption. On older systems, it may be necessary to use hardware decoding due to insufficient CPU resources; and even on modern systems, sufficiently complex content (eg: 4K60 AV1) may require it. This is a string list option. See List Options for details. Use the Ctrl+h shortcut to toggle hardware decoding at runtime. It toggles this option between auto and no. If you decide you want to use hardware decoding by default, the general recommendation is to try out decoding with the command line option, and prove to yourself that it works as desired for the content you care about. After that, you can add it to your config file. When testing, you should start by using hwdec=auto as it will limit itself to choosing from hwdecs that are actively supported by the development team. If that doesn't result in working hardware decoding, you can try hwdec=auto-unsafe to have it attempt to load every possible hwdec, but if auto didn't work, you will probably need to know exactly which hwdec matches your hardware and read up on that entry below. If auto produced the desired results, we recommend just sticking with that and only setting a specific hwdec in your config file if it is really necessary. If you use the Ubuntu package, keep in mind that their /etc/mpv/mpv.conf contains hwdec=vaapi, which is less than ideal as it may not be the right choice for your system, and it may end up using an inefficient wrapper library under the covers. We recommend removing this line or deleting the file altogether. Even if enabled, hardware decoding is still only white-listed for some codecs. See --hwdec-codecs to enable hardware decoding in more cases. Which method to choose? - If you only want to enable hardware decoding at runtime, don't set the parameter, or put hwdec=no into your mpv.conf (relevant on distros which force-enable it by default, such as on Ubuntu). Use the Ctrl+h default binding to enable it at runtime. - If you're not sure, but want hardware decoding always enabled by default, put hwdec=yes into your mpv.conf, and acknowledge that this may cause problems. - If you want to test all available hardware decoding methods, pass --hwdec=auto-unsafe --hwdec-codecs=all and look at the terminal output. - If you're a developer, or want to perform elaborate tests, you may need any of the other possible option values. This option accepts a comma delimited list of api types, along with certain special values: :no: always use software decoding (default) :auto: enable any whitelisted hw decoder (see below) :auto-unsafe: forcibly enable any hw decoder found (see below) :yes: exactly the same as auto :auto-safe: exactly the same as auto Special values can be mixed with api names. eg: vaapi,auto will try and use the vaapi hwdec, and if that fails, will run through the normal auto logic. Actively supported hwdecs: :d3d11va: requires --vo=gpu or --vo=gpu-next with --gpu-context=d3d11 or --gpu-context=angle (Windows 8+ only) :d3d11va-copy: copies video back to system RAM (Windows 8+ only) :videotoolbox: requires --vo=gpu or --vo=gpu-next (macOS only), or --vo=libmpv (iOS 9.0 and up) :videotoolbox-copy: copies video back into system RAM (macOS 10.15 or iOS 9.0 and up) :vaapi: requires --vo=gpu, --vo=gpu-next, --vo=vaapi or --vo=dmabuf-wayland (Linux only) :vaapi-copy: copies video back into system RAM (Linux with some GPUs or Windows) :nvdec: requires --vo=gpu or --vo=gpu-next (Any platform CUDA is available) :nvdec-copy: copies video back to system RAM (Any platform CUDA is available) :drm: requires --vo=gpu or --vo=gpu-next (Linux only) :drm-copy: copies video back to system RAM (Linux only) :vulkan: requires --vo=gpu-next (Any platform with Vulkan Video Decoding) :vulkan-copy: copies video back to system RAM (Any platform with Vulkan Video Decoding) Other hwdecs (only use if you know you have to): :dxva2: requires --vo=gpu with --gpu-context=d3d11, --gpu-context=angle or --gpu-context=dxinterop (Windows only) :dxva2-copy: copies video back to system RAM (Windows only) :vdpau: requires --vo=gpu with --gpu-context=x11, or --vo=vdpau (Linux only) :vdpau-copy: copies video back into system RAM (Linux with some GPUs only) :mediacodec: requires --vo=gpu --gpu-context=android or --vo=mediacodec_embed (Android only) :mediacodec-copy: copies video back to system RAM (Android only) :cuda: requires --vo=gpu (Any platform CUDA is available) :cuda-copy: copies video back to system RAM (Any platform CUDA is available) :crystalhd: copies video back to system RAM (Any platform supported by hardware) :rkmpp: requires --vo=gpu (some RockChip devices only) auto tries to automatically enable hardware decoding using the first available method, but allows only whitelisted methods that are considered \"safe\". This is supposed to be a reasonable way to enable hardware decoding by default in a config file (even though you shouldn't do that anyway; prefer runtime enabling with Ctrl+h). Unlike auto-unsafe, this will not try to enable unknown or known-to-be-bad methods. In addition, this may disable hardware decoding in other situations when it's known to cause problems, but currently this mechanism is quite primitive. (As an example for something that still causes problems: certain combinations of HEVC and Intel chips on Windows tend to cause mpv to crash, most likely due to driver bugs.) auto-unsafe is similar to auto, but without the whitelist. In general, you should never need to use this beyond debugging or development use. Any known unsafe hwdec you want to test can simply be appended to the list option such as --hwdec=auto,unsafe-hwdec. This still depends what VO you are using. See the list above, for which --vo and gpu-context is required for a given hwdec. It will go down the list of available hwdecs until one is successfully initialised. If all of them fail, it will fallback to software decoding. auto-copy selects only modes that copy the video data back to system memory after decoding. This selects modes like vaapi-copy (and so on), but it only allows whitelisted methods that are considered \"safe\". If none of these work, hardware decoding is disabled. This mode is usually guaranteed to incur no additional quality loss compared to software decoding (assuming modern codecs and an error free video stream), and will allow CPU processing with video filters. This mode works with all video filters and VOs. auto-copy-safe is an alias for auto-copy auto-copy-unsafe is the same as auto-copy except that it goes through all methods and not just the whitelisted ones that are considered \"safe\". Because these copy the decoded video back to system RAM, they're often less efficient than the direct modes, and may not help too much over software decoding if you are short on CPU resources. Most non-copy methods only work with the OpenGL GPU backend. Currently, only the vaapi, nvdec, cuda and vulkan methods work with Vulkan. The vaapi mode, if used with --vo=gpu or --vo=gpu-next most likely works with Intel and AMD GPUs only. It requires the opengl EGL backend if the GPU does not support drm modifiers. nvdec and nvdec-copy are the newest, and recommended method to do hardware decoding on Nvidia GPUs. cuda and cuda-copy are an older implementation of hardware decoding on Nvidia GPUs that uses Nvidia's bitstream parsers rather than FFmpeg's. This can lead to feature deficiencies, such as incorrect playback of HDR content, and nvdec/nvdec-copy should always be preferred unless you specifically need Nvidia's deinterlacing algorithms. To use this deinterlacing you must pass the option: vd-lavc-o=deint=[weave|bob|adaptive]. Pass weave (or leave the option unset) to not attempt any deinterlacing. Quality reduction with hardware decoding In theory, hardware decoding does not reduce video quality (at least for the codecs h264 and HEVC). However, due to restrictions in video output APIs, as well as bugs in the actual hardware decoders, there can be some loss, or even blatantly incorrect results. This has largely ceased to be a problem with modern hardware, but there is a lot of hardware out there, so caveat emptor. Known problems are discussed below, but the list cannot be considered exhaustive, as even hwdecs that work well on certain hardware generations may be problematic on other ones. In some cases, RGB conversion is forced, which means the RGB conversion is performed by the hardware decoding API, instead of the shaders used by --vo=gpu. This means certain colorspaces may not display correctly, and certain filtering (such as debanding) cannot be applied in an ideal way. This will also usually force the use of low quality chroma scalers instead of the one specified by --cscale. In other cases, hardware decoding can also reduce the bit depth of the decoded image, which can introduce banding or precision loss for 10-bit files. vdpau always does RGB conversion in hardware, which does not support newer colorspaces like BT.2020 correctly. However, vdpau doesn't support 10 bit or HDR encodings, so these limitations are unlikely to be relevant. dxva2 is not safe. It appears to always use BT.601 for forced RGB conversion, but actual behavior depends on the GPU drivers. Some drivers appear to convert to limited range RGB, which gives a faded appearance. In addition to driver-specific behavior, global system settings might affect this additionally. This can give incorrect results even with completely ordinary video sources. mediacodec is not safe. It forces RGB conversion (not with -copy) and how well it handles non-standard colorspaces is not known. In the rare cases where 10-bit is supported the bit depth of the output will be reduced to 8. cuda should usually be safe, but depending on how a file/stream has been mixed, it has been reported to corrupt the timestamps causing glitched, flashing frames. It can also sometimes cause massive framedrops for unknown reasons. Caution is advised, and nvdec should always be preferred. crystalhd is not safe. It always converts to 4:2:2 YUV, which may be lossy, depending on how chroma sub-sampling is done during conversion. It also discards the top left pixel of each frame for some reason. If you run into any weird decoding issues, frame glitches or discoloration, and you have --hwdec turned on, the first thing you should try is disabling it.",
+    "link": "https://mpv.io/manual/master/#options-hwdec",
+    "values": [
+      {
+        "type": "array"
+      }
+    ]
+  },
+  {
+    "name": "hwdec-codecs",
+    "group": "Video",
+    "desc": "Allow hardware decoding for a given list of codecs only. The special value all always allows all codecs. You can get the list of allowed codecs with mpv --vd=help. Remove the prefix, e.g. instead of lavc:h264 use h264. By default, this is set to h264,vc1,hevc,vp8,vp9,av1,prores,prores_raw,ffv1,dpx. Note that the hardware acceleration special codecs like h264_vdpau are not relevant anymore, and in fact have been removed from FFmpeg in this form. This is usually only needed with broken GPUs, where a codec is reported as supported, but decoding causes more problems than it solves. On some broken drivers (e.g. NVIDIA on Linux), probing for codecs which the GPU does not support can unnecessarily slow down video playback initialization. To alleviate this, explicitly specify a list which only includes the codecs supported on the setup. Example mpv --hwdec=vdpau --hwdec-codecs=h264,mpeg2video Enable vdpau decoding for h264 and mpeg2 only.",
+    "link": "https://mpv.io/manual/master/#options-hwdec-codecs",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "hwdec-threads",
+    "group": "Video",
+    "desc": "Number of threads used for hardware decoding (default: 4). This, as opposed to vd-queue, enables frame and slice threading in libavcodec. It can help with pipelining the decoding process and improve performance. The exact behavior depends on the hardware decoder API used. If this is set to 0, the number of threads will be automatically determined by the number of CPU cores available.",
+    "link": "https://mpv.io/manual/master/#options-hwdec-threads",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0
+      }
+    ]
+  },
+  {
+    "name": "hwdec-software-fallback",
+    "group": "Video",
+    "desc": "Fallback to software decoding if the hardware-accelerated decoder fails (default: 3). If this is a number, then fallback will be triggered if N frames fail to decode in a row. 1 is equivalent to yes. Setting this to a higher number might break the playback start fallback: if a fallback happens, parts of the file will be skipped, approximately by to the number of packets that could not be decoded. Values below an unspecified count will not have this problem, because mpv retains the packets.",
+    "link": "https://mpv.io/manual/master/#options-hwdec-software-fallback",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Never fall back to software decoding"
+          },
+          {
+            "value": "yes",
+            "desc": "Fall back to software decoding on failure (equivalent to 1)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deinterlace",
+    "group": "Video",
+    "desc": "Enable or disable deinterlacing (default: no). Interlaced video shows ugly comb-like artifacts, which are visible on fast movement. Enabling this typically inserts the bwdif video filter in order to deinterlace the video, or lets the video output apply deinterlacing if supported. When using auto, mpv will insert a deinterlacing filter if ffmpeg detects that the video frame is interlaced. Be aware that there can be false positives in certain cases, such as when files are encoded as interlaced despite the video not actually being so. This is why auto is not the default value. Keep in mind that using this filter **will** conflict with any manually inserted deinterlacing filters, and that this will make video look worse if it's not actually interlaced.",
+    "link": "https://mpv.io/manual/master/#options-deinterlace",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Disable deinterlacing (default)"
+          },
+          {
+            "value": "yes",
+            "desc": "Enable deinterlacing"
+          },
+          {
+            "value": "auto",
+            "desc": "Auto-detect interlaced content"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "video-output-levels",
+    "group": "Video",
+    "desc": "RGB color levels used with YUV to RGB conversion. Normally, output devices such as PC monitors use full range color levels. However, some TVs and video monitors expect studio RGB levels. Providing full range output to a device expecting studio level input results in crushed blacks and whites, the reverse in dim gray blacks and dim whites. Not all VOs support this option. Some will silently ignore it. Available color ranges are: :auto:      automatic selection (equals to full range) (default) :limited:   limited range (16-235 per component), studio levels :full:      full range (0-255 per component), PC levels .. note:: It is advisable to use your graphics driver's color range option instead, if available.",
+    "link": "https://mpv.io/manual/master/#options-video-output-levels",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "auto",
+            "desc": "Automatic selection (full range) (default)"
+          },
+          {
+            "value": "limited",
+            "desc": "Limited range (16-235), studio levels"
+          },
+          {
+            "value": "full",
+            "desc": "Full range (0-255), PC levels"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "vd-lavc-threads",
+    "group": "Video",
+    "desc": "Number of threads to use for decoding. Whether threading is actually supported depends on codec (default: 0). 0 means autodetect number of cores on the machine and use that, up to the maximum of 16. You can set more than 16 threads manually.",
+    "link": "https://mpv.io/manual/master/#options-vd-lavc-threads",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 0
+      }
+    ]
+  },
+  {
+    "name": "swapchain-depth",
+    "group": "Video",
+    "desc": "Allow up to N in-flight frames. This essentially controls the frame latency. Increasing the swapchain depth can improve pipelining and prevent missed vsyncs, but increases visible latency. This option only mandates an upper limit, the implementation can use a lower latency than requested internally. A setting of 1 means that the VO will wait for every frame to become visible before starting to render the next frame. (Default: 2)",
+    "link": "https://mpv.io/manual/master/#options-swapchain-depth",
+    "values": [
+      {
+        "type": "int",
+        "minimum": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "save-watch-history",
+    "group": "Watch History",
+    "desc": "Whether to save which files are played. These can be then selected with the default g-h key binding. This option may expose privacy-sensitive information and is thus disabled by default.",
+    "link": "https://mpv.io/manual/master/#options-save-watch-history",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "watch-history-path",
+    "group": "Watch History",
+    "desc": "The path in which to store the watch history. Default: ~~state/watch_history.jsonl (see FILES). This file contains one JSON object per line. Its time field is the UNIX timestamp when the file was opened, its path field is the normalized path, and its title field is the title when it was available.",
+    "link": "https://mpv.io/manual/master/#options-watch-history-path",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  }
+]

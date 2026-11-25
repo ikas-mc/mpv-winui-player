@@ -1,0 +1,67 @@
+[
+  {
+    "name": "brightness",
+    "group": "Equalizer",
+    "desc": "Adjust the brightness of the video signal (default: 0). Not supported by all video output drivers.",
+    "link": "https://mpv.io/manual/master/#options-brightness",
+    "values": [
+      {
+        "type": "int",
+        "minimum": -100,
+        "maximum": 100
+      }
+    ]
+  },
+  {
+    "name": "contrast",
+    "group": "Equalizer",
+    "desc": "Adjust the contrast of the video signal (default: 0). Not supported by all video output drivers.",
+    "link": "https://mpv.io/manual/master/#options-contrast",
+    "values": [
+      {
+        "type": "int",
+        "minimum": -100,
+        "maximum": 100
+      }
+    ]
+  },
+  {
+    "name": "saturation",
+    "group": "Equalizer",
+    "desc": "Adjust the saturation of the video signal (default: 0). You can get grayscale output with this option. Not supported by all video output drivers.",
+    "link": "https://mpv.io/manual/master/#options-saturation",
+    "values": [
+      {
+        "type": "int",
+        "minimum": -100,
+        "maximum": 100
+      }
+    ]
+  },
+  {
+    "name": "gamma",
+    "group": "Equalizer",
+    "desc": "Adjust the gamma of the video signal (default: 0). Not supported by all video output drivers.",
+    "link": "https://mpv.io/manual/master/#options-gamma",
+    "values": [
+      {
+        "type": "int",
+        "minimum": -100,
+        "maximum": 100
+      }
+    ]
+  },
+  {
+    "name": "hue",
+    "group": "Equalizer",
+    "desc": "Adjust the hue of the video signal (default: 0). You can get a colored negative of the image with this option. Not supported by all video output drivers.",
+    "link": "https://mpv.io/manual/master/#options-hue",
+    "values": [
+      {
+        "type": "int",
+        "minimum": -100,
+        "maximum": 100
+      }
+    ]
+  }
+]

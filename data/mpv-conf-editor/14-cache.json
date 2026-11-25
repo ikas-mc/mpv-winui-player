@@ -1,0 +1,219 @@
+[
+  {
+    "name": "cache",
+    "group": "Cache",
+    "desc": "Decide whether to use network cache settings (default: auto). If enabled, use up to --cache-secs for the cache size (but still limited to --demuxer-max-bytes), and make the cached data seekable (if possible). If disabled, --cache-pause and related are implicitly disabled. The auto choice enables this depending on whether the stream is thought to involve network accesses or other slow media (this is an imperfect heuristic). Use --demuxer-max-bytes to specify the size of the cache.",
+    "link": "https://mpv.io/manual/master/#options-cache",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Disable network cache"
+          },
+          {
+            "value": "auto",
+            "desc": "Auto-enable for network streams (default)"
+          },
+          {
+            "value": "yes",
+            "desc": "Always enable network cache"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cache-secs",
+    "group": "Cache",
+    "desc": "How many seconds of audio/video to prefetch if the cache is active. This overrides the --demuxer-readahead-secs option if and only if the cache is enabled and the value is larger. The default value is set to something very high, so the actually achieved readahead will usually be limited by the value of the --demuxer-max-bytes option. Setting this option is usually only useful for limiting readahead.",
+    "link": "https://mpv.io/manual/master/#options-cache-secs",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 0.0
+      }
+    ]
+  },
+  {
+    "name": "cache-on-disk",
+    "group": "Cache",
+    "desc": "Write packet data to a temporary file, instead of keeping them in memory. This makes sense only with --cache. If the normal cache is disabled, this option is ignored. The cache file is append-only. Even if the player appears to prune data, the file space freed by it is not reused. The cache file is deleted when playback is closed. Note that packet metadata is still kept in memory. --demuxer-max-bytes and related options are applied to metadata *only*. The size of this metadata varies, but 50 MB per hour of media is typical. The cache statistics will report this metadats size, instead of the size of the cache file. If the metadata hits the size limits, the metadata is pruned (but not the cache file). When the media is closed, the cache file is deleted. A cache file is generally worthless after the media is closed, and it's hard to retrieve any media data from it (it's not supported by design). If the option is enabled at runtime, the cache file is created, but old data will remain in the memory cache. If the option is disabled at runtime, old data remains in the disk cache, and the cache file is not closed until the media is closed. If the option is disabled and enabled again, it will continue to use the cache file that was opened first.",
+    "link": "https://mpv.io/manual/master/#options-cache-on-disk",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "demuxer-cache-dir",
+    "group": "Cache",
+    "desc": "Directory where to create temporary files. Cache is stored in the system's cache directory (usually ~/.cache/mpv) if this is unset. Currently, this is used for --cache-on-disk only.",
+    "link": "https://mpv.io/manual/master/#options-demuxer-cache-dir",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "cache-pause",
+    "group": "Cache",
+    "desc": "Whether the player should automatically pause when the cache runs out of data and stalls decoding/playback (default: yes). If enabled, it will pause and unpause once more data is available, aka \"buffering\".",
+    "link": "https://mpv.io/manual/master/#options-cache-pause",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "cache-pause-wait",
+    "group": "Cache",
+    "desc": "Number of seconds the packet cache should have buffered before starting playback again if \"buffering\" was entered (default: 1). This can be used to control how long the player rebuffers if --cache-pause is enabled, and the demuxer underruns. If the given time is higher than the maximum set with --cache-secs or --demuxer-readahead-secs, or prefetching ends before that for some other reason (like file end or maximum configured cache size reached), playback resumes earlier.",
+    "link": "https://mpv.io/manual/master/#options-cache-pause-wait",
+    "values": [
+      {
+        "type": "float",
+        "minimum": 0.0
+      }
+    ]
+  },
+  {
+    "name": "cache-pause-initial",
+    "group": "Cache",
+    "desc": "Enter \"buffering\" mode before starting playback (default: no). This can be used to ensure playback starts smoothly, in exchange for waiting some time to prefetch network data (as controlled by --cache-pause-wait). For example, some common behavior is that playback starts, but network caches immediately underrun when trying to decode more data as playback progresses. Another thing that can happen is that the network prefetching is so CPU demanding (due to demuxing in the background) that playback drops frames at first. In these cases, it helps enabling this option, and setting --cache-secs and --cache-pause-wait to roughly the same value. This option also triggers when playback is restarted after seeking.",
+    "link": "https://mpv.io/manual/master/#options-cache-pause-initial",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "demuxer-cache-unlink-files",
+    "group": "Cache",
+    "desc": "Whether or when to unlink cache files (default: immediate). This affects cache files which are inherently temporary, and which make no sense to remain on disk after the player terminates. This is a debugging option. immediate Unlink cache file after they were created. The cache files won't be visible anymore, even though they're in use. This ensures they are guaranteed to be removed from disk when the player terminates, even if it crashes. whendone Delete cache files after they are closed. no Don't delete cache files. They will consume disk space without having a use. Currently, this is used for --cache-on-disk only.",
+    "link": "https://mpv.io/manual/master/#options-demuxer-cache-unlink-files",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "immediate",
+            "desc": "Unlink cache files immediately after creation (default)"
+          },
+          {
+            "value": "whendone",
+            "desc": "Delete cache files after they are closed"
+          },
+          {
+            "value": "no",
+            "desc": "Don't delete cache files"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stream-buffer-size",
+    "group": "Cache",
+    "desc": "Size of the low level stream byte buffer (default: 128KB). This is used as buffer between demuxer and low level I/O (e.g. sockets). Generally, this can be very small, and the main purpose is similar to the internal buffer FILE in the C standard library will have. Half of the buffer is always used for guaranteed seek back, which is important for unseekable input. There are known cases where this can help performance to set a large buffer: 1. mp4 files. libavformat may trigger many small seeks in both directions, depending on how the file was muxed. 2. Certain network filesystems, which do not have a cache, and where small reads can be inefficient. In other cases, setting this to a large value can reduce performance. Usually, read accesses are at half the buffer size, but it may happen that accesses are done alternating with smaller and larger sizes (this is due to the internal ring buffer wrap-around). See --list-options for defaults and value range. <bytesize> options accept suffixes such as KiB and MiB.",
+    "link": "https://mpv.io/manual/master/#options-stream-buffer-size",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "ad-queue-enable",
+    "group": "Cache",
+    "desc": "Enable running the video/audio decoder on a separate thread (default: no). If enabled, the decoder is run on a separate thread, and a frame queue is put between decoder and higher level playback logic. The size of the frame queue is defined by the other options below. This is probably quite pointless. libavcodec already has multithreaded decoding (enabled by default), which makes this largely unnecessary. It might help in some corner cases with high bandwidth video that is slow to decode (in these cases libavcodec would block the playback logic, while using a decoding thread would distribute the decoding time evenly without affecting the playback logic). In other situations, it will simply make seeking slower and use significantly more memory. The queue size is restricted by the other ``--vd-queue-...`` options. The final queue size is the minimum as indicated by the option with the lowest limit. Each decoder/track has its own queue that may use the full configured queue size. Most queue options can be changed at runtime. ``--vd-queue-enable`` itself (and the audio equivalent) update only if decoding is completely reinitialized. However, setting ``--vd-queue-max-samples=1`` should almost lead to the same behavior as ``--vd-queue-enable=no``, so that value can be used for effectively runtime enabling/disabling the queue. This should not be used with hardware decoding. It is possible to enable this for audio, but it makes even less sense.",
+    "link": "https://mpv.io/manual/master/#options-ad-queue-enable",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "vd-queue-enable",
+    "group": "Cache",
+    "desc": "Enable running the video/audio decoder on a separate thread (default: no). If enabled, the decoder is run on a separate thread, and a frame queue is put between decoder and higher level playback logic. The size of the frame queue is defined by the other options below. This is probably quite pointless. libavcodec already has multithreaded decoding (enabled by default), which makes this largely unnecessary. It might help in some corner cases with high bandwidth video that is slow to decode (in these cases libavcodec would block the playback logic, while using a decoding thread would distribute the decoding time evenly without affecting the playback logic). In other situations, it will simply make seeking slower and use significantly more memory. The queue size is restricted by the other ``--vd-queue-...`` options. The final queue size is the minimum as indicated by the option with the lowest limit. Each decoder/track has its own queue that may use the full configured queue size. Most queue options can be changed at runtime. ``--vd-queue-enable`` itself (and the audio equivalent) update only if decoding is completely reinitialized. However, setting ``--vd-queue-max-samples=1`` should almost lead to the same behavior as ``--vd-queue-enable=no``, so that value can be used for effectively runtime enabling/disabling the queue. This should not be used with hardware decoding. It is possible to enable this for audio, but it makes even less sense.",
+    "link": "https://mpv.io/manual/master/#options-vd-queue-enable",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "name": "vd-queue-max-bytes",
+    "group": "Cache",
+    "desc": "Maximum approximate allowed size of the queue. If exceeded, decoding will be stopped. The maximum size can be exceeded by about 1 frame. See ``--list-options`` for defaults and value range. ``<bytesize>`` options accept suffixes such as ``KiB`` and ``MiB``.",
+    "link": "https://mpv.io/manual/master/#options-vd-queue-max-bytes",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "ad-queue-max-bytes",
+    "group": "Cache",
+    "desc": "Maximum approximate allowed size of the queue. If exceeded, decoding will be stopped. The maximum size can be exceeded by about 1 frame. See ``--list-options`` for defaults and value range. ``<bytesize>`` options accept suffixes such as ``KiB`` and ``MiB``.",
+    "link": "https://mpv.io/manual/master/#options-ad-queue-max-bytes",
+    "values": [
+      {
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "vd-queue-max-samples",
+    "group": "Cache",
+    "desc": "Maximum number of frames (video) or samples (audio) of the queue. The audio size may be exceeded by about 1 frame. See ``--list-options`` for defaults and value range.",
+    "link": "https://mpv.io/manual/master/#options-vd-queue-max-samples",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "ad-queue-max-samples",
+    "group": "Cache",
+    "desc": "Maximum number of frames (video) or samples (audio) of the queue. The audio size may be exceeded by about 1 frame. See ``--list-options`` for defaults and value range.",
+    "link": "https://mpv.io/manual/master/#options-ad-queue-max-samples",
+    "values": [
+      {
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "name": "vd-queue-max-secs",
+    "group": "Cache",
+    "desc": "Maximum number of seconds of media in the queue. The special value 0 means no limit is set. The queue size may be exceeded by about 2 frames. Timestamp resets may lead to random queue size usage. See ``--list-options`` for defaults and value range.",
+    "link": "https://mpv.io/manual/master/#options-vd-queue-max-secs",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "ad-queue-max-secs",
+    "group": "Cache",
+    "desc": "Maximum number of seconds of media in the queue. The special value 0 means no limit is set. The queue size may be exceeded by about 2 frames. Timestamp resets may lead to random queue size usage. See ``--list-options`` for defaults and value range.",
+    "link": "https://mpv.io/manual/master/#options-ad-queue-max-secs",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  }
+]

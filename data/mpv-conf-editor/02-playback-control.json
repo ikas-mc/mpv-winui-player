@@ -1,0 +1,57 @@
+[
+  {
+    "name": "hr-seek",
+    "group": "Playback Control",
+    "desc": "Select when to use precise seeks that are not limited to keyframes. Such seeks require decoding video from the previous keyframe up to the target position and so can take some time depending on decoding performance. For some video formats, precise seeks are disabled. This option selects the default choice to use for seeks; it is possible to explicitly override that default in the definition of key bindings and in input commands. :no: Never use precise seeks. :absolute: Use precise seeks if the seek is to an absolute position in the file, such as a chapter seek, but not for relative seeks like the default behavior of arrow keys. :default: Like absolute, but enable hr-seeks in audio-only cases. The exact behavior is implementation specific and may change with new releases (default). :yes: Use precise seeks whenever possible. :always: Same as yes (for compatibility).",
+    "link": "https://mpv.io/manual/master/#options-hr-seek",
+    "values": [
+      {
+        "type": "string",
+        "enum": [
+          {
+            "value": "no",
+            "desc": "Never use precise seeks"
+          },
+          {
+            "value": "absolute",
+            "desc": "Use precise seeks for absolute seeks (chapter, etc.) only"
+          },
+          {
+            "value": "yes",
+            "desc": "Use precise seeks whenever possible"
+          },
+          {
+            "value": "always",
+            "desc": "Same as yes (compatibility alias)"
+          },
+          {
+            "value": "default",
+            "desc": "Like absolute, but enable for audio-only cases (default)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hr-seek-demuxer-offset",
+    "group": "Playback Control",
+    "desc": "This option exists to work around failures to do precise seeks (as in --hr-seek) caused by bugs or limitations in the demuxers for some file formats. Some demuxers fail to seek to a keyframe before the given target position, going to a later position instead. The value of this option is subtracted from the time stamp given to the demuxer. Thus, if you set this option to 1.5 and try to do a precise seek to 60 seconds, the demuxer is told to seek to time 58.5, which hopefully reduces the chance that it erroneously goes to some time later than 60 seconds. The downside of setting this option is that precise seeks become slower, as video between the earlier demuxer position and the real target may be unnecessarily decoded.",
+    "link": "https://mpv.io/manual/master/#options-hr-seek-demuxer-offset",
+    "values": [
+      {
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "hr-seek-framedrop",
+    "group": "Playback Control",
+    "desc": "Allow the video decoder to drop frames during seek, if these frames are before the seek target. If this is enabled, precise seeking can be faster, but if you're using video filters which modify timestamps or add new frames, it can lead to precise seeking skipping the target frame. This e.g. can break frame backstepping when deinterlacing is enabled. Default: yes",
+    "link": "https://mpv.io/manual/master/#options-hr-seek-framedrop",
+    "values": [
+      {
+        "type": "bool"
+      }
+    ]
+  }
+]
