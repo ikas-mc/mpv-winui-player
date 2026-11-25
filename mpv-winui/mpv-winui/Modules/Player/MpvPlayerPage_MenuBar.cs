@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using mpv_winui.Modules.About;
 using mpv_winui.Modules.AppConfData;
 using mpv_winui.Modules.FileSystem;
+using mpv_winui.Modules.Language;
 using mpv_winui.Modules.Menu.MenuBar;
 using mpv_winui.Modules.Menu.MenuEditor;
 using mpv_winui.Modules.Menu.MpvMenu;
@@ -254,6 +255,9 @@ namespace mpv_winui.Modules.Player
                             break;
                         case "media-info":
                             ShowMediaInfoWindow();
+                            break;
+                        case "language":
+                            await LanguageSettingDialog.ShowAsync(XamlRoot);
                             break;
                     }
                 }

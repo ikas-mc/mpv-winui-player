@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.MpvConf.Option"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     xmlns:schema="using:mpv_winui.Modules.MpvConf.Schema"
     mc:Ignorable="d">
 
@@ -37,7 +38,7 @@
                 Padding="0"
                 VerticalAlignment="Center"
                 CheckChanged="OnEnableCheckChanged"
-                ToolTipService.ToolTip="Enable / Remove" />
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MpvConfEnableRemove}" />
             <TextBlock
                 x:Name="KeyText"
                 Grid.Column="1"
@@ -54,7 +55,7 @@
                 FontSize="8"
                 Foreground="#FFB900"
                 Glyph="&#xE91F;"
-                ToolTipService.ToolTip="Modified, not saved"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MpvConfModifiedUnsaved}"
                 Visibility="Collapsed" />
             <Border
                 x:Name="GroupBadge"
@@ -79,7 +80,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="OnCopyClicked"
-                ToolTipService.ToolTip="Copy">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Copy}">
                 <FontIcon
                     FontSize="14"
                     Glyph="&#xE8C8;" />
@@ -93,7 +94,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="OnApplyClicked"
-                ToolTipService.ToolTip="Apply to player">
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MpvConfApplyToPlayer}">
                 <FontIcon
                     FontSize="14"
                     Glyph="&#xE724;" />
@@ -128,7 +129,7 @@
                 CheckChanged="OnDisableCheckChanged"
                 Content="#"
                 FlowDirection="RightToLeft"
-                ToolTipService.ToolTip="Comment out (disable)" />
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MpvConfCommentOut}" />
             <ComboBox
                 x:Name="TypeBox"
                 Grid.Row="0"
@@ -150,8 +151,8 @@
                 Height="32"
                 MinWidth="0"
                 HorizontalAlignment="Left"
-                OffContent="no"
-                OnContent="yes"
+                OffContent="{x:Bind r:AppContext.AppLang.No}"
+                OnContent="{x:Bind r:AppContext.AppLang.Yes}"
                 Style="{StaticResource LeftContentToggleSwitchStyle}"
                 Toggled="OnBoolToggled"
                 Visibility="Collapsed" />

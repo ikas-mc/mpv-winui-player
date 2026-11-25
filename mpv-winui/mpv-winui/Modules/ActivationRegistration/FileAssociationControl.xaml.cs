@@ -144,7 +144,7 @@ public sealed partial class FileAssociationControl : UserControl
         var selected = AllGroups().SelectMany(items => items).Where(item => item.IsChecked).Select(item => item.Extension).ToArray();
         if (selected.Length == 0)
         {
-            StatusText.Text = "Please check the extensions to register.";
+            StatusText.Text = AppContext.AppLang.ActivationCheckExtension;
             return;
         }
 

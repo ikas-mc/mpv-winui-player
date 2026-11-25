@@ -26,11 +26,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key = nameof(AppContext.AppSetting.ThemeType),
-                Label = "Theme",
-                Description = "App theme",
+                Label = AppContext.AppLang.SettingsTheme,
+                Description = AppContext.AppLang.SettingsThemeNote,
                 Icon = "\uE790",
                 GroupKey="Style",
-                GroupLabel="Style",
+                GroupLabel = AppContext.AppLang.SettingsGroupStyle,
                 Type = OptionType.StringList,
                 Options = [AppSettings.ThemeType_Auto, AppSettings.ThemeType_Light, AppSettings.ThemeType_Dark],
                 Getter = () => AppContext.AppSetting.ThemeType,
@@ -46,11 +46,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.BackdropType),
-                Label = "Backdrop",
-                Description = "Window background. Restart required.",
+                Label = AppContext.AppLang.SettingsBackdrop,
+                Description = AppContext.AppLang.SettingsBackdropNote,
                 Icon="\uE91B",
                 GroupKey="Style",
-                GroupLabel="Style",
+                GroupLabel = AppContext.AppLang.SettingsGroupStyle,
                 Type = OptionType.StringList,
                 Options = [AppSettings.BackdropType_Acrylic, AppSettings.BackdropType_Mica],
                 Getter = () => AppContext.AppSetting.BackdropType,
@@ -66,11 +66,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key = nameof(AppContext.AppSetting.PlayerStyle),
-                Label = "Player Control Style",
-                Description = "Player control style.",
+                Label = AppContext.AppLang.SettingsPlayerStyle,
+                Description = AppContext.AppLang.SettingsPlayerStyleNote,
                 Icon = "\uE768",
                 GroupKey = "Style",
-                GroupLabel = "Style",
+                GroupLabel = AppContext.AppLang.SettingsGroupStyle,
                 Type = OptionType.StringList,
                 Options = [AppSettings.PlayerStyle_Default, AppSettings.PlayerStyle_Center, AppSettings.PlayerStyle_Compact],
                 Getter = () => AppContext.AppSetting.PlayerStyle,
@@ -86,11 +86,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.EnableVideoPreview),
-                Label = "Thumbnails Preview",
-                Description = "Using a plugin that supports the mpv osc-preview-api.",
+                Label = AppContext.AppLang.SettingsThumbnailPreview,
+                Description = AppContext.AppLang.SettingsThumbnailPreviewNote,
                 Icon = "\uE8B2",
                 GroupKey="Preview",
-                GroupLabel="Preview",
+                GroupLabel = AppContext.AppLang.SettingsGroupPreview,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnableVideoPreview,
                 Setter = v => AppContext.AppSetting.EnableVideoPreview = (bool)v!
@@ -99,11 +99,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.EnableVideoBuiltInPreview),
-                Label = "Built-in Thumbnails Preview",
-                Description = "Built-in preview. Restart required.",
+                Label = AppContext.AppLang.SettingsBuiltInPreview,
+                Description = AppContext.AppLang.SettingsBuiltInPreviewNote,
                 Icon = "\uE8B2",
                 GroupKey="Preview",
-                GroupLabel="Preview",
+                GroupLabel = AppContext.AppLang.SettingsGroupPreview,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnableVideoBuiltInPreview,
                 Setter = v => AppContext.AppSetting.EnableVideoBuiltInPreview = (bool)v!
@@ -112,11 +112,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.KeepVideoBuiltInPreviewAlive),
-                Label = "Built-in Preview Keep Alive",
-                Description = "Keep the preview mpv instance alive. Restart required.",
+                Label = AppContext.AppLang.SettingsBuiltInPreviewKeepAlive,
+                Description = AppContext.AppLang.SettingsBuiltInPreviewKeepAliveNote,
                 Icon = "\uE8B2",
                 GroupKey="Preview",
-                GroupLabel="Preview",
+                GroupLabel = AppContext.AppLang.SettingsGroupPreview,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.KeepVideoBuiltInPreviewAlive,
                 Setter = v => AppContext.AppSetting.KeepVideoBuiltInPreviewAlive = (bool)v!
@@ -125,11 +125,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.BuiltInPreviewAliveTimeout),
-                Label = "Built-in Preview Alive Timeout (s)",
-                Description = "Seconds the preview mpv instance stays alive.",
+                Label = AppContext.AppLang.SettingsBuiltInPreviewTimeout,
+                Description = AppContext.AppLang.SettingsBuiltInPreviewTimeoutNote,
                 Icon = "\uE8B2",
                 GroupKey="Preview",
-                GroupLabel="Preview",
+                GroupLabel = AppContext.AppLang.SettingsGroupPreview,
                 Type = OptionType.Integer,
                 Min = 0,
                 Max = int.MaxValue,
@@ -141,11 +141,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.EnableMouseInput),
-                Label = "Mouse Input",
-                Description = "Enable mouse input to mpv. Restart required.",
+                Label = AppContext.AppLang.SettingsMouseInput,
+                Description = AppContext.AppLang.SettingsMouseInputNote,
                 Icon = "\uE961",
                 GroupKey="Input",
-                GroupLabel="Input",
+                GroupLabel = AppContext.AppLang.SettingsGroupInput,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnableMouseInput,
                 Setter = v => AppContext.AppSetting.EnableMouseInput = (bool)v!
@@ -154,11 +154,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.EnableMouseInputDiscNavOnly),
-                Label = "Mouse Input Disc Nav Only",
-                Description = "When mouse input is enabled, send events to mpv only when the disc menu is active. Restart required.",
+                Label = AppContext.AppLang.SettingsMouseInputDiscNavOnly,
+                Description = AppContext.AppLang.SettingsMouseInputDiscNavOnlyNote,
                 Icon = "\uE961",
                 GroupKey="Input",
-                GroupLabel="Input",
+                GroupLabel = AppContext.AppLang.SettingsGroupInput,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnableMouseInputDiscNavOnly,
                 Setter = v => AppContext.AppSetting.EnableMouseInputDiscNavOnly = (bool)v!
@@ -167,11 +167,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key = nameof(AppContext.AppSetting.PlayerControlToggleButton),
-                Label = "Player Control Toggle Button",
-                Description = "Mouse buttons to toggle player control, Ignored while auto hide is enabled.\nL: left, M: middle, D: double-click. ",
+                Label = AppContext.AppLang.SettingsPlayerControlToggle,
+                Description = AppContext.AppLang.SettingsPlayerControlToggleNote,
                 Icon = "\uE961",
                 GroupKey = "PlayerControl",
-                GroupLabel = "Player Control",
+                GroupLabel = AppContext.AppLang.SettingsGroupPlayerControl,
                 Type = OptionType.StringList,
                 Options = [AppSettings.PlayerControlToggleButton_LeftMiddle, AppSettings.PlayerControlToggleButton_Middle, AppSettings.PlayerControlToggleButton_LeftDouble, AppSettings.PlayerControlToggleButton_LeftDoubleMiddle],
                 Getter = () => AppContext.AppSetting.PlayerControlToggleButton,
@@ -181,11 +181,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key = nameof(AppContext.AppSetting.EnablePlayerControlAutoHide),
-                Label = "Auto Hide Player Control",
-                Description = "Auto hide the player control, Disables the manual toggle. Restart required.",
+                Label = AppContext.AppLang.SettingsPlayerControlAutoHide,
+                Description = AppContext.AppLang.SettingsPlayerControlAutoHideNote,
                 Icon = "\uE917",
                 GroupKey = "PlayerControl",
-                GroupLabel = "Player Control",
+                GroupLabel = AppContext.AppLang.SettingsGroupPlayerControl,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnablePlayerControlAutoHide,
                 Setter = v => AppContext.AppSetting.EnablePlayerControlAutoHide = (bool)v!
@@ -194,11 +194,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key = nameof(AppContext.AppSetting.PlayerControlAutoHideDelay),
-                Label = "Auto Hide Delay (ms)",
-                Description = "Idle time before the player control hide. Restart required.",
+                Label = AppContext.AppLang.SettingsPlayerControlAutoHideDelay,
+                Description = AppContext.AppLang.SettingsPlayerControlAutoHideDelayNote,
                 Icon = "\uE917",
                 GroupKey = "PlayerControl",
-                GroupLabel = "Player Control",
+                GroupLabel = AppContext.AppLang.SettingsGroupPlayerControl,
                 Type = OptionType.Integer,
                 Min = 200,
                 Max = 60000,
@@ -210,11 +210,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.KeepDisplayAwake),
-                Label = "Keep Display Awake",
-                Description = "Prevent the display from dimming or sleeping while playing. Restart required.",
+                Label = AppContext.AppLang.SettingsKeepDisplayAwake,
+                Description = AppContext.AppLang.SettingsKeepDisplayAwakeNote,
                 Icon = "\uE945",
                 GroupKey="Power",
-                GroupLabel="Power",
+                GroupLabel = AppContext.AppLang.SettingsGroupPower,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.KeepDisplayAwake,
                 Setter = v => AppContext.AppSetting.KeepDisplayAwake = (bool)v!
@@ -223,11 +223,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.SingleAppInstance),
-                Label = "Single App Instance",
-                Description = "Enable single app instance. Restart required.",
+                Label = AppContext.AppLang.SettingsSingleAppInstance,
+                Description = AppContext.AppLang.SettingsSingleAppInstanceNote,
                 Icon = "\uECAA",
                 GroupKey="App",
-                GroupLabel="App",
+                GroupLabel = AppContext.AppLang.SettingsGroupApp,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.SingleAppInstance,
                 Setter = v => AppContext.AppSetting.SingleAppInstance = (bool)v!
@@ -236,11 +236,11 @@ public sealed partial class SettingsPage : Page
             new Option
             {
                 Key =  nameof(AppContext.AppSetting.EnableDebugLog),
-                Label = "Debug Log",
-                Description = "Enable app and mpv debug log. Restart required.",
+                Label = AppContext.AppLang.SettingsDebugLog,
+                Description = AppContext.AppLang.SettingsDebugLogNote,
                 Icon = "\uE946",
                 GroupKey="Data",
-                GroupLabel="Data",
+                GroupLabel = AppContext.AppLang.SettingsGroupData,
                 Type = OptionType.Boolean,
                 Getter = () => AppContext.AppSetting.EnableDebugLog,
                 Setter = v => AppContext.AppSetting.EnableDebugLog = (bool)v!

@@ -328,13 +328,13 @@ public sealed partial class MpvConfEditorPage : Page
     {
         string oldName = profile.Name;
 
-        var nameBox = new TextBox { Text = oldName, Header = "New name" };
+        var nameBox = new TextBox { Text = oldName, Header = AppContext.AppLang.NewName };
         var dialog = new ContentDialog
         {
             Title = $"Rename profile '{oldName}'",
             Content = nameBox,
-            PrimaryButtonText = "Rename",
-            CloseButtonText = "Cancel",
+            PrimaryButtonText = AppContext.AppLang.Rename,
+            CloseButtonText = AppContext.AppLang.Cancel,
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -368,9 +368,9 @@ public sealed partial class MpvConfEditorPage : Page
         var dialog = new ContentDialog
         {
             Title = $"Delete profile '{label}'",
-            Content = "All options in this profile will be removed when the file is saved.",
-            PrimaryButtonText = "Delete",
-            CloseButtonText = "Cancel",
+            Content = AppContext.AppLang.MpvConfDeleteProfileWarning,
+            PrimaryButtonText = AppContext.AppLang.Delete,
+            CloseButtonText = AppContext.AppLang.Cancel,
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -423,9 +423,9 @@ public sealed partial class MpvConfEditorPage : Page
     private async void AddButton_Click(object sender, RoutedEventArgs e)
     {
         string currentLabel = _profile.Length == 0 ? DefaultProfileLabel : _profile;
-        var profileBox = new TextBox { Text = currentLabel, PlaceholderText = "profile name (new names create a profile)", Header = "Profile" };
-        var keyBox = new TextBox { PlaceholderText = "option name (optional for a new profile)", Header = "Key" };
-        var valueBox = new TextBox { PlaceholderText = "value (optional)", Header = "Value" };
+        var profileBox = new TextBox { Text = currentLabel, PlaceholderText = AppContext.AppLang.MpvConfProfileName, Header = AppContext.AppLang.Profile };
+        var keyBox = new TextBox { PlaceholderText = AppContext.AppLang.MpvConfOptionName, Header = AppContext.AppLang.Key };
+        var valueBox = new TextBox { PlaceholderText = AppContext.AppLang.MpvConfOptionValue, Header = AppContext.AppLang.Value };
         var panel = new StackPanel { Spacing = 8 };
         panel.Children.Add(profileBox);
         panel.Children.Add(keyBox);
@@ -433,10 +433,10 @@ public sealed partial class MpvConfEditorPage : Page
 
         var dialog = new ContentDialog
         {
-            Title = "Add option",
+            Title = AppContext.AppLang.MpvConfAddOption,
             Content = panel,
-            PrimaryButtonText = "Add",
-            CloseButtonText = "Cancel",
+            PrimaryButtonText = AppContext.AppLang.Add,
+            CloseButtonText = AppContext.AppLang.Cancel,
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };

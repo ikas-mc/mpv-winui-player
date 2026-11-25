@@ -73,16 +73,16 @@ namespace mpv_winui.Modules.Player.History
                 {
                     if (_saveWatchHistoryEnabled)
                     {
-                        EmptyTextBlock.Text = "The watch history file is empty.";
+                        EmptyTextBlock.Text = AppContext.AppLang.PlayerHistoryEmptyFile;
                     }
                     else
                     {
-                        EmptyTextBlock.Text = "Enable --save-watch-history to jump to recently played files.";
+                        EmptyTextBlock.Text = AppContext.AppLang.PlayerHistoryEnableSave;
                     }
                 }
                 else
                 {
-                    EmptyTextBlock.Text = "No history entries.";
+                    EmptyTextBlock.Text = AppContext.AppLang.PlayerHistoryNoEntries;
                 }
             }
             else

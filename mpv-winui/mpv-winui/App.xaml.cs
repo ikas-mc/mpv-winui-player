@@ -1,7 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using mpv_winui.Modules.AppModel;
 using mpv_winui.Modules.Common.View;
+using mpv_winui.Modules.Language;
 using NLog;
+using System;
 
 namespace mpv_winui
 {
@@ -16,12 +19,15 @@ namespace mpv_winui
 
         public App()
         {
+            UpdatePrimaryLanguage();
             InitializeComponent();
             AppContext.Init();
         }
 
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
+            await AppContext.WaitAll();
+
             var window = new MainWindow();
             Window = window;
             window.Open();
@@ -42,5 +48,21 @@ namespace mpv_winui
 
             Window?.ShowAndForegroundWindow();
         }
+
+        private void UpdatePrimaryLanguage()
+        {
+            if (!PackageHelper.IsPackaged)
+            {
+                try
+                {
+                    AppLanguageService.UpdatePrimaryLanguage();
+                }
+                catch (Exception)
+                {
+                    //
+                }
+            }
+        }
+
     }
 }

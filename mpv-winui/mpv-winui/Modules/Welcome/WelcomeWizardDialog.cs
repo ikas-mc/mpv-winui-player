@@ -13,9 +13,9 @@ namespace mpv_winui.Modules.Welcome
             var control = WelcomeWizardControl.Create();
             var dialog = new ContentDialog
             {
-                Title = "Welcome",
+                Title = AppContext.AppLang.Welcome,
                 Content = control,
-                CloseButtonText = "Close",
+                CloseButtonText = AppContext.AppLang.Close,
                 XamlRoot = xamlRoot,
             };
 

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:mpv_winui.Modules.ActivationRegistration"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:mpv_winui"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -36,16 +37,16 @@
         <StackPanel Spacing="12">
             <TextBlock
                 FontWeight="Bold"
-                Text="File Associations" />
+                Text="{x:Bind r:AppContext.AppLang.ActivationFileAssociation}" />
             <TextBlock
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="Unregister all file types before moving or deleting the app folder."
+                Text="{x:Bind r:AppContext.AppLang.ActivationUnregisterBeforeMove}"
                 TextWrapping="Wrap" />
 
             <TextBlock
                 FontWeight="SemiBold"
                 Style="{StaticResource BodyTextBlockStyle}"
-                Text="Video" />
+                Text="{x:Bind r:AppContext.AppLang.Video}" />
             <ItemsControl x:Name="VideoList">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -62,7 +63,7 @@
             <TextBlock
                 FontWeight="SemiBold"
                 Style="{StaticResource BodyTextBlockStyle}"
-                Text="Audio" />
+                Text="{x:Bind r:AppContext.AppLang.Audio}" />
             <ItemsControl x:Name="AudioList">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -79,7 +80,7 @@
             <TextBlock
                 FontWeight="SemiBold"
                 Style="{StaticResource BodyTextBlockStyle}"
-                Text="Image" />
+                Text="{x:Bind r:AppContext.AppLang.Image}" />
             <ItemsControl x:Name="ImageList">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -96,7 +97,7 @@
             <TextBlock
                 FontWeight="SemiBold"
                 Style="{StaticResource BodyTextBlockStyle}"
-                Text="Archive" />
+                Text="{x:Bind r:AppContext.AppLang.Archive}" />
             <ItemsControl x:Name="ArchiveList">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -113,7 +114,7 @@
             <TextBlock
                 FontWeight="SemiBold"
                 Style="{StaticResource BodyTextBlockStyle}"
-                Text="Playlist" />
+                Text="{x:Bind r:AppContext.AppLang.Playlist}" />
             <ItemsControl x:Name="PlaylistList">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -132,21 +133,21 @@
                 DefaultLabelPosition="Right">
                 <AppBarButton
                     Click="OnSelectAll"
-                    Label="Select All">
+                    Label="{x:Bind r:AppContext.AppLang.ActivationSelectAll}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE8B3;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
                     Click="OnDeselectAll"
-                    Label="Select None">
+                    Label="{x:Bind r:AppContext.AppLang.ActivationSelectNone}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE711;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
                     Click="OnInvert"
-                    Label="Invert">
+                    Label="{x:Bind r:AppContext.AppLang.ActivationInvert}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE8AB;" />
                     </AppBarButton.Icon>
@@ -155,7 +156,7 @@
                 <AppBarButton
                     x:Name="RegisterButton"
                     Click="OnRegister"
-                    Label="Register">
+                    Label="{x:Bind r:AppContext.AppLang.ActivationRegister}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE73E;" />
                     </AppBarButton.Icon>
@@ -163,7 +164,7 @@
                 <AppBarButton
                     x:Name="UnregisterButton"
                     Click="OnUnregisterAll"
-                    Label="Unregister All">
+                    Label="{x:Bind r:AppContext.AppLang.ActivationUnregisterAll}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE74D;" />
                     </AppBarButton.Icon>

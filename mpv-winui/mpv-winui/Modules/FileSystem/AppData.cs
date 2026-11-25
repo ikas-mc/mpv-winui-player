@@ -24,6 +24,16 @@ namespace mpv_winui.Modules.FileSystem
             return Path.Combine(_localFolder.Value.Path, path);
         }
 
+        public string ResolveLocalData(string path1, string path2)
+        {
+            return Path.Combine(_localFolder.Value.Path, path1, path2);
+        }
+
+        public string ResolveLocalData(string path1, string path2, string path3)
+        {
+            return Path.Combine(_localFolder.Value.Path, path1, path2, path3);
+        }
+
         public async Task<StorageFolder> OpenOrCreateLocalDataFolderAsync(string path)
         {
             return await _localFolder.Value.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);

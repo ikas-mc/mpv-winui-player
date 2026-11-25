@@ -19,9 +19,9 @@ public static class WatchLaterDialog
 
         var dialog = new ContentDialog
         {
-            Title = "Watch Later",
+            Title = AppContext.AppLang.PlayerWatchLater,
             Content = control,
-            CloseButtonText = "Close",
+            CloseButtonText = AppContext.AppLang.Close,
             XamlRoot = xamlRoot,
         };
         dialog.Resources["ContentDialogMaxWidth"] = 900;
